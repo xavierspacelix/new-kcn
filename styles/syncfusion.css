@@ -1,0 +1,691 @@
+/* @import "@syncfusion/ej2/material3.css"; */
+@import '@syncfusion/ej2-icons/styles/material3.css';
+@import url('./syncfusion/material4.css');
+@import url('./syncfusion/grid-layout.css');
+/* @import url('./syncfusion/dialog/components-dialog.module.css');
+@import url('./syncfusion/button/split-button.module.css');
+@import url('./syncfusion/button/progress-button.module.css');
+@import url('./syncfusion/inputs/sample.module.css');  */
+
+.e-control,
+.e-control [class^='e-'],
+.e-control [class*=' e-'] {
+    font-size: 11px;
+}
+
+.e-control {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif !important;
+}
+
+.set-font-11 {
+    font-size: 11px;
+    font-weight: normal;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    margin: 6px 0 3px;
+}
+
+.set-font-12 {
+    font-size: 12px;
+    font-weight: normal;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    margin: 6px 0 3px;
+}
+
+.set-font-16 {
+    font-size: 16px;
+}
+
+.set-font-18 {
+    font-size: 18px;
+}
+
+.set-font-20 {
+    font-size: 20px;
+}
+
+.panel-tab {
+    position: relative;
+    border-radius: 0.375rem;
+    border: 1px solid #f1f1f1 !important;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    /* padding: 0.25rem; */
+    --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.panel-input {
+    position: relative;
+    border-radius: 0.375rem;
+    border: 1px solid #f1f1f1 !important;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    padding-left: 8px;
+    padding-right: 2px;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.panel-tabel {
+    display: table;
+    padding: 0px;
+    position: relative;
+    border-radius: 0.375rem;
+    border: 1px solid #f1f1f1 !important;
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+    /* background-color: rgb(255 255 255 / var(--tw-bg-opacity)); */
+    --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.panel-pager {
+    position: relative;
+    /* border-bottom-left-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem;   */
+    /* height: 40px;
+  max-height: 40px; */
+    /* border: 1px solid #F1F1F1 !important; */
+    padding-top: 2px;
+    padding-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 2px;
+    /* --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); */
+}
+
+/*================== ContextMenu / DropdownList / LIstView ====================*/
+.e-contextmenu-wrapper .e-menu-parent {
+    font-size: 11px;
+    line-height: 25px;
+}
+
+.e-dropdownbase .e-list-item,
+.e-dropdownbase .e-list-item.e-item-focus {
+    font-size: 11px;
+    line-height: 25px;
+}
+
+.e-listview .e-list-group-item {
+    color: black;
+    background-color: #dedede;
+    font-size: 11px;
+    line-height: 25px;
+}
+
+.e-listview .e-list-item {
+    color: black;
+    background-color: white;
+    font-size: 11px;
+    line-height: 25px;
+}
+
+/*=========================== SweetAlert Toast =================================*/
+.swal2-popup * {
+    font-weight: normal;
+    font-family: Nunito, sans-serif !important;
+    /* font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif !important;  */
+}
+
+.swal2-popup .swal2-title {
+    font-size: 12px !important;
+    color: black !important;
+}
+
+.swal2-popup .swal2-html-container {
+    font-size: 12px !important;
+    color: black !important;
+}
+
+.swal2-popup .swal2-label {
+    font-size: 12px !important;
+    color: black !important;
+}
+
+.swal2-popup .btn {
+    font-size: 11px !important;
+    font-weight: normal;
+    /* font-family: Nunito, sans-serif !important; */
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif !important;
+}
+
+.swal2-popup .swal2-radio {
+    margin: 0 !important;
+}
+
+.colored-toast.swal2-icon-success {
+    background-color: white !important;
+}
+
+.colored-toast.swal2-icon-error {
+    background-color: white !important;
+}
+
+.colored-toast.swal2-icon-warning {
+    background-color: white !important;
+}
+
+.colored-toast.swal2-icon-info {
+    background-color: white !important;
+}
+
+.colored-toast.swal2-icon-question {
+    background-color: white !important;
+}
+
+.colored-toast .swal2-title {
+    color: black !important;
+}
+
+.colored-toast .swal2-close {
+    color: black !important;
+}
+
+.colored-toast .swal2-html-container {
+    color: black !important;
+}
+
+.swal2-icon {
+    background-color: white;
+}
+
+/*============================== Checkbox =================================*/
+.e-checkbox-wrapper .e-label {
+    font-size: 11px !important;
+}
+
+/*================================ Input ===================================*/
+.e-input-group input.e-input,
+.e-input-group.e-control-wrapper input.e-input {
+    font-size: 11px !important;
+}
+
+.e-input-group .e-input-group-icon:last-child,
+.e-input-group.e-control-wrapper .e-input-group-icon:last-child {
+    font-size: 11px !important;
+}
+
+/* Hilangkan garis bawah pada input control */
+.e-input-group:not(.e-float-icon-left),
+.e-input-group.e-success:not(.e-float-icon-left),
+.e-input-group.e-warning:not(.e-float-icon-left),
+.e-input-group.e-error:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-success:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left),
+.e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left) {
+    font-size: 11px;
+    border: none !important;
+}
+
+.e-input:not(:valid),
+.e-input:valid,
+.e-float-input.e-control-wrapper input:not(:valid),
+.e-float-input.e-control-wrapper input:valid,
+.e-float-input input:not(:valid),
+.e-float-input input:valid,
+.e-input-group input:not(:valid),
+.e-input-group input:valid,
+.e-input-group.e-control-wrapper input:not(:valid),
+.e-input-group.e-control-wrapper input:valid,
+.e-float-input.e-control-wrapper textarea:not(:valid),
+.e-float-input.e-control-wrapper textarea:valid,
+.e-float-input textarea:not(:valid),
+.e-float-input textarea:valid,
+.e-input-group.e-control-wrapper textarea:not(:valid),
+.e-input-group.e-control-wrapper textarea:valid,
+.e-input-group textarea:not(:valid),
+.e-input-group textarea:valid {
+    font-size: 11px !important;
+}
+
+.e-float-input.e-control-wrapper:not(.e-error) input:valid ~ label.e-float-text,
+.e-float-input.e-control-wrapper:not(.e-error) input ~ label.e-label-top.e-float-text {
+    font-size: 11px !important;
+}
+
+/* Hilangkan focus pada input control */
+.e-input-group:not(.e-float-icon-left):not(.e-float-input)::before,
+.e-input-group:not(.e-float-icon-left):not(.e-float-input)::after,
+.e-input-group.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::before,
+.e-input-group.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::after,
+.e-input-group.e-control-wrapper:not(.e-float-icon-left):not(.e-float-input)::before,
+.e-input-group.e-control-wrapper:not(.e-float-icon-left):not(.e-float-input)::after,
+.e-input-group.e-control-wrapper.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::before,
+.e-input-group.e-control-wrapper.e-float-icon-left:not(.e-float-input) .e-input-in-wrap::after {
+    -moz-transition: 0.2s cubic-bezier(0.4, 0, 0.4, 1);
+    bottom: 0;
+    content: '';
+    height: 0px !important;
+    position: absolute;
+    transition: 0.2s cubic-bezier(0.4, 0, 0.4, 1);
+    width: 0;
+}
+
+.e-outline.e-input-group input.e-input,
+.e-outline.e-float-input.e-input-group input,
+.e-outline.e-input-group.e-control-wrapper input.e-input,
+.e-outline.e-float-input.e-input-group.e-control-wrapper input,
+.e-outline.e-float-input input,
+.e-outline.e-float-input.e-control-wrapper input {
+    font-size: 11px !important;
+    /* box-sizing: border-box;  */
+    /* min-height: 40px;*/
+}
+
+.e-dropdownbase .e-list-item,
+.e-dropdownbase .e-list-item.e-item-focus {
+    min-height: 20px;
+}
+
+/* Disable with default cursor */
+.e-input[disabled],
+.e-input-group .e-input[disabled],
+.e-input-group.e-control-wrapper .e-input[disabled],
+.e-input-group.e-disabled,
+.e-input-group.e-disabled input,
+.e-input-group.e-disabled input.e-input,
+.e-input-group.e-disabled textarea,
+.e-input-group.e-disabled textarea.e-input,
+.e-input-group.e-control-wrapper.e-disabled,
+.e-input-group.e-control-wrapper.e-disabled input,
+.e-input-group.e-control-wrapper.e-disabled input.e-input,
+.e-input-group.e-control-wrapper.e-disabled textarea,
+.e-input-group.e-control-wrapper.e-disabled textarea.e-input,
+.e-float-input.e-disabled input,
+.e-float-input.e-disabled textarea,
+.e-float-input input[disabled],
+.e-float-input input.e-disabled,
+.e-float-input textarea[disabled],
+.e-float-input textarea.e-disabled,
+.e-float-input.e-control-wrapper.e-disabled input,
+.e-float-input.e-control-wrapper.e-disabled textarea,
+.e-float-input.e-control-wrapper input[disabled],
+.e-float-input.e-control-wrapper input.e-disabled,
+.e-float-input.e-control-wrapper textarea[disabled],
+.e-float-input.e-control-wrapper textarea.e-disabled,
+.e-input-group.e-disabled span,
+.e-input-group.e-control-wrapper.e-disabled span {
+    cursor: default;
+}
+
+/* Disable resize multiline */
+.e-custom-height {
+    height: 75px;
+    min-height: 75px;
+}
+.e-input-group input.e-input,
+.e-input-group textarea.e-input,
+.e-input-group input.e-input:hover:not(.e-success):not(.e-warning):not(.e-error):not([disabled]):not(:focus),
+.e-input-group textarea.e-input:hover:not(.e-success):not(.e-warning):not(.e-error):not([disabled]),
+.e-input-group.e-control-wrapper input.e-input,
+.e-input-group.e-control-wrapper textarea.e-input,
+.e-input-group.e-control-wrapper input.e-input:hover:not(.e-success):not(.e-warning):not(.e-error):not([disabled]):not(:focus),
+.e-input-group.e-control-wrapper textarea.e-input:hover:not(.e-success):not(.e-warning):not(.e-error):not([disabled]) {
+    resize: none;
+}
+
+/*=========================== Calendar ===========================*/
+/* To specify background color and border for the Calendar */
+.e-calendar {
+    /* background-color: peachpuff;
+  border: 0px solid red;  */
+    font-size: 11px !important;
+}
+
+/* To specify background color, color, and border for date elements on hovering */
+.e-calendar .e-content td:hover span.e-day,
+.e-calendar .e-content td:focus span.e-day,
+.e-bigger.e-small .e-calendar .e-content td:hover span.e-day,
+.e-bigger.e-small .e-calendar .e-content td:focus span.e-day {
+    /* background-color: red;
+  border: 1px solid;
+  color: #212529;   */
+    font-size: 10px;
+}
+
+/* To specify border border of date cell grid */
+.e-calendar .e-content span.e-day,
+.e-bigger.e-small .e-calendar .e-content span.e-day {
+    /* border: 1px solid;   */
+    font-size: 10px;
+}
+
+/* To specify color and font size Calendar title */
+.e-calendar .e-header .e-title,
+.e-bigger.e-small .e-calendar .e-header .e-title {
+    color: black;
+    font-size: 15px;
+}
+
+/* To specify color and border the previous and next icon  */
+.e-calendar .e-header span,
+.e-bigger.e-small .e-calendar .e-header span {
+    /* border: 1px solid;
+  color: chocolate;   */
+    font-size: 10px;
+}
+
+/* To specify background color, color, and border-color the footer button */
+.e-calendar .e-btn.e-today.e-flat.e-primary,
+.e-calendar .e-css.e-btn.e-today.e-flat.e-primary {
+    background-color: #ff5a5f;
+    border-color: white;
+    color: white;
+    font-size: 10px;
+}
+
+/* To specify background color and color the selected date cell grid */
+.e-calendar .e-content td.e-focused-date.e-today span.e-day {
+    /* background-color: maroon;
+  color: #fff;   */
+    font-size: 10px;
+}
+
+/* To specify background the content header in Calendar */
+.e-calendar .e-content thead,
+.e-bigger.e-small .e-calendar .e-content thead {
+    background: aquamarine;
+    font-size: 10px;
+}
+
+/*=========================== Tab Sheet ===========================*/
+.e-tab {
+    /* border: 3px solid red; */
+    /* background-color: transparent !important;
+  border-radius: 6px; */
+    /* padding: 0 5px 0 5px;   */
+}
+
+.e-tab .e-content.e-lib {
+    /* font-size: 11px !important;
+  font-weight: normal !important;
+  background-color: white !important;
+  position: relative;
+  border-top-right-radius: 0.375rem;
+  border-bottom-left-radius: 0.375rem;
+  border-bottom-right-radius: 0.375rem; 
+  border: 1px solid #F1F1F1;
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); */
+}
+
+.e-tab .e-tab-header .e-toolbar-items {
+    /* background: #9faed8;
+  border: 2px solid blue; */
+}
+
+.e-tab .e-content .e-item {
+    /* color: #a78515;
+  font-size: 14px; */
+}
+
+.e-tab .e-tab-header {
+    /* background: #F2FDF8 !important; */
+    /* background: #badfba !important; */
+    background: transparent !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    border-top-left-radius: 6px !important;
+    border-top-right-radius: 6px !important;
+}
+
+.e-tab .e-tab-header .e-toolbar-item.e-active .e-text-wrap {
+    /* height: 40px; */
+    /* margin-top: 0; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item .e-text-wrap {
+    /* height: 40px; */
+    /* margin-top: 0;
+  color: #5d676e !important;
+  align-content: center;
+  align-items: center;
+  display: inline-flex; */
+}
+
+.e-tab .e-tab-header .e-toolbar-items:not(.e-tbar-pos) .e-toolbar-item:last-child {
+    /* background: transparent !important; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item:not(.e-separator) {
+    /* background: transparent !important; */
+}
+
+.e-toolbar .e-toolbar-item:not(.e-separator) {
+    /* height: 40px !important; */
+    /* padding: 0px 0px 0px 0px !important; */
+}
+
+.e-tab .e-tab-wrap {
+    /* height: 40px !important; */
+    /* background-color: white !important;
+  border-top-left-radius: 6px !important;
+  border-top-right-radius: 6px !important;
+  border: 1px solid #F1F1F1 !important;   */
+}
+
+.e-tab .e-tab-wrap:hover {
+    /* background: transparent !important;
+  border-top-left-radius: 6px !important;
+  border-top-right-radius: 6px !important;
+  border: 1px solid #F1F1F1 !important;   */
+}
+
+.e-tab .e-tab-header:not(.e-vertical) .e-indicator,
+.e-tab .e-tab-header.e-vertical .e-indicator {
+    /* transition: none; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item.e-active .e-tab-wrap {
+    /* background: yellow !important;
+  color: black !important; 
+  border: 1px solid #F1F1F1 !important; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item .e-tab-icon {
+    /* color: white !important; */
+}
+
+.e-tab .e-content {
+    /* background: whitesmoke !important; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item .e-tab-wrap:hover {
+    /* background: white !important; */
+}
+
+.e-tab .e-tab-header .e-hor-nav .e-popup-up-icon:hover,
+.e-tab .e-tab-header .e-hor-nav .e-popup-down-icon:hover {
+    /* background: #d1f6d1 !important; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item.e-active {
+    /* background: transparent !important; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item.e-active .e-tab-text,
+.e-tab .e-tab-header .e-toolbar-item.e-active .e-tab-icon {
+    /* color: green !important; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item.e-active .e-tab-text,
+.e-tab .e-tab-header .e-toolbar-item.e-active .e-tab-icon {
+    font-size: 11px !important;
+    color: #7d696e;
+    /* color: white !important; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item .e-tab-text {
+    font-size: 11px !important;
+    font-weight: normal !important;
+    color: #857f81 !important;
+    /* color: white !important; */
+}
+
+.e-tab .e-tab-header:not(.e-vertical)::before {
+    /* background-color: #DEDEDE; */
+}
+
+.e-tab .e-tab-header .e-toolbar-item.e-active .e-tab-text,
+.e-tab .e-tab-header .e-toolbar-item.e-active .e-tab-icon {
+    /* color: rgba(var(--color-sf-primary)); */
+    font-size: 11px !important;
+    color: #7d696e !important;
+    font-weight: bold !important;
+}
+
+/*=========================== Dialog ===========================*/
+.e-dialog .e-dlg-header {
+    background: #f2fdf8;
+    color: black;
+    font-size: 16px;
+    font-weight: normal;
+    font-family: Nunito, sans-serif !important;
+}
+
+.e-dialog .e-dlg-header-content {
+    background: #f2fdf8;
+    padding: 8px 10px 0 15px !important;
+}
+
+.e-dialog .e-dlg-header-content + .e-dlg-content {
+    padding-top: 10px;
+}
+
+.e-dialog .e-dlg-content {
+    padding: 5px 5px 5px 5px !important;
+    color: #5d676e !important;
+    font-size: 11px;
+    font-weight: normal;
+    line-height: normal;
+    font-family: Nunito, sans-serif !important;
+}
+
+.e-dlg-overlay {
+    background-color: slategray;
+    opacity: 0.6;
+}
+
+.e-dialog.e-draggable > .e-dlg-header-content {
+    height: 43px;
+}
+
+.e-dialog .e-footer-content {
+    height: 43px;
+    padding: 10px 35px 20px 20px;
+}
+
+.e-dialog .e-footer-content .e-btn {
+    margin-left: 3px !important;
+    font-size: 11px !important;
+    /* color: black !important;  */
+    width: 90px;
+    background-color: #3b3f5c;
+}
+
+/*=======================================================================================================*/
+
+.sidebar {
+    box-shadow: rgb(113 122 131 / 11%) 0px 7px 30px 0px;
+}
+
+.nav-item,
+.navbar {
+    z-index: 10000;
+}
+
+@media screen and (max-width: 800px) {
+    .sidebar {
+        z-index: 10000000;
+    }
+}
+
+.e-dlg-center-center,
+.e-quick-popup-wrapper.e-device {
+    z-index: 1000000 !important;
+}
+
+/* ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #c2c9d2; 
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+} */
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+    /* border-radius: 4px;
+    background: #f5f5f5;  */
+}
+
+::-webkit-scrollbar-thumb {
+    /* background: transparent; */
+    border-radius: 4px;
+    background: #c2c9d2;
+    width: 2px !important;
+    height: 2px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    border-radius: 4px;
+    background: #999;
+}
+
+.e-radio-wrapper {
+    margin-right: 10px;
+}
+
+.e-radio + label .e-label {
+    font-size: 11px;
+}
+
+
+.e-pivotview .e-pivot-toolbar .e-toolbar-items {
+    background-color: rgb(230 226 222);
+}
+
+.e-pivotview .e-group-values, .e-pivotview .e-group-columns, .e-pivotview .e-group-filters, .e-pivotview .e-group-rows, .e-pivotview .e-group-all-fields {
+    background-color: rgb(230 226 222);
+}
+
+.e-pivotview .e-gtot, .e-pivotview .e-gtot.e-rowsheader, .e-pivotview .e-gtot.e-columnsheader, .e-pivotview .e-grid .e-content, .e-pivotview .e-grid .e-gridheader {
+    background-color: rgb(230 226 222);
+}
+
+.e-columnheader {
+    background-color: rgb(230 226 222);
+}
+
+.e-leftfreeze {
+    background-color: rgb(230 226 222) !important;
+}
+.e-pivotview .e-pivot-toolbar {
+    background-color: rgb(230 226 222);
+}
+
+.e-input-group:not(.e-float-icon-left), .e-input-group.e-success:not(.e-float-icon-left), .e-input-group.e-warning:not(.e-float-icon-left), .e-input-group.e-error:not(.e-float-icon-left), .e-input-group.e-control-wrapper:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-success:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left), .e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left) {
+    border-radius: 5px;
+}

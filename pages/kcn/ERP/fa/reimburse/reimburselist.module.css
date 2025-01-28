@@ -1,0 +1,13 @@
+.flex-container {
+    display: flex;
+    gap: 15px;
+}
+
+.link-style {
+    color: black;
+    /* text-decoration: underline; */
+}
+
+.link-style:hover {
+    color: blue;
+}

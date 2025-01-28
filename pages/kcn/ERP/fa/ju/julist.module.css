@@ -1,0 +1,214 @@
+/* SOList.module.css */
+
+.flex-container {
+    display: flex;
+    gap: 20px;
+}
+
+/* grid */
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 86% 14%;
+    gap: 10px;
+}
+
+.grid-left {
+    padding: 10px;
+}
+
+.grid-right {
+    margin-top: 5vh;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* grid catatan*/
+.grid-containerNote {
+    display: grid;
+    grid-template-columns: 77% 23%;
+    gap: 10px;
+}
+
+.grid-leftNote {
+    padding: 10px;
+}
+
+.grid-rightNote {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /* gap: 5px; */
+}
+
+/* Border Content*/
+.bordered-content {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center; /* Membuat teks menjadi tengah horizontal */
+    height: 40vh;
+    display: flex;
+    justify-content: center; /* Mengatur posisi vertikal menjadi di tengah */
+    align-items: center; /* Mengatur posisi vertikal menjadi di tengah */
+    color: red;
+    font-style: italic;
+}
+
+.centered-text-file-pendukung {
+    font-size: 3vh;
+    margin: 0;
+}
+
+.titleText {
+    font-size: 2.5vh;
+    margin-bottom: 2vh;
+}
+
+/* table */
+.table {
+    border-collapse: collapse;
+}
+
+.table,
+.table th,
+.table td {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.table th {
+    background-color: #f6f8fa;
+    color: rgb(107, 107, 107);
+}
+
+.table th,
+.table td {
+    border: 1px solid rgb(159, 158, 158);
+}
+
+.titleText {
+    margin-bottom: 2vh;
+}
+
+.inputTableBasicSearch {
+    width: 100%;
+}
+
+.inputTableBasic:focus,
+.inputTableBasicSearch:focus,
+.inputTableBasicDate:focus {
+    outline: none;
+}
+
+.inputTableBasic:focus,
+.inputTableBasicSearch:focus,
+.inputTableBasicDate:focus {
+    border-color: #ccc;
+}
+
+.inline-flex-container {
+    display: flex;
+    flex-direction: row-reverse; /* Mengubah arah tata letak menjadi dari kanan ke kiri */
+}
+
+.custom-box-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Menempatkan elemen-elemen sejajar dan memberikan ruang di antara mereka */
+}
+
+.custom-box-aktif {
+    background-color: #fff; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-non-aktif {
+    background-color: #c0c0c0; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-bl {
+    background-color: #ff0000; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-noo {
+    background-color: #00ff80; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-batal-noo {
+    background-color: #ff8080; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-tidak-digarap {
+    background-color: #f5800a; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.box-text {
+    margin-left: 10px; /* Jarak antara teks dan kotak */
+    font-weight: bold;
+}
+
+.modalDetailDragable {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgb(56, 55, 55);
+    padding: 28px;
+    background-color: #fbfafa;
+    z-index: 1000;
+    color: black;
+    width: 80%;
+    max-width: 80%;
+    overflow: auto;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.closeButtonDetailDragable {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+}
+
+.table th {
+    background-color: rgb(94, 98, 98);
+    color: white;
+}
+
+.root {
+    font-size: 8px; /* Ubah ukuran font sesuai kebutuhan */
+}

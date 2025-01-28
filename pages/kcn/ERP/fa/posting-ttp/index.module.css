@@ -1,0 +1,459 @@
+/* SOList.module.css */
+
+.flex-container {
+    display: flex;
+    gap: 20px;
+}
+
+/* grid */
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 86% 14%;
+    gap: 10px;
+}
+
+.grid-left {
+    padding: 10px;
+}
+
+.grid-right {
+    margin-top: 5vh;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* grid catatan*/
+.grid-containerNote {
+    display: grid;
+    grid-template-columns: 77% 23%;
+    gap: 10px;
+}
+
+.grid-leftNote {
+    padding: 10px;
+}
+
+.grid-rightNote {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    /* gap: 5px; */
+}
+
+/* Border Content*/
+.bordered-content {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center; /* Membuat teks menjadi tengah horizontal */
+    height: 40vh;
+    display: flex;
+    justify-content: center; /* Mengatur posisi vertikal menjadi di tengah */
+    align-items: center; /* Mengatur posisi vertikal menjadi di tengah */
+    color: red;
+    font-style: italic;
+}
+
+.centered-text-file-pendukung {
+    font-size: 3vh;
+    margin: 0;
+}
+
+.titleText {
+    font-size: 2.5vh;
+    margin-bottom: 2vh;
+}
+
+/* table
+.table {
+    border-collapse: collapse;
+}
+
+.table,
+.table th,
+.table td {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.table th {
+    background-color: #f6f8fa;
+    color: rgb(107, 107, 107);
+}
+
+.table th,
+.table td {
+    border: 1px solid rgb(159, 158, 158);
+} */
+
+.table {
+    border-collapse: separate !important;
+    border-spacing: 0;
+}
+
+.table th {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0px !important;
+    background: #309e70;
+    color: black !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif !important;
+}
+
+.table td {
+    text-align: center !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 0 0 5px !important;
+    font-size: 11px !important;
+    font-weight: normal !important;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif !important;
+}
+
+.table thead tr th {
+    border-right-width: 1px;
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-style: solid;
+    border-color: #f1f1f1;
+    /* #bbb; */
+}
+
+.table thead tr:first-child th:last-child {
+    border-right-width: 0px;
+    border-top-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-style: solid;
+    border-color: #f1f1f1;
+}
+
+.table tbody tr td {
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-style: solid;
+    border-color: #f1f1f1;
+}
+
+.table tbody tr:last-child td:first-child {
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-style: solid;
+    border-color: #f1f1f1;
+}
+
+.table tbody tr:first-child td:last-child {
+    border-right-width: 0px;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 1px;
+    border-style: solid;
+    border-color: #f1f1f1;
+}
+
+.table tbody tr:last-child td:last-child {
+    border-right-width: 0px;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-style: solid;
+    border-color: #f1f1f1;
+}
+
+.table tbody tr td:last-child {
+    border-right-width: 0px;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-style: solid;
+    border-color: #f1f1f1;
+}
+
+/* top-left border-radius */
+.table tr:first-child th:first-child {
+    border-top-left-radius: 6px;
+}
+
+/* top-right border-radius */
+.table tr:first-child th:last-child {
+    border-top-right-radius: 6px;
+}
+
+/* bottom-left border-radius */
+.table tr:last-child td:first-child {
+    border-bottom-left-radius: 6px;
+}
+
+/* bottom-right border-radius */
+.table tr:last-child td:last-child {
+    border-bottom-right-radius: 6px;
+}
+
+.titleText {
+    margin-bottom: 2vh;
+}
+
+.inputTableBasicSearch {
+    width: 100%;
+}
+
+.inputTableBasic:focus,
+.inputTableBasicSearch:focus,
+.inputTableBasicDate:focus {
+    outline: none;
+}
+
+.inputTableBasic:focus,
+.inputTableBasicSearch:focus,
+.inputTableBasicDate:focus {
+    border-color: #ccc;
+}
+
+.inline-flex-container {
+    display: flex;
+    flex-direction: row-reverse; /* Mengubah arah tata letak menjadi dari kanan ke kiri */
+}
+
+.custom-box-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Menempatkan elemen-elemen sejajar dan memberikan ruang di antara mereka */
+}
+
+.custom-box-aktif {
+    background-color: #fff; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-non-aktif {
+    background-color: #c0c0c0; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-bl {
+    background-color: #ff0000; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-noo {
+    background-color: #00ff80; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-batal-noo {
+    background-color: #ff8080; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.custom-box-tidak-digarap {
+    background-color: #f5800a; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 3vh; /* Lebar kotak */
+    height: 3vh; /* Tinggi kotak */
+    margin-left: 10px;
+}
+
+.box-text {
+    margin-left: 10px; /* Jarak antara teks dan kotak */
+    font-weight: bold;
+}
+
+.grid-containerDlgDetailPpItem {
+    display: grid;
+    grid-template-columns: 27% 71%;
+    gap: 10px;
+}
+
+.modalDetailDragable {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgb(56, 55, 55);
+    padding: 28px;
+    background-color: #fbfafa;
+    z-index: 1000;
+    color: black;
+    width: 80%;
+    max-width: 80%;
+    overflow: auto;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.closeButtonDetailDragable {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+}
+
+.modalPreviewPictureDragable {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgb(56, 55, 55);
+    padding: 28px;
+    background-color: #fbfafa;
+    z-index: 1000;
+    color: black;
+    overflow: auto;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.w_328px {
+    width: 328px;
+}
+
+.panel {
+    background: #dedede;
+    width: 80%;
+    height: 80vh; /* Menggunakan 80% dari tinggi viewport */
+}
+
+@media (max-width: 1200px) {
+    .panel {
+        width: 90%; /* Misalnya, pada layar yang lebih kecil, kurangi lebar panel */
+    }
+}
+
+@media (max-width: 768px) {
+    .panel {
+        width: 100%; /* Misalnya, pada layar yang lebih kecil lagi, gunakan lebar penuh */
+        height: 100vh; /* Gunakan 100% dari tinggi viewport */
+    }
+}
+
+.colored-popup {
+    background-color: #3b3f5c; /* Ganti dengan warna yang diinginkan */
+}
+
+.custom-css {
+    background: #ffff00;
+}
+
+.custom-textbox {
+    font-size: 11;
+    margin-left: 0;
+    margin-top: 4;
+    border-color: #bfc9d4;
+}
+
+.custom-confirm-button {
+    background-color: #3b3f5c;
+    color: white;
+    border-radius: 4px;
+}
+
+.custom-confirm-button:hover {
+    background-color: #3b3f5c;
+}
+
+/* Mengatur ukuran teks dan padding untuk header dan item dropdown */
+.dropdown-header th,
+.dropdown-item td {
+    font-size: 10px; /* Mengatur ukuran teks menjadi lebih kecil */
+    padding: 4px 8px; /* Menambahkan padding agar lebih rapi */
+    text-align: left; /* Menyelaraskan teks ke kiri */
+    box-sizing: border-box; /* Memastikan padding dan border dihitung dalam ukuran elemen */
+}
+
+/* Mengatur lebar tabel di dalam dropdown agar penuh */
+.dropdown-header table,
+.dropdown-item table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Memastikan tabel menggunakan lebar tetap */
+}
+
+/* Menambahkan garis bawah pada header dan item */
+.dropdown-header th {
+    background-color: #f1f1f1; /* Warna latar belakang header */
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-item td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Menambahkan garis pemisah antara kolom kode dan nama */ /* Menambahkan garis pemisah antara kolom kode dan nama */
+.dropdown-header th:nth-child(1),
+.dropdown-item td:nth-child(1) {
+    border-right: 1px solid #ddd;
+}
+
+/* Menghapus margin dan padding default pada tabel */
+.dropdown-header table,
+.dropdown-item table {
+    margin: 0;
+    padding: 0;
+}
+
+.custom-box-cetak-ulang {
+    background-color: #ffffd2; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 2vh; /* Lebar kotak */
+    height: 2vh; /* Tinggi kotak */
+}
+
+.custom-box-pembatalan {
+    background-color: #ffcece; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 2vh; /* Lebar kotak */
+    height: 2vh; /* Tinggi kotak */
+}
+
+.custom-box-batal {
+    background-color: #d4d0c8; /* Warna latar belakang kotak */
+    border: 1px solid #0e1726; /* Garis tepi kotak */
+    border-radius: 5px; /* Sudut kotak yang melengkung */
+    width: 2vh; /* Lebar kotak */
+    height: 2vh; /* Tinggi kotak */
+}
+
+.custom-box-wrapper-posting-ttp {
+    display: flex;
+    align-items: center;
+}
+
+.bold-label .e-label {
+    font-weight: bold;
+}
+
+.custom-textbox {
+    height: 178px !important; /* Pastikan menggunakan !important jika ada konflik style */
+}

@@ -1,0 +1,43 @@
+.colored-popup {
+    background-color: #3b3f5c; /* Ganti dengan warna yang diinginkan */
+}
+
+/* Mengatur ukuran teks dan padding untuk header dan item dropdown */
+.dropdown-header th,
+.dropdown-item td {
+    font-size: 10px; /* Mengatur ukuran teks menjadi lebih kecil */
+    padding: 4px 8px; /* Menambahkan padding agar lebih rapi */
+    text-align: left; /* Menyelaraskan teks ke kiri */
+    box-sizing: border-box; /* Memastikan padding dan border dihitung dalam ukuran elemen */
+}
+
+/* Mengatur lebar tabel di dalam dropdown agar penuh */
+.dropdown-header table,
+.dropdown-item table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Memastikan tabel menggunakan lebar tetap */
+}
+
+/* Menambahkan garis bawah pada header dan item */
+.dropdown-header th {
+    background-color: #f1f1f1; /* Warna latar belakang header */
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-item td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Menambahkan garis pemisah antara kolom kode dan nama */ /* Menambahkan garis pemisah antara kolom kode dan nama */
+.dropdown-header th:nth-child(1),
+.dropdown-item td:nth-child(1) {
+    border-right: 1px solid #ddd;
+}
+
+/* Menghapus margin dan padding default pada tabel */
+.dropdown-header table,
+.dropdown-item table {
+    margin: 0;
+    padding: 0;
+}
