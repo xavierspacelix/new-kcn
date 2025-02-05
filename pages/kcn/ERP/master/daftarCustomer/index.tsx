@@ -2,11 +2,22 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { DateRangePickerComponent } from '@syncfusion/ej2-react-calendars';
-import { ButtonComponent, CheckBoxComponent, RadioButtonComponent } from '@syncfusion/ej2-react-buttons';
+import { ButtonComponent, RadioButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { SidebarComponent } from '@syncfusion/ej2-react-navigations';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
-import { classNames, fetchDataCustomer, getDataKategori, getDataKelompok, getDataRegionIndonesia, getDataSalesman, getDataWilayah, styleButton, tabKlasifikasiArray } from './functions/definition';
+import {
+    classNames,
+    fetchDataCustomer,
+    getDataKategori,
+    getDataKelompok,
+    getDataRegionIndonesia,
+    getDataSalesman,
+    getDataWilayah,
+    onRenderDayCell,
+    styleButton,
+    tabKlasifikasiArray,
+} from './functions/definition';
 import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
 import './style/sidebar.module.css';
 import GridDaftarCustomer from './components/GridDaftarCustomer';
@@ -23,9 +34,7 @@ import * as numbers from 'cldr-data/main/id/numbers.json';
 import * as timeZoneNames from 'cldr-data/main/id/timeZoneNames.json';
 import * as numberingSystems from 'cldr-data/supplemental/numberingSystems.json';
 import * as weekData from 'cldr-data/supplemental/weekData.json';
-import { contentLoader } from './components/Template';
-import { FaHamburger } from 'react-icons/fa';
-import { Search } from '@mui/icons-material';
+import { CheckboxCustomerCustom, contentLoader } from './components/Template';
 import NewEditDialog from './components/Dialog/NewEdit';
 loadCldr(numberingSystems, gregorian, numbers, timeZoneNames, weekData);
 L10n.load(idIDLocalization);
@@ -39,6 +48,11 @@ const DaftarCustomer = () => {
         new: false,
         edit: false,
         detail: false,
+    });
+    const [dialogParams, setDialogParams] = React.useState({
+        kode_cust: '',
+        entitas: '',
+        token: '',
     });
     const [filter, setFilter] = React.useState([
         {
@@ -73,7 +87,7 @@ const DaftarCustomer = () => {
         },
         {
             name: 'paramKodeArea',
-            placeholder: 'Kode Area',
+            placeholder: 'Rayon (Wilayah Penjualan)',
             value: 'all',
             type: 'select',
             visible: true,
@@ -83,7 +97,7 @@ const DaftarCustomer = () => {
         },
         {
             name: 'paramNamaSales',
-            placeholder: 'Nama Sales',
+            placeholder: 'Sales Man',
             value: 'all',
             type: 'select',
             visible: true,
@@ -132,7 +146,7 @@ const DaftarCustomer = () => {
         },
         {
             name: 'paramRks',
-            placeholder: 'RKS',
+            placeholder: 'Rencana Kunjungan',
             value: 'all',
             type: 'radio',
             options: [
@@ -154,7 +168,7 @@ const DaftarCustomer = () => {
         },
         {
             name: 'paramAktif',
-            placeholder: 'Aktif',
+            placeholder: 'Customer Non Aktif',
             value: 'N',
             type: 'radio',
             options: [
@@ -189,7 +203,7 @@ const DaftarCustomer = () => {
 
         {
             name: 'paramPlafond',
-            placeholder: 'Plafond',
+            placeholder: 'Plafon Kredit Sudah Aktif',
             value: 'all',
             type: 'radio',
             options: [
@@ -211,7 +225,7 @@ const DaftarCustomer = () => {
         },
         {
             name: 'paramBayarTunai',
-            placeholder: 'Bayar Tunai',
+            placeholder: 'Customer Tunai',
             value: 'all',
             type: 'radio',
             options: [
@@ -233,7 +247,7 @@ const DaftarCustomer = () => {
         },
         {
             name: 'paramTerimaDokumen',
-            placeholder: 'Terima Dokumen',
+            placeholder: 'Terima Dokumen Asli (Kantor Pusat)',
             value: 'all',
             type: 'radio',
             options: [
@@ -325,7 +339,7 @@ const DaftarCustomer = () => {
         },
         {
             name: 'paramPernahTransaksi',
-            placeholder: 'Pernah Transaksi',
+            placeholder: 'Sudah Pernah Ada Transaksi',
             value: 'all',
             type: 'radio',
             options: [
@@ -358,31 +372,7 @@ const DaftarCustomer = () => {
     const kode_user = sessionData?.kode_user ?? '';
     const token = sessionData?.token ?? '';
     const fields = { text: 'label', value: 'value' };
-    const footerButtons = [
-        {
-            buttonModel: {
-                content: 'Berikut',
-                cssClass: 'e-flat e-primary',
-            },
-            click: () => {},
-        },
-        {
-            buttonModel: {
-                content: 'Simpan',
-                cssClass: 'e-flat',
-            },
-            click: () => {},
-        },
-        {
-            buttonModel: {
-                content: 'Batal',
-                cssClass: 'e-flat',
-            },
-            click: () => {
-                setOpenDialog({ ...openDialog, edit: false, new: false });
-            },
-        },
-    ];
+
     // Function
     const updateFilterOptions = (name: string, options: any, label: string, value: string) => {
         setFilter((prevFilter) =>
@@ -450,15 +440,27 @@ const DaftarCustomer = () => {
         }
     };
     function recordDoubleClickHandle(args: any): void {
-        console.log(args.rowData);
-        alert(args.rowData.kode_cust);
+        setOpenDialog({ ...openDialog, edit: true });
+        setDialogParams({
+            ...dialogParams,
+            kode_cust: args.rowData?.kode_cust ?? dialogParams?.kode_cust,
+        });
     }
+
     useEffect(() => {
         if (kode_entitas && token) {
             fecthInitialDataFilter();
 
             fetchDataCustomer(filter, token, kode_entitas, 'all').then((res) => {
-                setCustomer(res);
+                setTimeout(() => {
+                    setCustomer(res);
+                    setDialogParams({
+                        ...dialogParams,
+                        entitas: kode_entitas,
+                        kode_cust: '',
+                        token: token,
+                    });
+                }, 500);
             });
         }
     }, [kode_entitas, token]);
@@ -485,7 +487,7 @@ const DaftarCustomer = () => {
                                             >
                                                 Baru
                                             </ButtonComponent>
-                                            <ButtonComponent id="btnEdit" onClick={() => {}} type="submit" style={styleButton} className="e-primary e-small">
+                                            <ButtonComponent id="btnEdit" onClick={recordDoubleClickHandle} type="submit" style={styleButton} className="e-primary e-small">
                                                 Ubah
                                             </ButtonComponent>
                                             <ButtonComponent id="btnHapus" type="submit" cssClass="e-primary e-small" style={styleButton}>
@@ -573,19 +575,21 @@ const DaftarCustomer = () => {
                                 <div className="mb-5 h-px w-full border-b border-white-light dark:border-[#1b2e4b]"></div>
                                 <PerfectScrollbar className="growltr:-mr3.5 ltr:pr3.5 relative mb-5 h-full rtl:-ml-3.5 rtl:pl-3.5">
                                     <div className="flex h-full flex-col gap-6 overflow-auto">
-                                        <div className="flex flex-col gap-5">
+                                        <div className="flex flex-col gap-5 px-2">
                                             {filter
                                                 .filter((param) => param.visible)
                                                 .map((item, index) =>
                                                     item.type === 'dateRange' ? (
                                                         <div key={index} className="flex flex-col gap-2">
-                                                            <CheckBoxComponent
+                                                            <CheckboxCustomerCustom
                                                                 id={item.name + index}
                                                                 label={item.placeholder}
                                                                 checked={item.checked}
-                                                                onChange={(event: any) => {
+                                                                isRed={true}
+                                                                change={(event: any) => {
                                                                     handleFilterChange(item.name, 'checked', event.target.checked);
                                                                 }}
+                                                                name={item.name + index}
                                                             />
                                                             <div className="container form-input">
                                                                 <DateRangePickerComponent
@@ -595,6 +599,7 @@ const DaftarCustomer = () => {
                                                                     format={'dd-MM-yyyy'}
                                                                     endDate={item.akhirValue}
                                                                     showClearButton={false}
+                                                                    renderDayCell={onRenderDayCell}
                                                                     onChange={(event: any) => {
                                                                         const [startDate, endDate] = event.target.value;
                                                                         handleFilterChange(item.name, 'awalValue', new Date(startDate));
@@ -606,13 +611,15 @@ const DaftarCustomer = () => {
                                                         </div>
                                                     ) : item.type === 'select' ? (
                                                         <div key={index} className="flex flex-col gap-2">
-                                                            <CheckBoxComponent
+                                                            <CheckboxCustomerCustom
+                                                                isRed={true}
                                                                 id={item.name + index}
                                                                 label={item.placeholder}
                                                                 checked={item.checked}
-                                                                onChange={(event: any) => {
+                                                                change={(event: any) => {
                                                                     handleFilterChange(item.name, 'checked', event.target.checked);
                                                                 }}
+                                                                name={item.name + index}
                                                             />
                                                             <div className="container form-input">
                                                                 <ComboBoxComponent
@@ -623,8 +630,6 @@ const DaftarCustomer = () => {
                                                                     placeholder={item.placeholder}
                                                                     onChange={(event: { target: { value: string } }) => {
                                                                         handleFilterChange(item.name, 'value', event.target.value);
-                                                                    }}
-                                                                    onBlur={() => {
                                                                         handleFilterChange(item.name, 'checked', true);
                                                                     }}
                                                                 />
@@ -651,13 +656,15 @@ const DaftarCustomer = () => {
                                                         </div>
                                                     ) : (
                                                         <div key={index} className="flex flex-col gap-2">
-                                                            <CheckBoxComponent
+                                                            <CheckboxCustomerCustom
                                                                 id={item.name + index}
+                                                                isRed={true}
                                                                 label={item.placeholder}
                                                                 checked={item.checked}
-                                                                onChange={(event: any) => {
+                                                                change={(event: any) => {
                                                                     handleFilterChange(item.name, 'checked', event.target.checked);
                                                                 }}
+                                                                name={item.name + index}
                                                             />
                                                             <div className="container form-input">
                                                                 <TextBoxComponent
@@ -665,8 +672,14 @@ const DaftarCustomer = () => {
                                                                     placeholder={item.placeholder}
                                                                     value={item.value === 'all' ? '' : item.value}
                                                                     onBlur={(event: any) => {
-                                                                        handleFilterChange(item.name, 'checked', true);
                                                                         handleFilterChange(item.name, 'value', event.target.value);
+                                                                    }}
+                                                                    onChange={(event: any) => {
+                                                                        if (event.target.value === '') {
+                                                                            handleFilterChange(item.name, 'checked', false);
+                                                                        } else {
+                                                                            handleFilterChange(item.name, 'checked', true);
+                                                                        }
                                                                     }}
                                                                 />
                                                             </div>
@@ -719,6 +732,7 @@ const DaftarCustomer = () => {
                                         gridRef={(gridCustomer: GridComponent) => (gridCust = gridCustomer as GridComponent)}
                                         customerData={customer}
                                         recordDoubleClickHandle={recordDoubleClickHandle}
+                                        rowSelectedHandle={(args) => setDialogParams({ ...dialogParams, kode_cust: args.data.kode_cust })}
                                     />
                                 </Tab.Panels>
                             </Tab.Group>
@@ -726,15 +740,17 @@ const DaftarCustomer = () => {
                     </div>
                 </div>
             </div>
-
             <NewEditDialog
                 isOpen={openDialog.edit || openDialog.new}
                 onClose={() => {
                     setOpenDialog({ ...openDialog, edit: false, new: false });
+                    setDialogParams({
+                        ...dialogParams,
+                        kode_cust: '',
+                    });
                 }}
-                params={{}}
-                state={openDialog.new ? 'new' : 'edit'}
-                footerButton={() => footerTemplate}
+                params={dialogParams}
+                state={openDialog.new ? 'new' : openDialog.edit ? 'edit' : openDialog.detail ? 'detail' : ''}
             />
         </>
     );

@@ -1,5 +1,15 @@
-import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
-const contentLoader = () => {
+import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+
+interface CheckboxProps {
+    id: string;
+    label: string;
+    checked: boolean;
+    change: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    name: string;
+    isRed?: boolean;
+}
+
+export const contentLoader = () => {
     return (
         // prettier-ignore
         <div className="screen_loader animate__animated flex justify-center items-center fixed inset-0 z-[60] place-content-center bg-[#ffffff00] dark:bg-[#060818]">
@@ -22,39 +32,546 @@ const contentLoader = () => {
     );
 };
 
-const footerTemplate = ({ handleHistory, saveDoc, handleClose }: { handleHistory: () => void; saveDoc: () => void; handleClose: () => void }) => {
+export const CheckboxCustomerCustom: React.FC<CheckboxProps> = ({ id, label, checked, change, name, isRed }) => {
     return (
-        <div className="mx-auto flex items-center justify-between">
-            <div className="flex items-center justify-between ">
-                <ButtonComponent
-                    id="btnHisKunjungan"
-                    cssClass="e-primary e-small"
-                    style={{
-                        width: 'auto',
-                        backgroundColor: '#e6e6e6',
-                        color: 'black',
-                    }}
-                    onClick={handleHistory}
-                    content="History Kunjungan Sales"
-                    iconCss="e-icons e-medium e-chevron-right"
-                ></ButtonComponent>
-            </div>
-
-            <div className="flex">
-                {/*  TODO: onClick */}
-                <div className="e-btn e-danger e-small" onClick={saveDoc}>
-                    Berikut
-                </div>
-                {/* TODO: onClick */}
-                <div className="e-btn e-danger e-small" onClick={saveDoc}>
-                    Simpan
-                </div>
-                <div className="e-btn e-danger e-small" onClick={handleClose}>
-                    Batal
-                </div>
-            </div>
+        <div className="e-checkbox-wrapper e-wrapper">
+            <label htmlFor={id}>
+                <input id={id} className="e-control e-checkbox e-lib" type="checkbox" name={name} checked={checked} onChange={change} />
+                <span className={`e-ripple-container ${checked ? 'e-ripple-check' : ''}`} data-ripple="true" />
+                <span className={`e-icons e-frame ${checked ? 'e-check' : ''}`} />
+                <span className={`e-label ${isRed ? '' : '!text-red-600'}`}>{label}</span>
+            </label>
         </div>
     );
 };
+const statusTokoArray = [
+    { label: 'Keluarga', value: 'Keluarga' },
+    { label: 'Sendiri', value: 'Sendiri' },
+    { label: 'Sewa', value: 'Sewa' },
+    { label: 'Lainnya', value: 'Lainnya' },
+];
+export const defaultValueIuTab = [
+    {
+        id: 1,
+        type: 'date',
+        format: '',
+        name: 'tgl_register',
+        label: 'Tanggal Register',
+        value: new Date(),
+        hint: <span className="text-xs text-[#5EA7FF]">*ditetapkan otomatis pada saat pengisian data customer</span>,
+        placeholder: 'Tanggal Register',
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 2,
+        type: 'date',
+        format: '',
+        name: 'tgl_cust',
+        label: 'Tanggal NOO',
+        value: new Date(),
+        hint: <span className="text-xs text-[#5EA7FF]">*ditetapkan otomatis pada saat pengisian plafond pertama kalinya</span>,
+        placeholder: 'Tanggal NOO',
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 3,
+        type: 'stringAlamat',
+        format: '',
+        name: 'alamat',
+        label: 'Alamat',
+        value: '',
+        hint: null,
+        placeholder: 'Alamat',
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 4,
+        type: 'stringAlamat',
+        format: '',
+        name: 'alamat2',
+        label: '',
+        value: '',
+        hint: null,
+        placeholder: '',
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 5,
+        type: 'number',
+        format: 'telp',
+        name: 'telp_toko',
+        label: 'No. Telp',
+        value: '',
+        hint: null,
+        placeholder: 'No. Telp',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 6,
+        type: 'space',
+        format: 'space',
+        name: 'space',
+        label: 'Space',
+        value: '',
+        hint: null,
+        placeholder: 'Space',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 7,
+        type: 'string',
+        format: 'text',
+        name: 'kota',
+        label: 'Kota',
+        value: '',
+        hint: null,
+        placeholder: 'Kota',
+        readonly: true,
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 8,
+        type: 'number',
+        format: 'kode_pos',
+        name: 'kodepos',
+        label: 'Kode Pos',
+        value: '',
+        hint: null,
+        placeholder: 'Kode Pos',
+        readonly: true,
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 9,
+        type: 'string',
+        format: 'text',
+        name: 'kecamatan',
+        label: 'Kecamatan',
+        value: '',
+        hint: null,
+        placeholder: 'Kecamatan',
+        readonly: true,
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 10,
+        type: 'string',
+        format: 'text',
+        name: 'kelurahan',
+        label: 'Kelurahan',
+        value: '',
+        hint: null,
+        placeholder: 'Kelurahan',
+        readonly: true,
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 11,
+        type: 'string',
+        format: 'text',
+        name: 'propinsi',
+        label: 'Provinsi',
+        value: '',
+        hint: null,
+        placeholder: 'Provinsi',
+        readonly: true,
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 12,
+        type: 'string',
+        format: 'text',
+        name: 'negara',
+        label: 'Negara',
+        value: '',
+        hint: null,
+        placeholder: 'Negara',
+        readonly: true,
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 13,
+        type: 'number',
+        format: 'npwp',
+        name: 'npwp',
+        label: 'No. NPWP',
+        value: '',
+        hint: null,
+        placeholder: 'No. NPWP',
+        readonly: true,
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 14,
+        type: 'string',
+        format: 'text',
+        name: 'siup',
+        label: 'No. SIUP',
+        value: '',
+        hint: null,
+        placeholder: 'No. SIUP',
+        readonly: true,
+        group: 'left',
+        team: 'master',
+    },
+    {
+        id: 15,
+        type: 'number',
+        format: 'm2',
+        name: 'luas_toko',
+        label: 'Luas Kantor / Outlet (M2)',
+        value: '',
+        hint: null,
+        placeholder: 'Luas Toko',
+        readonly: false,
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 16,
+        type: 'number',
+        format: 'm2',
+        name: 'luas_gudang',
+        label: 'Luas Gudang',
+        value: '',
+        hint: null,
+        placeholder: 'Luas Gudang',
+        readonly: false,
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 17,
+        type: 'select',
+        format: 'select',
+        name: 'status_toko',
+        label: 'Status Toko / Outlet',
+        value: '',
+        hint: null,
+        placeholder: 'Pilih Status Toko',
+        readonly: false,
+        selection: statusTokoArray,
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 18,
+        type: 'number',
+        format: 'year',
+        name: 'usaha_sejak',
+        label: 'Usaha Sejak',
+        value: '',
+        hint: null,
+        placeholder: 'Usaha Sejak',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 19,
+        type: 'number',
+        format: 'number',
+        name: 'jumlah_karyawan',
+        label: 'Jumlah Karyawan',
+        value: '',
+        hint: null,
+        placeholder: 'Jumlah Karyawan',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 20,
+        type: 'number',
+        format: 'number',
+        name: 'jarak_dari_gudang',
+        label: 'Jarak Dari Gudang (KM)',
+        value: '',
+        hint: null,
+        placeholder: 'Jarak Dari Gudang (KM)',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 21,
+        type: 'number',
+        format: 'number',
+        name: 'omzet',
+        label: 'Perkiraan Omzet / Bulan Rp',
+        value: '',
+        hint: null,
+        placeholder: 'Perkiraan Omzet / Bulan Rp',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 22,
+        type: 'space',
+        format: 'space',
+        name: 'space',
+        label: 'Space',
+        value: '',
+        hint: null,
+        placeholder: 'Space',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 23,
+        type: 'stringJenisUsaha',
+        format: '',
+        name: 'jenis_usahalain',
+        label: 'Jenis Usaha Lain',
+        value: '',
+        hint: null,
+        placeholder: 'Jenis Usaha Lain',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 24,
+        type: 'number',
+        format: 'number',
+        name: 'usahalain_sejak',
+        label: 'Usaha Lain Berdiri Sejak',
+        value: '',
+        hint: null,
+        placeholder: 'Usaha Lain Berdiri Sejak',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 25,
+        type: 'number',
+        format: 'number',
+        name: 'hari_kunjungan',
+        label: 'Hari Kunjungan',
+        value: '',
+        hint: null,
+        placeholder: 'Hari Kunjungan',
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 26,
+        type: 'radio',
+        format: 'radio',
+        name: 'jenis_pembayaran',
+        label: 'Jenis Pembayaran',
+        value: '',
+        hint: null,
+        placeholder: 'Jenis Pembayaran',
+        selection: [
+            {
+                name: 'bayar_transfer',
+                label: 'Transfer',
+                value: false,
+            },
+            { name: 'bayar_giro', label: 'BG/Cek', value: false },
+            { name: 'bayar_tunai', label: 'Titip Tunai', value: false },
+        ],
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 27,
+        type: 'radio',
+        format: 'radio',
+        name: 'jenis_order',
+        label: 'Jenis Order',
+        value: '',
+        hint: null,
+        placeholder: 'Jenis Order',
+        selection: [
+            {
+                name: 'order_cbd',
+                label: 'CBD',
+                value: false,
+            },
+            { name: 'order_cod', label: 'COD', value: false },
+            { name: 'order_kredit', label: 'Kredit', value: false },
+        ],
+        group: 'left',
+        team: 'detail',
+    },
+    {
+        id: 28,
+        type: 'table',
+        format: 'table',
+        name: 'jam_operasional',
+        label: 'Hari / Jam Operasional',
+        value: '',
+        hint: null,
+        placeholder: 'Hari / Jam Operasional',
+        items: [
+            { id: 1, hari: 'Senin', jam_buka: '', jam_tutup: '', buka: false },
+            { id: 2, hari: 'Selasa', jam_buka: '', jam_tutup: '', buka: false },
+            { id: 3, hari: 'Rabu', jam_buka: '', jam_tutup: '', buka: false },
+            { id: 4, hari: 'Kamis', jam_buka: '', jam_tutup: '', buka: false },
+            { id: 5, hari: 'Jum`at', jam_buka: '', jam_tutup: '', buka: false },
+            { id: 6, hari: 'Sabtu', jam_buka: '', jam_tutup: '', buka: false },
+            { id: 7, hari: 'Minggu', jam_buka: '', jam_tutup: '', buka: false },
+        ],
+        group: 'right',
+        team: 'jam_ops',
+    },
+    {
+        id: 29,
+        type: 'textarea',
+        format: 'textarea',
+        name: 'alasan',
+        label: 'Alasan Blacklist / Open Blacklist / NOO Batal / Tidak Digarap',
+        value: '',
+        hint: null,
+        placeholder: 'Alasan Blacklist / Open Blacklist / NOO Batal / Tidak Digarap',
+        group: 'right',
+        team: 'master',
+    },
+];
+export const headerFieldValue = [
+    {
+        name: 'kode_relasi',
+        placeholder: 'No. Register',
+        value: '',
+        type: 'number',
+        options: null,
+        selection: [],
+        hint: null,
+        disabled: true,
+        action: {
+            isAction: false,
+            icon: null,
+        },
+        checked: false,
+        team: 'master',
+    },
+    {
+        name: 'nama_relasi',
+        placeholder: 'Nama',
+        value: '',
+        type: 'text',
+        options: null,
+        selection: [],
+        hint: null,
+        disabled: true,
+        action: {
+            isAction: true,
+            icon: faMagnifyingGlass,
+        },
+        checked: false,
+        team: 'master',
+    },
+    {
+        name: 'no_cust',
+        placeholder: 'No. Customer',
+        value: '',
+        type: 'number',
+        options: null,
+        selection: [],
+        hint: null,
+        disabled: true,
+        action: {
+            isAction: true,
+            icon: faBarcode,
+        },
+        checked: false,
+        team: 'master',
+    },
+    {
+        name: 'prospek',
+        placeholder: 'Prospek',
+        value: '',
+        type: 'checkbox',
+        options: null,
+        selection: [],
+        hint: null,
+        disabled: true,
+        action: {
+            isAction: false,
+            icon: null,
+        },
+        checked: true,
+        team: 'master',
+    },
+    {
+        name: 'aktif',
+        placeholder: 'Non-Aktif',
+        value: '',
+        type: 'checkbox',
+        options: null,
+        selection: [],
+        hint: null,
+        disabled: true,
+        action: {
+            isAction: false,
+            icon: null,
+        },
+        checked: false,
+        team: 'master',
+    },
+    {
+        name: 'terima_dokumen',
+        placeholder: 'Terima Dokumen Asli (Kantor Pusat)',
+        value: '',
+        type: 'checkbox',
+        options: null,
+        selection: [],
+        hint: null,
+        disabled: true,
+        action: {
+            isAction: false,
+            icon: null,
+        },
+        checked: false,
+        team: 'master',
+    },
+    {
+        name: 'manual_hks_mobile',
+        placeholder: 'Manual HKS Mobile',
+        value: '',
+        type: 'checkbox',
+        options: null,
+        selection: [],
+        hint: null,
+        disabled: true,
+        action: {
+            isAction: false,
+            icon: null,
+        },
+        checked: false,
+        team: 'master',
+    },
+    {
+        name: 'pabrik',
+        placeholder: 'Pabrik',
+        value: '',
+        type: 'checkbox',
+        options: null,
+        selection: [],
+        hint: null,
+        disabled: true,
+        action: {
+            isAction: false,
+            icon: null,
+        },
+        checked: false,
+        team: 'master',
+    },
+];
 
-export { contentLoader, footerTemplate };
+const Template = () => {
+    return <div>Template</div>;
+};
+
+export default Template;

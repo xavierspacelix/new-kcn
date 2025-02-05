@@ -5,8 +5,9 @@ interface GridCustomer {
     gridRef: any;
     customerData: any[];
     recordDoubleClickHandle: (args: any) => void;
+    rowSelectedHandle: (args: any) => void;
 }
-const GridDaftarCustomer = ({ gridRef, customerData, recordDoubleClickHandle }: GridCustomer) => {
+const GridDaftarCustomer = ({ gridRef, customerData, recordDoubleClickHandle, rowSelectedHandle }: GridCustomer) => {
     const queryCellInfoListData = (args: any) => {
         const field = args.column?.field;
         const data = args.data;
@@ -43,9 +44,7 @@ const GridDaftarCustomer = ({ gridRef, customerData, recordDoubleClickHandle }: 
             dataSource={customerData}
             allowExcelExport={true}
             ref={gridRef}
-            // excelExportComplete={ExportComplete}
             allowPdfExport={true}
-            // pdfExportComplete={ExportComplete}
             editSettings={{ allowDeleting: true }}
             selectionSettings={{
                 mode: 'Row',
@@ -67,13 +66,8 @@ const GridDaftarCustomer = ({ gridRef, customerData, recordDoubleClickHandle }: 
             gridLines={'Both'}
             loadingIndicator={{ indicatorType: 'Spinner' }}
             queryCellInfo={queryCellInfoListData}
-            // dataBound={() => {
-            //     if (gridListData) {
-            //         gridListData.selectRow(rowIdxListData.current);
-            //     }
-            // }}
             recordDoubleClick={recordDoubleClickHandle}
-            // rowSelecting={rowSelectingListData}
+            rowSelecting={rowSelectedHandle}
         >
             <ColumnsDirective>
                 <ColumnDirective field="no_cust" headerText="No. Customer" headerTextAlign="Center" textAlign="Center" width="80" clipMode="EllipsisWithTooltip" isFrozen={true} />
