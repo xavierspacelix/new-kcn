@@ -6,7 +6,7 @@ import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import stylesHeader from './customerHeader.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CheckboxCustomerCustom, contentLoader, defaultValueIuTab, headerFieldValue } from '../Template';
+import { CheckboxCustomerCustom, contentLoader, defaultValueIuTab, dKTabValue, headerFieldValue, iPTabValue } from '../Template';
 import { Grid, GridComponent } from '@syncfusion/ej2-react-grids';
 import { loadCldr, L10n, enableRipple } from '@syncfusion/ej2-base';
 import idIDLocalization from 'public/syncfusion/locale.json';
@@ -17,6 +17,8 @@ import * as numberingSystems from 'cldr-data/supplemental/numberingSystems.json'
 import * as weekData from 'cldr-data/supplemental/weekData.json';
 import InfoPerusahaan from '../TabsContent/InfoPerusahaan';
 import { myAlertGlobal } from '@/utils/routines';
+import InfoPemilik from '../TabsContent/InfoPemilik';
+import DaftarKontak from '../TabsContent/DaftarKontak';
 loadCldr(numberingSystems, gregorian, numbers, timeZoneNames, weekData);
 L10n.load(idIDLocalization);
 enableRipple(true);
@@ -24,9 +26,16 @@ interface NewEditProps {
     isOpen: boolean;
     onClose: () => void;
     params: {
+        userid: string;
         kode_cust: string;
+        kode_relasi: string;
         entitas: string;
         token: string;
+        kotaArray: any[];
+        kecamatanArray: any[];
+        kelurahanArray: any[];
+        provinsiArray: any[];
+        negaraArray: any[];
     };
     state: string;
 }
@@ -58,12 +67,51 @@ type ItemsData = {
     jam_tutup: string;
     buka: boolean;
 };
+
+type iPTabInterface = {
+    id: number;
+    name: string;
+    label: string;
+    type: string;
+    value: string;
+    options?: SelectionItem[];
+    isAction?: boolean;
+    icon?: (props: React.SVGProps<SVGSVGElement>) => JSX.Element;
+    readOnly: boolean;
+    hint?: string;
+};
+
+type dKTabInterface = {
+    kode_relasi: string;
+    id_relasi: number;
+    nama_lengkap: string;
+    nama_person: string;
+    jab: string;
+    hubungan: string;
+    bisnis: string;
+    bisnis2: string;
+    telp: string;
+    hp: string;
+    hp2: string;
+    fax: string;
+    email: string;
+    catatan: string;
+    file_kuasa: string;
+    file_ktp: string;
+    file_ttd: string;
+    aktif_kontak: string;
+};
 let gridJamOPSType: Grid;
+let gridDKType: Grid;
+
 const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
-    const [title, setTitle] = React.useState('<Customer Baru>');
+    const [title, setTitle] = React.useState('Customer Baru');
     const [headerField, setHeaderField] = React.useState(headerFieldValue);
     const [iUTab, setIUTab] = React.useState<TabItem[]>(defaultValueIuTab);
+    const [iPTab, setIPTab] = React.useState<iPTabInterface[]>(iPTabValue);
+    const [dKTab, setDKTab] = React.useState<dKTabInterface[]>([]);
     const [showLoader, setShowLoader] = React.useState(false);
+    const [status, setStatus] = React.useState(false);
 
     const footerTemplateDlg = () => {
         return (
@@ -94,6 +142,8 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                         className="e-btn e-danger e-small"
                         onClick={() => {
                             gridJamOPSType?.refresh();
+                            gridDKType?.refresh();
+                            console.log('dKTab ', dKTab);
                         }}
                     >
                         Simpan
@@ -103,6 +153,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                         onClick={() => {
                             setHeaderField(headerFieldValue);
                             setIUTab(defaultValueIuTab);
+                            setIPTab(iPTabValue);
                             dialogClose();
                         }}
                     >
@@ -173,10 +224,22 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                     )
                 );
             }
+        } else if (stateName === 'iPTab') {
+            setIPTab((prevIUTab) =>
+                prevIUTab.map((iPTabItem) =>
+                    iPTabItem.name === name
+                        ? {
+                              ...iPTabItem,
+                              [key]: value,
+                          }
+                        : iPTabItem
+                )
+            );
         }
     }
     const fecthInitialDataCustomer = async () => {
         let MasterDetail: any = [];
+        let DetailMaster: any = [];
         try {
             setShowLoader(true);
             await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'master').then((result) => {
@@ -212,8 +275,15 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                     });
                 setTitle(`Customer : ${result[0].no_cust} - ${result[0].nama_relasi}`);
                 MasterDetail.push(...masterField);
-            });
 
+                const detailField = iPTab
+                    .filter((item) => result[0].hasOwnProperty(item.name))
+                    .map((item) => ({
+                        ...item,
+                        value: result[0][item.name] ?? '',
+                    }));
+                DetailMaster.push(...detailField);
+            });
             await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'detail').then((result) => {
                 if (result.length > 0) {
                     const mappedDetail = iUTab
@@ -242,8 +312,16 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                             return item;
                         });
                     MasterDetail.push(...mappedDetail);
+                    const detailField = iPTab
+                        .filter((item) => result[0].hasOwnProperty(item.name))
+                        .map((item) => ({
+                            ...item,
+                            value: result[0][item.name] ?? '',
+                        }));
+                    DetailMaster.push(...detailField);
                 } else {
                     MasterDetail.push(...defaultValueIuTab.filter((item: any) => item.team === 'detail'));
+                    DetailMaster.push(...iPTab.filter((item) => !DetailMaster.some((detailItem: { name: string }) => detailItem.name === item.name)));
                 }
             });
             await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'jam_ops').then((result) => {
@@ -290,8 +368,26 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                     MasterDetail.push(...mappedJamOps);
                 }
             });
-
+            await getDataMasterCustomer(params.entitas, params.kode_relasi, params.token, 'person').then((result) => {
+                setDKTab(result);
+            });
             setIUTab(MasterDetail.sort((a: any, b: any) => a.id - b.id));
+            setIPTab((prev) => {
+                let merged = DetailMaster.map((detailItem: iPTabInterface) => {
+                    const existingItem = prev.find((item) => item.name === detailItem.name);
+                    if (existingItem) {
+                        return { ...existingItem, ...detailItem };
+                    }
+                    return detailItem;
+                });
+
+                const spaceItem = prev.find((item) => item.name === 'space');
+                if (spaceItem) {
+                    merged = merged.filter((item: { name: string }) => item.name !== 'space');
+                    merged.push(spaceItem);
+                }
+                return merged.sort((a: { id: number }, b: { id: number }) => a.id - b.id);
+            });
         } catch (error) {
             setShowLoader(false);
             myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
@@ -302,13 +398,70 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
     const dialogClose = () => {
         onClose();
     };
+    const actionBeginDKTabHandle = (args: any) => {
+        const idNumber = dKTab.length;
+        console.log(args.requestType)
+        if (args.requestType === 'save') {
+            const data = args.data;
+            const newData = {
+                kode_relasi: params.kode_relasi,
+                id_relasi: idNumber + 1,
+                nama_lengkap: data.nama_lengkap ?? '',
+                nama_person: data.nama_person ?? '',
+                jab: data.jab ?? '',
+                hubungan: data.hubungan ?? '',
+                bisnis: data.bisnis ?? '',
+                bisnis2: data.bisnis2 ?? '',
+                telp: data.telp ?? '',
+                hp: data.hp ?? '',
+                hp2: data.hp2 ?? '',
+                fax: data.fax ?? '',
+                email: data.email ?? '',
+                catatan: data.catatan ?? '',
+                file_kuasa: data.file_kuasa ?? '',
+                file_ktp: data.file_ktp ?? '',
+                file_ttd: data.file_ttd ?? '',
+                aktif_kontak: data.aktif_kontak ?? '',
+            };
+            setDKTab((prev) => [...prev, newData]);
+        }
+    };
+    const editBeginDKTabHandle = (args: any) => {
+        // const idNumber = dKTab.length;
+        console.log(args.requestType)
+        // if (args.requestType === 'save') {
+        //     const data = args.data;
+        //     const newData = {
+        //         kode_relasi: params.kode_relasi,
+        //         id_relasi: idNumber + 1,
+        //         nama_lengkap: data.nama_lengkap ?? '',
+        //         nama_person: data.nama_person ?? '',
+        //         jab: data.jab ?? '',
+        //         hubungan: data.hubungan ?? '',
+        //         bisnis: data.bisnis ?? '',
+        //         bisnis2: data.bisnis2 ?? '',
+        //         telp: data.telp ?? '',
+        //         hp: data.hp ?? '',
+        //         hp2: data.hp2 ?? '',
+        //         fax: data.fax ?? '',
+        //         email: data.email ?? '',
+        //         catatan: data.catatan ?? '',
+        //         file_kuasa: data.file_kuasa ?? '',
+        //         file_ktp: data.file_ktp ?? '',
+        //         file_ttd: data.file_ttd ?? '',
+        //         aktif_kontak: data.aktif_kontak ?? '',
+        //     };
+        //     setDKTab((prev) => [...prev, newData]);
+        // }
+    };
     React.useEffect(() => {
         if (isOpen) {
-            if (state === 'edit') {
+            if (state === 'edit' || status) {
                 fecthInitialDataCustomer();
             }
         }
-    }, [isOpen]);
+    }, [isOpen, status]);
+
     return (
         <>
             <DialogComponent
@@ -318,7 +471,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                 height="100%"
                 visible={isOpen}
                 close={dialogClose}
-                header={title}
+                header={title.toString()}
                 showCloseIcon={true}
                 target="#main-target"
                 closeOnEscape={false}
@@ -418,7 +571,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                             ))}
                     </div>
                     <div>
-                        <Tab.Group defaultIndex={0}>
+                        <Tab.Group defaultIndex={1}>
                             <Tab.List className="mt-3 flex max-h-20 w-full flex-wrap border-b border-white-light dark:border-[#191e3a]">
                                 {customerTab.map((item) => (
                                     <Tab key={item.id} as={React.Fragment}>
@@ -434,7 +587,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                                     </Tab>
                                 ))}
                             </Tab.List>
-                            <Tab.Panels className="w-full flex-1 border border-t-0 border-white-light p-2  text-sm dark:border-[#191e3a]">
+                            <Tab.Panels className="w-full flex-1 border border-t-0 border-white-light bg-[#f8f7ff]  p-2 text-sm dark:border-[#191e3a]">
                                 {customerTab.map((item) => (
                                     <Tab.Panel key={item.id} className={'h-[450px] overflow-auto'}>
                                         {item.name === 'Info Perusahaan' ? (
@@ -443,6 +596,15 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                                                 handleChange={handleChange}
                                                 onRenderDayCell={onRenderDayCell}
                                                 gridRef={(gridJamOps: GridComponent) => (gridJamOPSType = gridJamOps as GridComponent)}
+                                            />
+                                        ) : item.name === 'Info Pemilik' ? (
+                                            <InfoPemilik setStatus={setStatus} iPTab={iPTab} handleChange={handleChange} params={params} state={state} />
+                                        ) : item.name === 'Daftar Kontak' ? (
+                                            <DaftarKontak
+                                                gridRef={(gridDK: GridComponent) => (gridDKType = gridDK as GridComponent)}
+                                                daftarKontak={dKTab}
+                                                actionBeginHandle={actionBeginDKTabHandle}
+                                                editBeginHandle={editBeginDKTabHandle}
                                             />
                                         ) : (
                                             <></>

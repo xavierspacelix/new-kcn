@@ -33,7 +33,8 @@ interface dialogRelasiProps {
     masterDataState: any;
     isOpen: boolean;
     onClose: any;
-    onRefresh: any;
+    onRefresh?: any;
+    target?: string;
 }
 
 interface ProvinsiStateAPI {
@@ -72,11 +73,11 @@ interface DetailRelasi {
     file_ttd: string;
     aktif_kontak: string;
 }
-const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, masterKodeRelasi, masterDataState, isOpen, onClose, onRefresh, token }: dialogRelasiProps) => {
+const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, masterKodeRelasi, masterDataState, isOpen, onClose, onRefresh, token, target }: dialogRelasiProps) => {
     // Base URL API Data
     const apiUrl = process.env.NEXT_PUBLIC_LOGIN_API || '';
     const router = useRouter();
-    const { norelasi, isRedirectFromSupp,masterState,nomor_supplier } = router.query;
+    const { norelasi, isRedirectFromSupp, masterState, nomor_supplier } = router.query;
     const [masterKeterangan, setMasterKeterangan] = useState<any>(null);
 
     const [provinsiList, setProvinsiList] = useState<ProvinsiStateAPI[]>([]);
@@ -124,16 +125,15 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
     // Loading data indicator
     const [showLoader, setShowLoader] = useState(true);
     const closeDialogRelasi = () => {
+        console.log('BATAL CLICKED');
 
-        console.log("BATAL CLICKED");
-                
         if (norelasi) {
             const targetUrl = '/kcn/ERP/master/supplier/supplier';
             const queryParams = {
                 tabId: tabId,
                 norelasi: norelasi,
                 masterState: masterState,
-                nomor_supplier: nomor_supplier ? nomor_supplier : ""
+                nomor_supplier: nomor_supplier ? nomor_supplier : '',
             };
             return router.push({
                 pathname: targetUrl,
@@ -141,17 +141,19 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
             });
         } else if (isRedirectFromSupp) {
             const targetUrl = '/kcn/ERP/master/supplier/supplier';
-                    const queryParams = {
-                        isRedirectFromSupp: isRedirectFromSupp
-                    };
-                    return router.push({
-                        pathname: targetUrl,
-                        query: queryParams,
-                    });
+            const queryParams = {
+                isRedirectFromSupp: isRedirectFromSupp,
+            };
+            return router.push({
+                pathname: targetUrl,
+                query: queryParams,
+            });
         }
         onClose();
         setTimeout(() => {
-            onRefresh();
+            if (onRefresh) {
+                onRefresh();
+            }
         }, 100);
     };
     //======= Setting tampilan sweet alert  =========
@@ -184,20 +186,20 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
             popup: 'colored-toast',
         },
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3500,
         showClass: {
-            popup: `
-              animate__animated
-              animate__zoomIn
-              animate__faster
-            `,
+            popup: ` 
+                  animate__animated 
+                  animate__zoomIn 
+                  animate__faster 
+                `,
         },
         hideClass: {
-            popup: `
-              animate__animated
-              animate__zoomOut
-              animate__faster
-            `,
+            popup: ` 
+                  animate__animated 
+                  animate__zoomOut 
+                  animate__faster 
+                `,
         },
     });
     const convertDateToString = (date: Date) => {
@@ -243,7 +245,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
             const status = result.status;
             const errormsg = result.serverMessage;
             if (status === true) {
-                withReactContent(swalDialog).fire({
+                withReactContent(swalToast).fire({
                     title: ``,
                     html: '<p style="font-size:12px">Data Relasi Baru berhasil disimpan</p>',
                     icon: 'success',
@@ -251,6 +253,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                     heightAuto: true,
                     showConfirmButton: false,
                     timer: 1500,
+                    target: target ?? '#main-target',
                 });
                 if (norelasi) {
                     const targetUrl = '/kcn/ERP/master/supplier/supplier';
@@ -258,7 +261,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                         tabId: tabId,
                         norelasi: norelasi,
                         masterState: masterState,
-                        nomor_supplier: nomor_supplier ? nomor_supplier : ""
+                        nomor_supplier: nomor_supplier ? nomor_supplier : '',
                     };
                     return router.push({
                         pathname: targetUrl,
@@ -267,7 +270,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                 } else if (isRedirectFromSupp) {
                     const targetUrl = '/kcn/ERP/master/supplier/supplier';
                     const queryParams = {
-                        isRedirectFromSupp: isRedirectFromSupp
+                        isRedirectFromSupp: isRedirectFromSupp,
                     };
                     return router.push({
                         pathname: targetUrl,
@@ -322,7 +325,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
             const status = result.status;
             const errormsg = result.serverMessage;
             if (status === true) {
-                withReactContent(swalDialog).fire({
+                withReactContent(swalToast).fire({
                     title: ``,
                     html: '<p style="font-size:12px">Data Relasi berhasil disimpan</p>',
                     icon: 'success',
@@ -330,6 +333,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                     heightAuto: true,
                     showConfirmButton: false,
                     timer: 1500,
+                    target: target ?? '#main-target',
                 });
                 if (norelasi) {
                     const targetUrl = '/kcn/ERP/master/supplier/supplier';
@@ -337,7 +341,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                         tabId: tabId,
                         norelasi: norelasi,
                         masterState: masterState,
-                        nomor_supplier: nomor_supplier ? nomor_supplier : ""
+                        nomor_supplier: nomor_supplier ? nomor_supplier : '',
                     };
                     return router.push({
                         pathname: targetUrl,
@@ -346,7 +350,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                 } else if (isRedirectFromSupp) {
                     const targetUrl = '/kcn/ERP/master/supplier/supplier';
                     const queryParams = {
-                        isRedirectFromSupp: isRedirectFromSupp
+                        isRedirectFromSupp: isRedirectFromSupp,
                     };
                     return router.push({
                         pathname: targetUrl,
@@ -821,7 +825,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
             isFlat: false,
             click: () => {
                 setEditModeDetail(false);
-               
+
                 setDialogKontakRelasiVisible(false);
                 setInputValue({
                     kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
@@ -948,7 +952,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                     id="DialogRelasi"
                     name="DialogRelasi"
                     className="DialogRelasi"
-                    target="#main-target"
+                    target={target ?? '#main-target'}
                     header={() => {
                         let header: string = '';
                         if (masterDataState == 'BARU') {
@@ -1014,8 +1018,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                                         ? '-- Belum Memilih Tipe --'
                                                                         : '-- Pilih Tipe --'}
                                                                 </option>
-                                                                {apiTipeRelasi.map((tipe) => (
-                                                                    <option value={tipe.tipe} key={tipe.tipe}>
+                                                                {apiTipeRelasi.map((tipe, index) => (
+                                                                    <option value={tipe.tipe} key={tipe.tipe + index+1}>
                                                                         {tipe.tipe}
                                                                     </option>
                                                                 ))}
@@ -1113,8 +1117,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                                         : '-- Pilih Provinsi --'}
                                                                 </option>
                                                                 {/* Menghapus atribut 'selected' */}
-                                                                {provinsiList.map((propinsi) => (
-                                                                    <option key={propinsi.nama_propinsi} value={propinsi.nama_propinsi}>
+                                                                {provinsiList.map((propinsi, index) => (
+                                                                    <option key={propinsi.nama_propinsi  + index+1} value={propinsi.nama_propinsi}>
                                                                         {propinsi.nama_propinsi}
                                                                     </option>
                                                                 ))}
@@ -1136,8 +1140,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                                 <option value="" disabled selected={!masterData.kota}>
                                                                     {masterData.kota === null ? '-- Belum Memilih Kota --' : '-- Pilih Kota --'}
                                                                 </option>
-                                                                {kotaList.map((kota) => (
-                                                                    <option key={kota.nama_kota} value={kota.nama_kota}>
+                                                                {kotaList.map((kota,index) => (
+                                                                    <option key={kota.nama_kota+ index+1} value={kota.nama_kota}>
                                                                         {kota.nama_kota}
                                                                     </option>
                                                                 ))}
@@ -1161,8 +1165,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                                         ? '-- Belum Memilih Kecamatan --'
                                                                         : '-- Pilih Kecamatan --'}
                                                                 </option>
-                                                                {kecamatanList.map((kecamatan) => (
-                                                                    <option value={kecamatan.nama_kecamatan} key={kecamatan.nama_kecamatan}>
+                                                                {kecamatanList.map((kecamatan,index) => (
+                                                                    <option value={kecamatan.nama_kecamatan} key={kecamatan.nama_kecamatan, + index+1}>
                                                                         {kecamatan.nama_kecamatan}
                                                                     </option>
                                                                 ))}
@@ -1186,8 +1190,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                                         ? '-- Belum Memilih Kelurahan --'
                                                                         : '-- Pilih Kelurahan --'}
                                                                 </option>
-                                                                {kelurahanList.map((kelurahan) => (
-                                                                    <option value={kelurahan.nama_kelurahan} key={kelurahan.nama_kelurahan}>
+                                                                {kelurahanList.map((kelurahan, index) => (
+                                                                    <option value={kelurahan.nama_kelurahan} key={kelurahan.nama_kelurahan+ index+1}>
                                                                         {kelurahan.nama_kelurahan}
                                                                     </option>
                                                                 ))}
@@ -1724,8 +1728,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                     <option value="" disabled selected={!inputValue.jab}>
                                         {inputValue.jab === null ? '-- Belum Memilih Jabatan --' : '-- Pilih Jabatan --'}
                                     </option>
-                                    {jabatanArray.map((jab) => (
-                                        <option key={jab.name} value={jab.name}>
+                                    {jabatanArray.map((jab, index) => (
+                                        <option key={(jab.name, +index + 1)} value={jab.name}>
                                             {jab.name}
                                         </option>
                                     ))}
@@ -1744,8 +1748,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                     <option value="" disabled selected={!inputValue.hubungan}>
                                         {inputValue.hubungan === null ? '-- Belum Memilih Hubungan --' : '-- Pilih Hubungan --'}
                                     </option>
-                                    {hubunganKepemilikanArray.map((hubungan) => (
-                                        <option key={hubungan.name} value={hubungan.name}>
+                                    {hubunganKepemilikanArray.map((hubungan, index) => (
+                                        <option key={(hubungan.name, +index + 1)} value={hubungan.name}>
                                             {hubungan.name}
                                         </option>
                                     ))}

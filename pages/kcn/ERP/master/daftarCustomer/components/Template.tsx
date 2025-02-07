@@ -50,6 +50,34 @@ const statusTokoArray = [
     { label: 'Sewa', value: 'Sewa' },
     { label: 'Lainnya', value: 'Lainnya' },
 ];
+const statusRumah = [
+    { label: 'Keluarga', value: 'Keluarga' },
+    { label: 'Sendiri', value: 'Sendiri' },
+    { label: 'Sewa', value: 'Sewa' },
+    { label: 'Lainnya', value: 'Lainnya' },
+];
+const jenisKelaminArray = [
+    { label: 'Laki-laki', value: 'Laki-laki' },
+    { label: 'Perempuan', value: 'Perempuan' },
+];
+const diHubunginArray = [
+    {
+        label: 'Telepon Dan WhatsApp',
+        value: 'A',
+    },
+    {
+        label: 'Telepon',
+        value: 'T',
+    },
+    {
+        label: 'WhatsApp',
+        value: 'W',
+    },
+    {
+        label: 'Tidak Berkenan Dihubungi',
+        value: 'N',
+    },
+];
 export const defaultValueIuTab = [
     {
         id: 1,
@@ -569,7 +597,296 @@ export const headerFieldValue = [
         team: 'master',
     },
 ];
+export const iPTabValue = [
+    {
+        id: 1,
+        label: 'Alamat Pemilik',
+        name: 'alamat_pemilik1',
+        type: 'string',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 2,
+        name: 'alamat_pemilik2',
+        label: '',
+        type: 'string',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 3,
+        name: 'kota_pemilik',
+        label: 'Kota',
+        type: 'select',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 4,
+        name: 'kodepos_pemilik',
+        label: 'Kode Pos',
+        type: 'number',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 5,
+        name: 'kecamatan_pemilik',
+        label: 'Kecamatan',
+        type: 'select',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 6,
+        name: 'propinsi_pemilik',
+        label: 'Provinsi',
+        type: 'select',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 7,
+        name: 'kelurahan_pemilik',
+        label: 'Kelurahan',
+        type: 'select',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 8,
+        name: 'negara_pemilik',
+        label: 'Negara',
+        type: 'select',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 9,
+        name: 'status_rumah',
+        label: 'Status Rumah Tinggal',
+        type: 'select',
+        value: '',
+        readOnly: false,
+        selection: statusRumah,
+    },
+    {
+        id: 10,
+        name: 'tinggal_sejak',
+        label: 'Tinggal Sejak',
+        type: 'number',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 11,
+        name: 'personal',
+        label: 'Nama Pemilik',
+        type: 'personalString',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 12,
+        name: 'tempat_lahir',
+        label: 'Tempat Lahir',
+        type: 'ttl',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 13,
+        name: 'tanggal_lahir',
+        label: 'Tanggal Lahir',
+        type: 'ttlDate',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 14,
+        name: 'jenis_kelamin',
+        label: 'Jenis Kelamin',
+        type: 'select',
+        value: '',
+        readOnly: false,
+        selection: jenisKelaminArray,
+    },
+    {
+        id: 15,
+        name: 'space',
+        label: 'Space',
+        type: 'space',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 16,
+        name: 'status_perkawinan',
+        label: 'Status Perkawinan',
+        type: 'string',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 17,
+        name: 'warganegara',
+        label: 'Warga Negara',
+        type: 'string',
+        value: '',
+        readOnly: false,
+    },
+    {
+        id: 18,
+        name: 'ktp',
+        label: 'No. KTP / Paspor',
+        type: 'string',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 19,
+        name: 'sim',
+        label: 'No. SIM',
+        type: 'number',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 20,
+        name: 'telp',
+        label: 'Telepon 1',
+        type: 'number',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 21,
+        name: 'telp2',
+        label: 'Telepon 2',
+        type: 'number',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 22,
+        name: 'hp',
+        label: 'Handphone',
+        type: 'number',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 23,
+        name: 'hp2',
+        label: 'WhatsApp',
+        type: 'number',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 24,
+        name: 'fax',
+        label: 'Facimile',
+        type: 'number',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 25,
+        name: 'space',
+        label: 'Space',
+        type: 'space',
+        value: '',
+        readOnly: true,
+    },
+    {
+        id: 26,
+        name: 'email',
+        label: 'Email',
+        type: 'action',
+        value: '',
+        readOnly: true,
+        isAction: true,
+        icon: (props: any) => (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                {...props}
+                viewBox="0 0 24 24"
+            >
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+        ),
+        hint: 'Kirimkan Email',
+    },
+    {
+        id: 27,
+        name: 'website',
+        label: 'Website',
+        type: 'action',
+        value: '',
+        readOnly: true,
+        isAction: true,
+        icon: (props: any) => (
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                {...props}
+            >
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+        ),
 
+        hint: 'Kunjungi Website',
+    },
+    {
+        id: 28,
+        name: 'dikontak',
+        label: 'Kontak aktif yang bisa dihubungi',
+        type: 'select',
+        value: '',
+        readOnly: false,
+        selection: diHubunginArray,
+    },
+];
+export const dKTabValue = [
+    {
+        kode_relasi: '',
+        id_relasi: '',
+        nama_lengkap: '',
+        nama_person: '',
+        jab: '',
+        hubungan: '',
+        bisnis: '',
+        bisnis2: '',
+        telp: '',
+        hp: '',
+        hp2: '',
+        fax: '',
+        email: '',
+        catatan: '',
+        file_kuasa: '',
+        file_ktp: '',
+        file_ttd: '',
+        aktif_kontak: '',
+    },
+];
 const Template = () => {
     return <div>Template</div>;
 };

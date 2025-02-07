@@ -195,7 +195,7 @@ export const getDataKelompok = async (entitas: string) => {
     return data.data.data;
 };
 export const getDataRegionIndonesia = async (entitas: string, type: string) => {
-    const data = await axios.get(`${apiUrl}/erp/list_wilayah_daftar_relasi?`, {
+    const data = await axios.get(`${apiUrl}/erp/list_wilayah_daftar_relasi`, {
         params: {
             entitas: entitas,
             param1: type,
@@ -295,6 +295,17 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
             };
         });
         return newData;
+    } else if (type === 'person') {
+        const data = await axios.get(`${apiUrl}/erp/list_person_customer?`, {
+            params: {
+                entitas: entitas,
+                param1: kode_cust,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return data.data.data;
     }
 };
 

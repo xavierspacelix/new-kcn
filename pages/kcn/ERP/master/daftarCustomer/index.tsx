@@ -53,6 +53,13 @@ const DaftarCustomer = () => {
         kode_cust: '',
         entitas: '',
         token: '',
+        userid: '',
+        kode_relasi: '',
+        kotaArray: [],
+        kecamatanArray: [],
+        kelurahanArray: [],
+        provinsiArray: [],
+        negaraArray: [],
     });
     const [filter, setFilter] = React.useState([
         {
@@ -428,10 +435,66 @@ const DaftarCustomer = () => {
             await getDataSalesman(kode_entitas).then((res) => updateFilterOptions('paramNamaSales', res, 'nama_sales', 'kode_sales'));
             await getDataKategori(kode_entitas).then((res) => updateFilterOptions('paramKategori', res, 'grp', 'grp'));
             await getDataKelompok(kode_entitas).then((res) => updateFilterOptions('paramKelompok', res, 'kel', 'kel'));
-            await getDataRegionIndonesia(kode_entitas, 'provinsi').then((res) => updateFilterOptions('paramPropinsi', res, 'nama_propinsi', 'nama_propinsi'));
-            await getDataRegionIndonesia(kode_entitas, 'kota').then((res) => updateFilterOptions('paramKota', res, 'nama_kota', 'nama_kota'));
-            await getDataRegionIndonesia(kode_entitas, 'kecamatan').then((res) => updateFilterOptions('paramKecamatan', res, 'nama_kecamatan', 'nama_kecamatan'));
-            await getDataRegionIndonesia(kode_entitas, 'kelurahan').then((res) => updateFilterOptions('paramKelurahan', res, 'nama_kelurahan', 'nama_kelurahan'));
+            await getDataRegionIndonesia(kode_entitas, 'provinsi').then((res) => {
+                updateFilterOptions('paramPropinsi', res, 'nama_propinsi', 'nama_propinsi');
+                setDialogParams((prev: any) => ({
+                    ...prev,
+                    provinsiArray: res.map((option: any) => {
+                        return {
+                            label: option['nama_propinsi'],
+                            value: option['nama_propinsi'],
+                        };
+                    }),
+                }));
+            });
+            await getDataRegionIndonesia(kode_entitas, 'kota').then((res) => {
+                updateFilterOptions('paramKota', res, 'nama_kota', 'nama_kota');
+                setDialogParams((prev: any) => ({
+                    ...prev,
+                    kotaArray: res.map((option: any) => {
+                        return {
+                            label: option['nama_kota'],
+                            value: option['nama_kota'],
+                        };
+                    }),
+                }));
+            });
+            await getDataRegionIndonesia(kode_entitas, 'kecamatan').then((res) => {
+                updateFilterOptions('paramKecamatan', res, 'nama_kecamatan', 'nama_kecamatan');
+
+                setDialogParams((prev: any) => ({
+                    ...prev,
+                    kecamatanArray: res.map((option: any) => {
+                        return {
+                            label: option['nama_kecamatan'],
+                            value: option['nama_kecamatan'],
+                        };
+                    }),
+                }));
+            });
+            await getDataRegionIndonesia(kode_entitas, 'kelurahan').then((res) => {
+                updateFilterOptions('paramKelurahan', res, 'nama_kelurahan', 'nama_kelurahan');
+                setDialogParams((prev: any) => ({
+                    ...prev,
+                    kelurahanArray: res.map((option: any) => {
+                        return {
+                            label: option['nama_kelurahan'],
+                            value: option['nama_kelurahan'],
+                        };
+                    }),
+                }));
+            });
+            await getDataRegionIndonesia(kode_entitas, 'negara').then((res) => {
+                setDialogParams((prev: any) => ({
+                    ...prev,
+                    negaraArray: res.map((option: any) => {
+                        return {
+                            label: option['negara'],
+                            value: option['negara'],
+                        };
+                    }),
+                }));
+            });
         } catch (error) {
             setShowLoader(false);
             myAlertGlobal('Terjadi Kesalahan Server!', 'main-content', 'warning');
@@ -441,16 +504,16 @@ const DaftarCustomer = () => {
     };
     function recordDoubleClickHandle(args: any): void {
         setOpenDialog({ ...openDialog, edit: true });
-        setDialogParams({
-            ...dialogParams,
+        setDialogParams((prev: any) => ({
+            ...prev,
             kode_cust: args.rowData?.kode_cust ?? dialogParams?.kode_cust,
-        });
+            kode_relasi: args.rowData?.kode_relasi ?? dialogParams?.kode_relasi,
+        }));
     }
 
     useEffect(() => {
         if (kode_entitas && token) {
             fecthInitialDataFilter();
-
             fetchDataCustomer(filter, token, kode_entitas, 'all').then((res) => {
                 setTimeout(() => {
                     setCustomer(res);
@@ -717,7 +780,6 @@ const DaftarCustomer = () => {
                                                     id={item.kelas}
                                                     onClick={async () => {
                                                         const klasifikasiValue = item.kelas === 'Semua' ? 'all' : item.kelas;
-
                                                         fetchDataCustomer(filter, token, kode_entitas, klasifikasiValue).then((res) => setCustomer(res));
                                                     }}
                                                 >
@@ -732,7 +794,7 @@ const DaftarCustomer = () => {
                                         gridRef={(gridCustomer: GridComponent) => (gridCust = gridCustomer as GridComponent)}
                                         customerData={customer}
                                         recordDoubleClickHandle={recordDoubleClickHandle}
-                                        rowSelectedHandle={(args) => setDialogParams({ ...dialogParams, kode_cust: args.data.kode_cust })}
+                                        rowSelectedHandle={(args) => setDialogParams({ ...dialogParams, kode_cust: args.data.kode_cust, kode_relasi: args.data.kode_relasi })}
                                     />
                                 </Tab.Panels>
                             </Tab.Group>
@@ -747,7 +809,10 @@ const DaftarCustomer = () => {
                     setDialogParams({
                         ...dialogParams,
                         kode_cust: '',
+                        kode_relasi: '',
                     });
+                    fetchDataCustomer(filter, token, kode_entitas, 'all').then((res) => setCustomer(res));
+                    gridCust?.refresh();
                 }}
                 params={dialogParams}
                 state={openDialog.new ? 'new' : openDialog.edit ? 'edit' : openDialog.detail ? 'detail' : ''}

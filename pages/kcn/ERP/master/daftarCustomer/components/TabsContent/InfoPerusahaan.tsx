@@ -72,7 +72,7 @@ const InfoPerusahaan = ({ iUTab, handleChange, onRenderDayCell, gridRef }: InfoP
     };
     return (
         <div className="active">
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-12">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-12 px-3">
                 <div className="md:col-span-6">
                     <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
                         {iUTab
@@ -80,7 +80,7 @@ const InfoPerusahaan = ({ iUTab, handleChange, onRenderDayCell, gridRef }: InfoP
                             .map((field, index) =>
                                 field.type === 'date' ? (
                                     <div key={field.name + index}>
-                                        <span className="e-label font-bold">{field.label}</span>
+                                        <span className="e-label font-bold"> {field.label}</span>
                                         <div className="flex flex-col gap-2">
                                             <div className="container form-input">
                                                 <DatePickerComponent
