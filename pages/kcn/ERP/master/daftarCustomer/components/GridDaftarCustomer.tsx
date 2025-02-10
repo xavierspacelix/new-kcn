@@ -90,7 +90,7 @@ const GridDaftarCustomer = ({ gridRef, customerData, recordDoubleClickHandle, ro
                 <ColumnDirective field="kecamatan" headerText="Kecamatan" headerTextAlign="Center" textAlign="Center" width={120} clipMode="EllipsisWithTooltip" />
                 <ColumnDirective field="kelurahan" headerText="Kelurahan" headerTextAlign="Center" textAlign="Center" width={120} clipMode="EllipsisWithTooltip" />
                 <ColumnDirective field="nama_sales" headerText="SalesMan" headerTextAlign="Center" textAlign="Center" width={120} clipMode="EllipsisWithTooltip" />
-                <ColumnDirective field="plafond" headerText="Plafond Kredit" headerTextAlign="Center" textAlign="Center" width={120} clipMode="EllipsisWithTooltip" />
+                <ColumnDirective field="plafond" headerText="Plafond Kredit" headerTextAlign="Center" textAlign="Right" width={120} clipMode="EllipsisWithTooltip" />
                 <ColumnDirective field="nama_termin" headerText="Termin" headerTextAlign="Center" textAlign="Center" width={120} clipMode="EllipsisWithTooltip" />
                 <ColumnDirective field="kode_mu" headerText="MU" headerTextAlign="Center" textAlign="Center" autoFit clipMode="EllipsisWithTooltip" />
                 <ColumnDirective field="nama_bank" headerText="Nama Bank" headerTextAlign="Center" textAlign="Center" width={120} clipMode="EllipsisWithTooltip" />

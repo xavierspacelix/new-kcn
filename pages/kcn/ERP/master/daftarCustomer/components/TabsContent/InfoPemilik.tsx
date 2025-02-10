@@ -10,7 +10,7 @@ import DialogRelasi from '../../../daftarRelasi/component/DialogRelasi';
 type ParamsType = {
     userid: string;
     kode_cust: string;
-    kode_relasi: string;
+    kode_relasi?: string;
     entitas: string;
     token: string;
     provinsiArray: { label: string; value: string }[];
@@ -65,13 +65,13 @@ const InfoPemilik = ({ iPTab, handleChange, params, state, setStatus }: iPParams
                             console.log('params', params);
                         }}
                         content="Update"
-                        disabled={params.kode_relasi === ''}
+                        disabled={params?.kode_relasi === ''}
                         iconCss="e-icons e-medium e-description"
                     ></ButtonComponent>
                 </div>
                 <div className="col-span-11">
                     <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
-                        {iPTab.map((item, index) =>
+                        {iPTab?.map((item, index) =>
                             item.type === 'string' ? (
                                 item.name.startsWith('alamat_pemilik') ? (
                                     <div className="col-span-2" key={item.name + index}>
@@ -113,15 +113,15 @@ const InfoPemilik = ({ iPTab, handleChange, params, state, setStatus }: iPParams
                                             key={item.name}
                                             dataSource={
                                                 item.name === 'propinsi_pemilik'
-                                                    ? params.provinsiArray
+                                                    ? params?.provinsiArray
                                                     : item.name === 'kota_pemilik'
-                                                    ? params.kotaArray
+                                                    ? params?.kotaArray
                                                     : item.name === 'kecamatan_pemilik'
-                                                    ? params.kecamatanArray
+                                                    ? params?.kecamatanArray
                                                     : item.name === 'kelurahan_pemilik'
-                                                    ? params.kelurahanArray
+                                                    ? params?.kelurahanArray
                                                     : item.name === 'negara_pemilik'
-                                                    ? params.negaraArray
+                                                    ? params?.negaraArray
                                                     : item.selection
                                             }
                                             onChange={(event: { target: { value: string } }) => {
@@ -256,10 +256,10 @@ const InfoPemilik = ({ iPTab, handleChange, params, state, setStatus }: iPParams
             </div>
             {isEdit && (
                 <DialogRelasi
-                    token={params.token}
-                    userid={params.userid}
-                    kode_entitas={params.entitas}
-                    masterKodeRelasi={params.kode_relasi}
+                    token={params?.token}
+                    userid={params?.userid}
+                    kode_entitas={params?.entitas}
+                    masterKodeRelasi={params?.kode_relasi ?? ''}
                     masterDataState={state.toUpperCase()}
                     isOpen={isEdit}
                     target="#dialogCustomer"

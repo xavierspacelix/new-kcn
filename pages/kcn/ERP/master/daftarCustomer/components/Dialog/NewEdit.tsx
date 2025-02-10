@@ -1,6 +1,6 @@
 import { DialogComponent } from '@syncfusion/ej2-react-popups';
 import React from 'react';
-import { customerTab, getDataMasterCustomer, onRenderDayCell } from '../../functions/definition';
+import { customerTab, generateNoCust, getDataMasterCustomer, onRenderDayCell } from '../../functions/definition';
 import { Tab } from '@headlessui/react';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
@@ -19,6 +19,7 @@ import InfoPerusahaan from '../TabsContent/InfoPerusahaan';
 import { myAlertGlobal } from '@/utils/routines';
 import InfoPemilik from '../TabsContent/InfoPemilik';
 import DaftarKontak from '../TabsContent/DaftarKontak';
+import SelectRelasiDialog from './SelectRelasiDialog';
 loadCldr(numberingSystems, gregorian, numbers, timeZoneNames, weekData);
 L10n.load(idIDLocalization);
 enableRipple(true);
@@ -28,7 +29,7 @@ interface NewEditProps {
     params: {
         userid: string;
         kode_cust: string;
-        kode_relasi: string;
+        kode_relasi?: string;
         entitas: string;
         token: string;
         kotaArray: any[];
@@ -112,7 +113,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
     const [dKTab, setDKTab] = React.useState<dKTabInterface[]>([]);
     const [showLoader, setShowLoader] = React.useState(false);
     const [status, setStatus] = React.useState(false);
-
+    const [selectRelasiDialog, setSelectRelasiDialog] = React.useState(false);
     const footerTemplateDlg = () => {
         return (
             <div className="mx-auto flex items-center justify-between">
@@ -144,6 +145,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                             gridJamOPSType?.refresh();
                             gridDKType?.refresh();
                             console.log('dKTab ', dKTab);
+                            console.log('headerField ', headerField);
                         }}
                     >
                         Simpan
@@ -368,7 +370,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                     MasterDetail.push(...mappedJamOps);
                 }
             });
-            await getDataMasterCustomer(params.entitas, params.kode_relasi, params.token, 'person').then((result) => {
+            await getDataMasterCustomer(params.entitas, params?.kode_relasi ?? '', params.token, 'person').then((result) => {
                 setDKTab(result);
             });
             setIUTab(MasterDetail.sort((a: any, b: any) => a.id - b.id));
@@ -398,62 +400,55 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
     const dialogClose = () => {
         onClose();
     };
-    const actionBeginDKTabHandle = (args: any) => {
-        const idNumber = dKTab.length;
-        console.log(args.requestType)
-        if (args.requestType === 'save') {
-            const data = args.data;
-            const newData = {
-                kode_relasi: params.kode_relasi,
-                id_relasi: idNumber + 1,
-                nama_lengkap: data.nama_lengkap ?? '',
-                nama_person: data.nama_person ?? '',
-                jab: data.jab ?? '',
-                hubungan: data.hubungan ?? '',
-                bisnis: data.bisnis ?? '',
-                bisnis2: data.bisnis2 ?? '',
-                telp: data.telp ?? '',
-                hp: data.hp ?? '',
-                hp2: data.hp2 ?? '',
-                fax: data.fax ?? '',
-                email: data.email ?? '',
-                catatan: data.catatan ?? '',
-                file_kuasa: data.file_kuasa ?? '',
-                file_ktp: data.file_ktp ?? '',
-                file_ttd: data.file_ttd ?? '',
-                aktif_kontak: data.aktif_kontak ?? '',
-            };
-            setDKTab((prev) => [...prev, newData]);
+    const actionsHandler = async (actionName: string) => {
+        if (actionName === 'nama_relasi') {
+            setSelectRelasiDialog(true);
+        } else if (actionName === 'no_cust') {
+            await generateNoCust(params?.entitas, params?.token).then((result) => {
+                setHeaderField((prevHeaderField) =>
+                    prevHeaderField.map((headerItem) =>
+                        headerItem.name === actionName
+                            ? {
+                                  ...headerItem,
+                                  value: result,
+                              }
+                            : headerItem
+                    )
+                );
+            });
         }
     };
-    const editBeginDKTabHandle = (args: any) => {
-        // const idNumber = dKTab.length;
-        console.log(args.requestType)
-        // if (args.requestType === 'save') {
-        //     const data = args.data;
-        //     const newData = {
-        //         kode_relasi: params.kode_relasi,
-        //         id_relasi: idNumber + 1,
-        //         nama_lengkap: data.nama_lengkap ?? '',
-        //         nama_person: data.nama_person ?? '',
-        //         jab: data.jab ?? '',
-        //         hubungan: data.hubungan ?? '',
-        //         bisnis: data.bisnis ?? '',
-        //         bisnis2: data.bisnis2 ?? '',
-        //         telp: data.telp ?? '',
-        //         hp: data.hp ?? '',
-        //         hp2: data.hp2 ?? '',
-        //         fax: data.fax ?? '',
-        //         email: data.email ?? '',
-        //         catatan: data.catatan ?? '',
-        //         file_kuasa: data.file_kuasa ?? '',
-        //         file_ktp: data.file_ktp ?? '',
-        //         file_ttd: data.file_ttd ?? '',
-        //         aktif_kontak: data.aktif_kontak ?? '',
-        //     };
-        //     setDKTab((prev) => [...prev, newData]);
-        // }
+    const addNewDKTab = (data: dKTabInterface) => {
+        const newData: dKTabInterface = {
+            kode_relasi: params.kode_relasi ?? '',
+            id_relasi: dKTab.length + 1,
+            nama_lengkap: data.nama_lengkap ?? null,
+            nama_person: data.nama_person ?? null,
+            jab: data.jab ?? null,
+            hubungan: data.hubungan ?? null,
+            bisnis: data.bisnis ?? null,
+            bisnis2: data.bisnis2 ?? null,
+            telp: data.telp ?? null,
+            hp: data.hp ?? null,
+            hp2: data.hp2 ?? null,
+            fax: data.fax ?? null,
+            email: data.email ?? null,
+            catatan: data.catatan ?? null,
+            file_kuasa: data.file_kuasa ?? null,
+            file_ktp: data.file_ktp ?? null,
+            file_ttd: data.file_ttd ?? null,
+            aktif_kontak: data.aktif_kontak ?? null,
+        };
+        setDKTab((prev) => [...prev, newData]);
     };
+    const actionBeginDKTabHandle = (args: any) => {
+        console.log(args.requestType);
+        const data = args.data;
+        if (args.requestType === 'save') {
+            addNewDKTab(data);
+        }
+    };
+    const editBeginDKTabHandle = (args: any) => {};
     React.useEffect(() => {
         if (isOpen) {
             if (state === 'edit' || status) {
@@ -514,13 +509,14 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                                                                 <button
                                                                     className="flex items-center justify-center border border-white-light bg-[#eee] pr-1 font-semibold dark:border-[#17263c] dark:bg-[#1b2e4b] ltr:rounded-r-md ltr:border-l-0 rtl:rounded-l-md rtl:border-r-0"
                                                                     onClick={() => {
-                                                                        // setDialogListRelasi(true);
+                                                                        actionsHandler(item.name);
                                                                     }}
                                                                     style={{
                                                                         height: 28,
                                                                         background: 'white',
                                                                         borderColor: 'white',
                                                                     }}
+                                                                    disabled={state === 'edit'}
                                                                 >
                                                                     {item.action.icon && (
                                                                         <FontAwesomeIcon icon={item.action.icon} className="ml-2" width="15" height="15" style={{ margin: '7px 2px 0px 6px' }} />
@@ -616,6 +612,46 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                     </div>
                 </div>
             </DialogComponent>
+            {selectRelasiDialog && (
+                <SelectRelasiDialog
+                    isOpen={selectRelasiDialog}
+                    onClose={(args): void => {
+                        setSelectRelasiDialog(false);
+                        console.log(args);
+                        if (args.length > 0) {
+                            setIUTab((prevIUTab) =>
+                                prevIUTab.map((item) => {
+                                    if (item.team === 'master') {
+                                        if (args[0]?.hasOwnProperty(item.name)) {
+                                            return {
+                                                ...item,
+                                                value: args[0]?.[item.name] ?? '',
+                                            };
+                                        }
+                                        return item;
+                                    }
+                                    return item;
+                                })
+                            );
+                            setIPTab((prevIPTab) =>
+                                prevIPTab.map((item) => {
+                                    if (args[0]?.hasOwnProperty(item.name)) {
+                                        return {
+                                            ...item,
+                                            value: args[0]?.[item.name] ?? '',
+                                        };
+                                    }
+                                    return item;
+                                })
+                            );
+                        }
+                    }}
+                    params={{
+                        entitas: params.entitas,
+                        token: params.token,
+                    }}
+                />
+            )}
         </>
     );
 };

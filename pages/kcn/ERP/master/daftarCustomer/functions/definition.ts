@@ -156,7 +156,13 @@ export const fetchDataCustomer = async (params: any, token: string, entitas: str
                 Authorization: `Bearer ${token}`,
             },
         });
-        return data.data.data;
+        const transformedData = data.data.data.map((item: any) => {
+            return {
+                ...item,
+                plafond: item.plafond === null || item.plafond === '0.0000' ? null : new Intl.NumberFormat('id-ID').format(item.plafond),
+            };
+        });
+        return transformedData
     } catch (error: any) {
         console.error(error.message);
     }
@@ -447,3 +453,30 @@ export function onRenderDayCell(args: RenderDayCellEventArgs): void {
         args.isDisabled = true;
     }
 }
+
+export const generateNoCust = async (entitas: string, token: string) => {
+    const data = await axios.get(`${apiUrl}/erp/generate_no_customer`, {
+        params: {
+            entitas: entitas,
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    const no_cust = data.data.data;
+    return no_cust;
+};
+
+export const fetchDaftarRelasi = async (entitas: string, token: string) => {
+    const responseData = await axios.get(`${apiUrl}/erp/list_relasi_dlg`, {
+        params: {
+            entitas: entitas,
+            param1: 'all',
+            param2: 'all',
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return responseData.data.data;
+};

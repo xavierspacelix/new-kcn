@@ -72,11 +72,11 @@ const InfoPerusahaan = ({ iUTab, handleChange, onRenderDayCell, gridRef }: InfoP
     };
     return (
         <div className="active">
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-12 px-3">
+            <div className="grid grid-cols-1 gap-2 px-3 md:grid-cols-12">
                 <div className="md:col-span-6">
                     <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
                         {iUTab
-                            .filter((item) => item.group === 'left')
+                            ?.filter((item) => item.group === 'left')
                             .map((field, index) =>
                                 field.type === 'date' ? (
                                     <div key={field.name + index}>
@@ -119,8 +119,7 @@ const InfoPerusahaan = ({ iUTab, handleChange, onRenderDayCell, gridRef }: InfoP
                                                 <input
                                                     id={field.name + index}
                                                     name={field.name}
-                                                            type="text"
-                                                            
+                                                    type="text"
                                                     className="e-control e-textbox e-lib e-input"
                                                     value={typeof field.value === 'string' ? field.value : field.value}
                                                     readOnly={field.readonly}
@@ -213,8 +212,7 @@ const InfoPerusahaan = ({ iUTab, handleChange, onRenderDayCell, gridRef }: InfoP
                 </div>
                 <div className="md:col-span-6">
                     <div className="flex flex-col">
-                        {iUTab
-                            .filter((item) => item.group === 'right')
+                        {iUTab?.filter((item) => item.group === 'right')
                             .map((field, index) =>
                                 field.type === 'table' ? (
                                     <div>
@@ -242,21 +240,18 @@ const InfoPerusahaan = ({ iUTab, handleChange, onRenderDayCell, gridRef }: InfoP
                                                     field="jam_buka"
                                                     headerText="Jam Buka"
                                                     headerTextAlign="Center"
-                                                    
                                                     template={(props: any) => timePickerTemplate(props, field.name, index + props.hari + '_jam_buka_' + props.id, 'jam_buka')}
                                                 />
                                                 <ColumnDirective
                                                     field="jam_tutup"
                                                     headerText="Jam Tutup"
                                                     headerTextAlign="Center"
-                                                    
                                                     template={(props: any) => timePickerTemplate(props, field.name, index + props.hari + '_jam_tutup_' + props.id, 'jam_tutup')}
                                                 />
                                                 <ColumnDirective
                                                     field="buka"
                                                     headerText="Buka / Tutup"
                                                     headerTextAlign="Center"
-                                                    
                                                     template={(props: any) => checkBoxTemplate(props, field.name, index + props.hari + '_buka_' + props.id)}
                                                 />
                                             </ColumnsDirective>
