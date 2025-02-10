@@ -11,21 +11,7 @@ interface DaftarKontakProps {
     editBeginHandle: (args: any) => void;
 }
 const DaftarKontak = ({ gridRef, daftarKontak, actionBeginHandle, editBeginHandle }: DaftarKontakProps) => {
-    const stringTemplate = (args: any) => {
-        console.log(args);
 
-        return (
-            // <div className="form-input">
-            <TextBoxComponent
-            // id={args.name + index}
-            // value={item.value}
-            // onChange={(event: any) => {
-            //     handleChange(item.name, 'value', event.target.value, 'iPTab');
-            // }}
-            />
-            // </div>
-        );
-    };
     return (
         <GridComponent
             id="gridListData"

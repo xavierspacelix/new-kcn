@@ -162,7 +162,7 @@ export const fetchDataCustomer = async (params: any, token: string, entitas: str
                 plafond: item.plafond === null || item.plafond === '0.0000' ? null : new Intl.NumberFormat('id-ID').format(item.plafond),
             };
         });
-        return transformedData
+        return transformedData;
     } catch (error: any) {
         console.error(error.message);
     }
@@ -314,7 +314,30 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
         return data.data.data;
     }
 };
-
+export interface RelasiProps {
+    kode_relasi: string;
+    nama_relasi: string;
+    alamat: string;
+    alamat2: string;
+    kodepos: string;
+    kota: string;
+    kelurahan: string;
+    kecamatan: string;
+    propinsi: string;
+    negara: string;
+    npwp: string;
+    siup: string;
+    personal: string;
+    ktp: string;
+    sim: string;
+    telp: string;
+    telp2: string;
+    hp: string;
+    hp2: string;
+    fax: string;
+    email: string;
+    website: string;
+}
 export interface Customer {
     kode_cust: string;
     kode_relasi: string;

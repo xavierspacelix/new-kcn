@@ -1,6 +1,6 @@
 import { myAlertGlobal } from '@/utils/routines';
 import React from 'react';
-import { fetchDaftarRelasi } from '../../functions/definition';
+import { RelasiProps } from '../../functions/definition';
 import { DialogComponent } from '@syncfusion/ej2-react-popups';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
@@ -8,37 +8,14 @@ import stylesHeader from './customerHeader.module.css';
 import { ColumnDirective, ColumnsDirective, Filter, GridComponent, Group, Inject, Page, Sort } from '@syncfusion/ej2-react-grids';
 import { iPTabValue } from '../Template';
 import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
-interface RelasiProps {
-    kode_relasi: string;
-    nama_relasi: string;
-    alamat: string;
-    alamat2: string;
-    kodepos: string;
-    kota: string;
-    kelurahan: string;
-    kecamatan: string;
-    propinsi: string;
-    negara: string;
-    npwp: string;
-    siup: string;
-    personal: string;
-    ktp: string;
-    sim: string;
-    telp: string;
-    telp2: string;
-    hp: string;
-    hp2: string;
-    fax: string;
-    email: string;
-    website: string;
-}
-interface NewEditProps {
+import DialogRelasi from '../../../daftarRelasi/component/DialogRelasi';
+
+interface SelectRelasiProps {
     isOpen: boolean;
     onClose: (args: any) => void;
-    params: {
-        entitas: string;
-        token: string;
-    };
+    params: ParamsType;
+    relasiSource: RelasiProps[];
+    state: string;
 }
 type iPTabInterface = {
     id: number;
@@ -52,20 +29,34 @@ type iPTabInterface = {
     readOnly: boolean;
     hint?: string;
 };
-
+type ParamsType = {
+    userid: string;
+    kode_cust: string;
+    kode_relasi?: string;
+    entitas: string;
+    token: string;
+    provinsiArray: { label: string; value: string }[];
+    kotaArray: { label: string; value: string }[];
+    kecamatanArray: { label: string; value: string }[];
+    kelurahanArray: { label: string; value: string }[];
+    negaraArray: { label: string; value: string }[];
+};
 type SelectionItem = {
     name?: string;
     label: string;
     value: string | boolean;
 };
 let gridRelasiType: GridComponent;
-const SelectRelasiDialog = ({ isOpen, onClose, params }: NewEditProps) => {
-    const [relasiSource, setRelasiSource] = React.useState<RelasiProps[]>([]);
+const SelectRelasiDialog = ({ isOpen, onClose, params, relasiSource, state }: SelectRelasiProps) => {
     const [showLoader, setShowLoader] = React.useState(false);
     const [filter, setFilter] = React.useState({
         kode_relasi: '',
         nama_relasi: '',
     });
+        const [status, setStatus] = React.useState(false);
+    
+    const [isNew, setIsNew] = React.useState(false);
+
     const [iPTab, setIPTab] = React.useState<any[]>([
         {
             id: 1,
@@ -222,20 +213,6 @@ const SelectRelasiDialog = ({ isOpen, onClose, params }: NewEditProps) => {
             visible: false,
         },
     ]);
-
-    const fecthRelasiData = async () => {
-        try {
-            setShowLoader(true);
-            await fetchDaftarRelasi(params.entitas, params.token).then((res) => {
-                setRelasiSource(res);
-            });
-        } catch (error) {
-            setShowLoader(false);
-            myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
-        } finally {
-            setShowLoader(false);
-        }
-    };
     const footerTemplateDlg = () => {
         return (
             <div className="mx-auto flex items-center justify-between">
@@ -249,7 +226,9 @@ const SelectRelasiDialog = ({ isOpen, onClose, params }: NewEditProps) => {
                             color: 'black',
                         }}
                         //  {/*  TODO: onClick */}
-                        onClick={() => {}}
+                        onClick={() => {
+                            setIsNew(true);
+                        }}
                         content="Relasi Baru"
                         iconCss="e-icons e-medium e-chevron-right"
                     ></ButtonComponent>
@@ -260,7 +239,7 @@ const SelectRelasiDialog = ({ isOpen, onClose, params }: NewEditProps) => {
                     <div className="e-btn e-danger e-small" onClick={closeDialog}>
                         Pilih
                     </div>
-                    <div className="e-btn e-danger e-small" onClick={closeDialog}>
+                    <div className="e-btn e-danger e-small" onClick={() => onClose(null)}>
                         Batal
                     </div>
                 </div>
@@ -280,7 +259,6 @@ const SelectRelasiDialog = ({ isOpen, onClose, params }: NewEditProps) => {
     const closeDialog = () => {
         if (gridRelasiType) {
             if (gridRelasiType?.getSelectedRecords().length > 0) {
-                console.log('MASUK KE SESI INI');
                 onClose(gridRelasiType?.getSelectedRecords());
             } else {
                 myAlertGlobal(`Silahkan Pilih Data Terlebih Dahulu!`, 'DialogSelecteRelasi', 'warning');
@@ -289,187 +267,197 @@ const SelectRelasiDialog = ({ isOpen, onClose, params }: NewEditProps) => {
             myAlertGlobal(`Terjadi Kesalahan Server! Mohon Coba Lagi`, 'DialogSelecteRelasi', 'warning');
         }
     };
-    React.useEffect(() => {
-        if (isOpen) {
-            fecthRelasiData();
-        }
-    }, [isOpen]);
 
     return (
-        <DialogComponent
-            id="DialogSelecteRelasi"
-            isModal={true}
-            width="40%"
-            height="100%"
-            visible={isOpen}
-            close={closeDialog}
-            header={'Daftar Relasi'}
-            position={{ X: 'right', Y: 'center' }}
-            showCloseIcon={true}
-            target="#dialogCustomer"
-            closeOnEscape={false}
-            footerTemplate={footerTemplateDlg}
-            allowDragging={true}
-            animationSettings={{ effect: 'FadeZoom', duration: 400, delay: 0 }}
-            enableResize={true}
-        >
-            <div>
-                <div className="flex flex-col gap-3">
-                    <div className={`panel-tabel col-span-full`} style={{ width: '100%' }}>
-                        <table className={`${stylesHeader.table}`}>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '50%' }}>No. Register</th>
-                                    <th style={{ width: '50%' }}>Nama Lengkap</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <TextBoxComponent
-                                            className={`${stylesHeader.inputTableBasic}`}
-                                            name="kode_relasi"
-                                            value={filter.kode_relasi}
-                                            onChange={(args: any) => {
-                                                if (gridRelasiType) {
-                                                    if (gridRelasiType && gridRelasiType.searchSettings) {
-                                                        gridRelasiType.searchSettings.fields = ['kode_relasi'];
-                                                        gridRelasiType.searchSettings.key = args.value;
+        <>
+            <DialogComponent
+                id="DialogSelecteRelasi"
+                isModal={true}
+                width="35%"
+                height="100%"
+                visible={isOpen}
+                close={closeDialog}
+                header={'Daftar Relasi'}
+                position={{ X: 'right', Y: 'center' }}
+                showCloseIcon={false}
+                target="#dialogCustomer"
+                closeOnEscape={false}
+                footerTemplate={footerTemplateDlg}
+                allowDragging={true}
+                animationSettings={{ effect: 'FadeZoom', duration: 400, delay: 0 }}
+                enableResize={true}
+            >
+                <div>
+                    <div className="flex flex-col gap-3">
+                        <div className={`panel-tabel col-span-full`} style={{ width: '100%' }}>
+                            <table className={`${stylesHeader.table}`}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '50%' }}>No. Register</th>
+                                        <th style={{ width: '50%' }}>Nama Lengkap</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <TextBoxComponent
+                                                className={`${stylesHeader.inputTableBasic}`}
+                                                name="kode_relasi"
+                                                value={filter.kode_relasi}
+                                                onChange={(args: any) => {
+                                                    if (gridRelasiType) {
+                                                        if (gridRelasiType && gridRelasiType.searchSettings) {
+                                                            gridRelasiType.searchSettings.fields = ['kode_relasi'];
+                                                            gridRelasiType.searchSettings.key = args.value;
+                                                        }
                                                     }
-                                                }
-                                            }}
-                                            style={{ backgroundColor: 'white', borderRadius: '5px' }}
-                                        />
-                                    </td>
-                                    <td>
-                                        <TextBoxComponent
-                                            className={`${stylesHeader.inputTableBasic}`}
-                                            name="nama_relasi"
-                                            value={filter.nama_relasi}
-                                            onChange={(args: any) => {
-                                                if (gridRelasiType) {
-                                                    if (gridRelasiType && gridRelasiType.searchSettings) {
-                                                        gridRelasiType.searchSettings.fields = ['nama_relasi'];
-                                                        gridRelasiType.searchSettings.key = args.value;
+                                                }}
+                                                style={{ backgroundColor: 'white', borderRadius: '5px' }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <TextBoxComponent
+                                                className={`${stylesHeader.inputTableBasic}`}
+                                                name="nama_relasi"
+                                                value={filter.nama_relasi}
+                                                onChange={(args: any) => {
+                                                    if (gridRelasiType) {
+                                                        if (gridRelasiType && gridRelasiType.searchSettings) {
+                                                            gridRelasiType.searchSettings.fields = ['nama_relasi'];
+                                                            gridRelasiType.searchSettings.key = args.value;
+                                                        }
                                                     }
-                                                }
-                                            }}
-                                            style={{ backgroundColor: 'white', borderRadius: '5px' }}
-                                        />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <GridComponent
-                        id="gridRelasiList"
-                        name="gridRelasiList"
-                        className="gridRelasiList"
-                        selectedRowIndex={1}
-                        ref={(gridRelasi: GridComponent) => (gridRelasiType = gridRelasi as GridComponent)}
-                        locale="id"
-                        dataSource={relasiSource}
-                        selectionSettings={{ mode: 'Row', type: 'Single' }}
-                        allowResizing={true}
-                        width={'580px'}
-                        height={120} //170 barang jadi 150 barang produksi
-                        gridLines={'Both'}
-                        loadingIndicator={{ indicatorType: 'Shimmer' }}
-                        rowSelecting={rowSelectingListData}
-                        pageSettings={{
-                            pageSize: 25,
-                        }}
-                        recordDoubleClick={closeDialog}
-                    >
-                        <ColumnsDirective>
-                            <ColumnDirective width={'210'} field="kode_relasi" isPrimaryKey={true} headerText="No. Register" headerTextAlign="Center" textAlign="Left" clipMode="EllipsisWithTooltip" />
-                            <ColumnDirective width={'200'} field="nama_relasi" headerText="Nama Lengkap" headerTextAlign="Center" textAlign="Left" clipMode="EllipsisWithTooltip" />
-                        </ColumnsDirective>
-                        <Inject services={[Page, Sort, Filter]} />
-                    </GridComponent>
-                    <div className="">
-                        <div className="grid h-[360px] grid-cols-1 gap-1 overflow-auto p-1 md:grid-cols-2">
-                            {iPTab
-                                ?.filter((item: any) => item.visible)
-                                .map((item, index) => {
-                                    if (
-                                        item.name.startsWith('kota') ||
-                                        item.name.startsWith('kodepos') ||
-                                        item.name.startsWith('propinsi') ||
-                                        item.name.startsWith('kecamatan') ||
-                                        item.name.startsWith('kelurahan') ||
-                                        item.name.startsWith('kecamatan') ||
-                                        item.name.startsWith('negara') ||
-                                        item.name.startsWith('ktp') ||
-                                        item.name.startsWith('sim') ||
-                                        item.name.startsWith('telp') ||
-                                        item.name.startsWith('telp2') ||
-                                        item.name.startsWith('hp') ||
-                                        item.name.startsWith('hp2')
-                                    ) {
-                                        return (
-                                            <div key={item.name + index}>
-                                                {item.label && <span className="e-label font-bold">{item.label}</span>}
-                                                <div className="form-input">
-                                                    <TextBoxComponent
-                                                        id={item.name + index}
-                                                        value={item.value}
-                                                        onChange={(event: any) => {
-                                                            // handleChange(item.name, 'value', event.target.value, 'iPTab');
-                                                        }}
-                                                    />
+                                                }}
+                                                style={{ backgroundColor: 'white', borderRadius: '5px' }}
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <GridComponent
+                            id="gridRelasiList"
+                            name="gridRelasiList"
+                            className="gridRelasiList"
+                            selectedRowIndex={0}
+                            ref={(gridRelasi: GridComponent) => (gridRelasiType = gridRelasi as GridComponent)}
+                            locale="id"
+                            dataSource={relasiSource}
+                            selectionSettings={{ mode: 'Row', type: 'Single' }}
+                            allowResizing={true}
+                            height={120}
+                            gridLines={'Both'}
+                            loadingIndicator={{ indicatorType: 'Shimmer' }}
+                            rowSelecting={rowSelectingListData}
+                            allowPaging={true}
+                            pageSettings={{
+                                pageSize: 25,
+                            }}
+                            recordDoubleClick={closeDialog}
+                        >
+                            <ColumnsDirective>
+                                <ColumnDirective
+                                    width={'210'}
+                                    field="kode_relasi"
+                                    isPrimaryKey={true}
+                                    headerText="No. Register"
+                                    headerTextAlign="Center"
+                                    textAlign="Left"
+                                    clipMode="EllipsisWithTooltip"
+                                />
+                                <ColumnDirective width={'200'} field="nama_relasi" headerText="Nama Lengkap" headerTextAlign="Center" textAlign="Left" clipMode="EllipsisWithTooltip" />
+                            </ColumnsDirective>
+                            <Inject services={[Page, Sort, Filter]} />
+                        </GridComponent>
+                        <div className="">
+                            <div className="grid h-[300px] grid-cols-1 gap-1 overflow-auto p-1 md:grid-cols-2">
+                                {iPTab
+                                    ?.filter((item: any) => item.visible)
+                                    .map((item, index) => {
+                                        if (
+                                            item.name.startsWith('kota') ||
+                                            item.name.startsWith('kodepos') ||
+                                            item.name.startsWith('propinsi') ||
+                                            item.name.startsWith('kecamatan') ||
+                                            item.name.startsWith('kelurahan') ||
+                                            item.name.startsWith('kecamatan') ||
+                                            item.name.startsWith('negara') ||
+                                            item.name.startsWith('ktp') ||
+                                            item.name.startsWith('sim') ||
+                                            item.name.startsWith('telp') ||
+                                            item.name.startsWith('telp2') ||
+                                            item.name.startsWith('hp') ||
+                                            item.name.startsWith('hp2')
+                                        ) {
+                                            return (
+                                                <div key={item.name + index}>
+                                                    {item.label && <span className="e-label font-bold">{item.label}</span>}
+                                                    <div className="form-input">
+                                                        <TextBoxComponent
+                                                            id={item.name + index}
+                                                            value={item.value}
+                                                            onChange={(event: any) => {
+                                                                // handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                                            }}
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    } else if (item.name.startsWith('fax')) {
-                                        return (
-                                            <div key={item.name + index}>
-                                                {item.label && <span className="e-label font-bold">{item.label}</span>}
-                                                <div className="form-input">
-                                                    <TextBoxComponent
-                                                        id={item.name + index}
-                                                        value={item.value}
-                                                        onChange={(event: any) => {
-                                                            // handleChange(item.name, 'value', event.target.value, 'iPTab');
-                                                        }}
-                                                    />
+                                            );
+                                        } else if (item.name.startsWith('fax')) {
+                                            return (
+                                                <div key={item.name + index}>
+                                                    {item.label && <span className="e-label font-bold">{item.label}</span>}
+                                                    <div className="form-input">
+                                                        <TextBoxComponent
+                                                            id={item.name + index}
+                                                            value={item.value}
+                                                            onChange={(event: any) => {
+                                                                // handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                                            }}
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    } else {
-                                        return (
-                                            <div className="col-span-2" key={item.name + index}>
-                                                {item.label && <span className="e-label font-bold">{item.label}</span>}
-                                                <div className="form-input">
-                                                    <TextBoxComponent
-                                                        id={item.name + index}
-                                                        value={item.value}
-                                                        onChange={(event: any) => {
-                                                            // handleChange(item.name, 'value', event.target.value, 'iPTab');
-                                                        }}
-                                                    />
+                                            );
+                                        } else {
+                                            return (
+                                                <div className="col-span-2" key={item.name + index}>
+                                                    {item.label && <span className="e-label font-bold">{item.label}</span>}
+                                                    <div className="form-input">
+                                                        <TextBoxComponent
+                                                            id={item.name + index}
+                                                            value={item.value}
+                                                            onChange={(event: any) => {
+                                                                // handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                                            }}
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    }
-                                })}
-                            {/* item.name.startsWith('alamat') ? (
-                                     <div className="col-span-2" key={item.name + index}>
-                                         <span className="e-label font-bold">{item.label}</span>
-                                         <div className="form-input">
-                                             <TextBoxComponent id={item.name + index} value={item.value} disabled />
-                                         </div>
-                                     </div>
-                                 ) : (
-                                     <></>
-                                 )
-                             )} */}
-                            {/* </div> */}
+                                            );
+                                        }
+                                    })}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </DialogComponent>
+            </DialogComponent>
+
+            {isNew && (
+                <DialogRelasi
+                    token={params?.token}
+                    userid={params?.userid}
+                    kode_entitas={params?.entitas}
+                    masterKodeRelasi={params?.kode_relasi ?? ''}
+                    masterDataState={"BARU"}
+                    isOpen={isNew}
+                    target="#DialogSelecteRelasi"
+                    onClose={() => {
+                        setIsNew(false);
+                        setStatus(true);
+                    }}
+                    onRefresh={undefined}
+                />
+            )}
+        </>
     );
 };
 

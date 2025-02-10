@@ -1,6 +1,6 @@
 import { DialogComponent } from '@syncfusion/ej2-react-popups';
 import React from 'react';
-import { customerTab, generateNoCust, getDataMasterCustomer, onRenderDayCell } from '../../functions/definition';
+import { customerTab, fetchDaftarRelasi, generateNoCust, getDataMasterCustomer, onRenderDayCell, RelasiProps } from '../../functions/definition';
 import { Tab } from '@headlessui/react';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
@@ -114,6 +114,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
     const [showLoader, setShowLoader] = React.useState(false);
     const [status, setStatus] = React.useState(false);
     const [selectRelasiDialog, setSelectRelasiDialog] = React.useState(false);
+    const [relasiSource, setRelasiSource] = React.useState<RelasiProps[]>([]);
     const footerTemplateDlg = () => {
         return (
             <div className="mx-auto flex items-center justify-between">
@@ -146,6 +147,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                             gridDKType?.refresh();
                             console.log('dKTab ', dKTab);
                             console.log('headerField ', headerField);
+                            console.log('iUTab ', iUTab);
                         }}
                     >
                         Simpan
@@ -397,6 +399,15 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
             setShowLoader(false);
         }
     };
+    const fetchListRelasi = async () => {
+        try {
+            await fetchDaftarRelasi(params.entitas, params.token).then((result) => {
+                setRelasiSource(result);
+            });
+        } catch (error) {
+            myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
+        }
+    };
     const dialogClose = () => {
         onClose();
     };
@@ -448,12 +459,109 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
             addNewDKTab(data);
         }
     };
+    const onSelect = async (args: any) => {
+        let MasterDetail: any = [];
+        let DetailMaster: any = [];
+        try {
+            if (args?.length > 0) {
+                setIUTab((prevIUTab) =>
+                    prevIUTab.map((item) => {
+                        if (item.team === 'master') {
+                            if (args[0]?.hasOwnProperty(item.name)) {
+                                return {
+                                    ...item,
+                                    value: args[0]?.[item.name] ?? '',
+                                };
+                            }
+                            return item;
+                        }
+                        return item;
+                    })
+                );
+                setIPTab((prevIPTab) =>
+                    prevIPTab.map((item) => {
+                        if (args[0]?.hasOwnProperty(item.name)) {
+                            return {
+                                ...item,
+                                value: args[0]?.[item.name] ?? '',
+                            };
+                        }
+                        return item;
+                    })
+                );
+                setHeaderField((prevHeaderFields) =>
+                    prevHeaderFields.map((item) => {
+                        if (args[0]?.hasOwnProperty(item.name)) {
+                            return {
+                                ...item,
+                                value: args[0]?.[item.name] ?? '',
+                            };
+                        }
+                        return item;
+                    })
+                );
+
+                if (state === 'edit') {
+                    await getDataMasterCustomer(params.entitas, args?.kode_cust ?? '', params.token, 'detail').then((result) => {
+                        if (result.length > 0) {
+                            const mappedDetail = iUTab
+                                .filter((team: any) => team.team === 'detail')
+                                .map((item: any) => {
+                                    if (result[0].hasOwnProperty(item.name)) {
+                                        return {
+                                            ...item,
+                                            value: result[0][item.name] ?? '',
+                                        };
+                                    } else {
+                                        if (item.type === 'radio') {
+                                            item.selection = item.selection.map((itemSel: any) => {
+                                                if (result[0].hasOwnProperty(itemSel.name)) {
+                                                    return {
+                                                        ...itemSel,
+                                                        value: result[0][itemSel.name],
+                                                    };
+                                                }
+                                                return itemSel;
+                                            });
+
+                                            return item;
+                                        }
+                                    }
+                                    return item;
+                                });
+                            MasterDetail.push(...mappedDetail);
+                            const detailField = iPTab
+                                .filter((item) => result[0].hasOwnProperty(item.name))
+                                .map((item) => ({
+                                    ...item,
+                                    value: result[0][item.name] ?? '',
+                                }));
+                            DetailMaster.push(...detailField);
+                        } else {
+                            MasterDetail.push(...defaultValueIuTab.filter((item: any) => item.team === 'detail'));
+                            DetailMaster.push(...iPTab.filter((item) => !DetailMaster.some((detailItem: { name: string }) => detailItem.name === item.name)));
+                        }
+                    });
+                }
+
+                await getDataMasterCustomer(params.entitas, args?.kode_relasi ?? '', params.token, 'person').then((result) => {
+                    setDKTab(result);
+                });
+            }
+        } catch (error) {
+            setShowLoader(false);
+            myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
+        } finally {
+            setShowLoader(false);
+        }
+    };
     const editBeginDKTabHandle = (args: any) => {};
     React.useEffect(() => {
         if (isOpen) {
             if (state === 'edit' || status) {
                 fecthInitialDataCustomer();
             }
+            fetchListRelasi();
         }
     }, [isOpen, status]);
 
@@ -516,7 +624,6 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                                                                         background: 'white',
                                                                         borderColor: 'white',
                                                                     }}
-                                                                    disabled={state === 'edit'}
                                                                 >
                                                                     {item.action.icon && (
                                                                         <FontAwesomeIcon icon={item.action.icon} className="ml-2" width="15" height="15" style={{ margin: '7px 2px 0px 6px' }} />
@@ -617,39 +724,11 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                     isOpen={selectRelasiDialog}
                     onClose={(args): void => {
                         setSelectRelasiDialog(false);
-                        console.log(args);
-                        if (args.length > 0) {
-                            setIUTab((prevIUTab) =>
-                                prevIUTab.map((item) => {
-                                    if (item.team === 'master') {
-                                        if (args[0]?.hasOwnProperty(item.name)) {
-                                            return {
-                                                ...item,
-                                                value: args[0]?.[item.name] ?? '',
-                                            };
-                                        }
-                                        return item;
-                                    }
-                                    return item;
-                                })
-                            );
-                            setIPTab((prevIPTab) =>
-                                prevIPTab.map((item) => {
-                                    if (args[0]?.hasOwnProperty(item.name)) {
-                                        return {
-                                            ...item,
-                                            value: args[0]?.[item.name] ?? '',
-                                        };
-                                    }
-                                    return item;
-                                })
-                            );
-                        }
+                        onSelect(args);
                     }}
-                    params={{
-                        entitas: params.entitas,
-                        token: params.token,
-                    }}
+                    params={params}
+                    relasiSource={relasiSource}
+                    state={state}
                 />
             )}
         </>

@@ -890,5 +890,21 @@ export const dKTabValue = [
 const Template = () => {
     return <div>Template</div>;
 };
-
+export const HeaderField = [
+    { id: 1, FieldName: 'kode_cust', Type: 'string', Value: '', TabId: 0, readOnly: true, isAction: true },
+    { id: 2, FieldName: 'kode_relasi', Type: 'string', Value: '', TabId: 0, readOnly: true, isAction: true },
+    { id: 3, FieldName: 'no_cust', Type: 'string', Value: '', TabId: 0, readOnly: true, isAction: true },
+    { id: 4, FieldName: 'prospek', Type: 'checkbox', Value: true, TabId: 0, readOnly: false },
+    { id: 5, FieldName: 'aktif', Type: 'checkbox', Value: false, TabId: 0, readOnly: false },
+    { id: 6, FieldName: 'terima_dokumen', Type: 'checkbox', Value: false, TabId: 0, readOnly: false },
+    { id: 7, FieldName: 'manual_hks_mobile', Type: 'checkbox', Value: false, TabId: 0, readOnly: false },
+    { id: 8, FieldName: 'pabrik', Type: 'checkbox', Value: false, TabId: 0, readOnly: false },
+];
 export default Template;
+
+// TODO: ini Jangan Lupa
+// quCustalamat_kirim1.value:= quViewalamat.AsString;
+// quCustalamat_kirim2.value:= quViewalamat2.AsString;
+// quCustkota_kirim.value:= quViewkota.AsString;
+// quCustpropinsi_kirim.value:= quViewpropinsi.AsString;
+// quCustnegara_kirim.value:= quViewnegara.AsString;
