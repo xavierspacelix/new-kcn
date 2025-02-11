@@ -802,21 +802,23 @@ const DaftarCustomer = () => {
                     </div>
                 </div>
             </div>
-            <NewEditDialog
-                isOpen={openDialog.edit || openDialog.new}
-                onClose={() => {
-                    setOpenDialog({ ...openDialog, edit: false, new: false });
-                    setDialogParams({
-                        ...dialogParams,
-                        kode_cust: '',
-                        kode_relasi: '',
-                    });
-                    fetchDataCustomer(filter, token, kode_entitas, 'all').then((res) => setCustomer(res));
-                    gridCust?.refresh();
-                }}
-                params={dialogParams}
-                state={openDialog.new ? 'new' : openDialog.edit ? 'edit' : openDialog.detail ? 'detail' : ''}
-            />
+            {(openDialog.edit || openDialog.new) && (
+                <NewEditDialog
+                    isOpen={openDialog.edit || openDialog.new}
+                    onClose={() => {
+                        setOpenDialog({ ...openDialog, edit: false, new: false });
+                        setDialogParams({
+                            ...dialogParams,
+                            kode_cust: '',
+                            kode_relasi: '',
+                        });
+                        fetchDataCustomer(filter, token, kode_entitas, 'all').then((res) => setCustomer(res));
+                        gridCust?.refresh();
+                    }}
+                    params={dialogParams}
+                    state={openDialog.new ? 'new' : openDialog.edit ? 'edit' : openDialog.detail ? 'detail' : ''}
+                />
+            )}
         </>
     );
 };

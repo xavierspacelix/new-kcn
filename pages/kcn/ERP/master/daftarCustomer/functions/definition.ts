@@ -431,6 +431,32 @@ export interface Customer {
     tgl_register: string;
     pabrik: boolean;
 }
+export type JamOpsProps = {
+    id: number;
+    Hari?: string;
+    JamBuka?: string;
+    JamTutup?: string;
+    Buka?: boolean;
+};
+export type FieldProps = {
+    id: number;
+    FieldName: string;
+    Type: string;
+    Value: string | Date | boolean;
+    TabId: number;
+    ReadOnly: boolean;
+    IsAction: boolean;
+    group: string;
+    Visible: boolean;
+    Label: string;
+    Items?: ItemProps[];
+};
+export type ItemProps = {
+    id: number;
+    FieldName: string;
+    Value: boolean;
+    Label: string;
+};
 let id: number = 1;
 export const customerTab = [
     {
