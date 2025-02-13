@@ -51,6 +51,7 @@ const DaftarCustomer = () => {
     });
     const [dialogParams, setDialogParams] = React.useState({
         kode_cust: '',
+        nama_relasi: '',
         entitas: '',
         token: '',
         userid: '',
@@ -517,13 +518,14 @@ const DaftarCustomer = () => {
             fetchDataCustomer(filter, token, kode_entitas, 'all').then((res) => {
                 setTimeout(() => {
                     setCustomer(res);
-                    setDialogParams({
-                        ...dialogParams,
-                        entitas: kode_entitas,
-                        kode_cust: '',
-                        token: token,
-                    });
                 }, 500);
+            });
+            setDialogParams({
+                ...dialogParams,
+                entitas: kode_entitas,
+                kode_cust: '',
+                token: token,
+                userid: userid,
             });
         }
     }, [kode_entitas, token]);
@@ -803,7 +805,7 @@ const DaftarCustomer = () => {
                 </div>
             </div>
             {(openDialog.edit || openDialog.new) && (
-                <NewEditDialog
+                <NewEditDialog 
                     isOpen={openDialog.edit || openDialog.new}
                     onClose={() => {
                         setOpenDialog({ ...openDialog, edit: false, new: false });
@@ -816,6 +818,7 @@ const DaftarCustomer = () => {
                         gridCust?.refresh();
                     }}
                     params={dialogParams}
+                    setParams={setDialogParams}
                     state={openDialog.new ? 'new' : openDialog.edit ? 'edit' : openDialog.detail ? 'detail' : ''}
                 />
             )}
@@ -824,3 +827,5 @@ const DaftarCustomer = () => {
 };
 
 export default DaftarCustomer;
+
+// TODO: on new RECORD

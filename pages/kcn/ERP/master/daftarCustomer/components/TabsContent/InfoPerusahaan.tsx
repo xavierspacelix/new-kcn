@@ -1,7 +1,7 @@
 import React from 'react';
 import { DatePickerComponent, TimePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
-import { ColumnDirective, ColumnsDirective, Edit, GridComponent, Selection, Sort, Inject } from '@syncfusion/ej2-react-grids';
+import { ColumnDirective, ColumnsDirective, GridComponent, Selection, Sort, Inject } from '@syncfusion/ej2-react-grids';
 import { CheckboxCustomerCustom, statusTokoArray } from '../Template';
 import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
 import { FieldProps, ItemProps } from '../../functions/definition';
@@ -10,23 +10,23 @@ interface InfoPerusahaanType {
     OpsField: any[];
     handleChange: (name: string, value: string | Date | boolean, grup: string, itemName?: string) => void;
     onRenderDayCell: (args: any) => void;
-    gridRef: any;
+    gridRef: React.RefCallback<GridComponent>;
 }
 
 const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRef }: InfoPerusahaanType) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-    const timePickerTemplate = (props: any) => {
+    const timePickerTemplate = (props: any, name: string) => {
         return (
             <TimePickerComponent
                 change={(event) => {
-                    handleChange(props.column.field, event.text, 'JamOps', props.Hari);
+                    handleChange(name, event.text, 'JamOps', props.Hari);
                 }}
                 locale="id"
                 readOnly={!props.Buka}
-                name={props.column.field + props.id}
-                key={props.column.field + props.id}
-                id={props.column.field + props.id}
-                value={props}
+                name={name + props.id}
+                key={name + props.id}
+                id={name + props.id}
+                value={props[name]}
             />
         );
     };
@@ -41,13 +41,8 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                     key={props.column.field + props.id}
                     id={props.column.field + props.id}
                     onChange={(event) => {
-                        if (event.target.checked) {
-                            handleChange(props.column.field, event.target.checked, 'JamOps', props.Hari);
-                        } else {
-                            handleChange(props.column.field, event.target.checked, 'JamOps', props.Hari);
-                            handleChange('JamBuka', event.target.checked, 'JamOps', props.Hari);
-                            handleChange('JamTutup', event.target.checked, 'JamOps', props.Hari);
-                        }
+                        const value = event.target.checked;
+                        handleChange(props.column.field, value, 'JamOps', props.Hari);
                     }}
                 />
                 <span className="e-label">{props.Buka ? 'Buka' : 'Tutup'}</span>
@@ -77,7 +72,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
     return (
         <div className="active">
             <div className="grid grid-cols-1 gap-2 px-3 md:grid-cols-12">
-                <div className="md:col-span-6">
+                <div className="md:col-span-7">
                     <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
                         {Field?.map((item: FieldProps, index: number) =>
                             item.Type === 'date' ? (
@@ -87,7 +82,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                                         <div className="container form-input">
                                             <DatePickerComponent
                                                 id={item.FieldName + index}
-                                                value={item.Value instanceof Date ? item.Value : undefined}
+                                                value={typeof item.Value === 'string' ? new Date(item.Value) : item.Value instanceof Date ? item.Value : new Date()}
                                                 name={item.FieldName}
                                                 format="dd-MM-yyyy"
                                                 renderDayCell={onRenderDayCell}
@@ -213,13 +208,11 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                                 </div>
                             ) : item.Type === 'space' ? (
                                 <div></div>
-                            ) : (
-                                <></>
-                            )
+                            ) : null
                         )}
                     </div>
                 </div>
-                <div className="md:col-span-6">
+                <div className="md:col-span-5">
                     <div className="flex flex-col">
                         <div>
                             <span className="e-label font-bold">Hari / Jam Operasional</span>
@@ -241,13 +234,8 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                             >
                                 <ColumnsDirective>
                                     <ColumnDirective field="Hari" headerText="Hari" headerTextAlign="Center" clipMode="EllipsisWithTooltip" />
-                                    <ColumnDirective field="JamBuka" headerText="Jam Buka" headerTextAlign="Center" template={(props: any) => timePickerTemplate(props)} />
-                                    <ColumnDirective
-                                        field="JamTutup"
-                                        headerText="Jam Tutup"
-                                        headerTextAlign="Center"
-                                        template={(props: any) => timePickerTemplate(props)}
-                                    />
+                                    <ColumnDirective field="JamBuka" headerText="Jam Buka" headerTextAlign="Center" template={(props: any) => timePickerTemplate(props, 'JamBuka')} />
+                                    <ColumnDirective field="JamTutup" headerText="Jam Tutup" headerTextAlign="Center" template={(props: any) => timePickerTemplate(props, 'JamTutup')} />
                                     <ColumnDirective
                                         field="Buka"
                                         headerText="Buka / Tutup"
@@ -260,6 +248,12 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                                 <Inject services={[Selection, Sort]} />
                             </GridComponent>
                         </div>
+                        {Field?.filter((item: FieldProps) => item.Type === 'textarea')?.map((item: FieldProps, index: number) => (
+                            <div className="mt-6" key={item.FieldName + index}>
+                                <span className="e-label font-bold">{item.Label}</span>
+                                <textarea id="ctnTextarea" rows={3} className="form-textarea" ref={textareaRef} value={item.Value ? item.Value.toString() : ''} readOnly={item.ReadOnly} />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

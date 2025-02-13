@@ -457,6 +457,17 @@ export type ItemProps = {
     Value: boolean;
     Label: string;
 };
+export type FieldDKProps = {
+    id: number;
+    FieldName: string;
+    Type: string;
+    Value: string | boolean;
+    TabId: number;
+    ReadOnly: boolean;
+    IsAction: boolean;
+    Visible: boolean;
+    Label: string;
+};
 let id: number = 1;
 export const customerTab = [
     {

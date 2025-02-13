@@ -1,15 +1,19 @@
 import React from 'react';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { DialogComponent } from '@syncfusion/ej2-react-popups';
-import { BaseFormField, CheckboxCustomerCustom, contentLoader, JamOpsField } from '../Template';
+import { BaseFormField, CheckboxCustomerCustom, contentLoader, dKTabInterface, JamOpsField } from '../Template';
 import stylesHeader from './customerHeader.module.css';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { customerTab, FieldProps, JamOpsProps, onRenderDayCell } from '../../functions/definition';
+import { customerTab, fetchDaftarRelasi, FieldProps, generateNoCust, getDataMasterCustomer, JamOpsProps, onRenderDayCell, RelasiProps } from '../../functions/definition';
 import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Tab } from '@headlessui/react';
 import InfoPerusahaan from '../TabsContent/InfoPerusahaan';
 import { Grid, GridComponent } from '@syncfusion/ej2-react-grids';
+import { myAlertGlobal } from '@/utils/routines';
+import DaftarKontak from '../TabsContent/DaftarKontak';
+import InfoPemilik from '../TabsContent/InfoPemilik';
+import SelectRelasiDialog from './SelectRelasiDialog';
 
 interface NewEditProps {
     isOpen: boolean;
@@ -18,6 +22,7 @@ interface NewEditProps {
         userid: string;
         kode_cust: string;
         kode_relasi?: string;
+        nama_relasi?: string;
         entitas: string;
         token: string;
         kotaArray: any[];
@@ -27,13 +32,19 @@ interface NewEditProps {
         negaraArray: any[];
     };
     state: string;
+    setParams: any;
 }
 let gridJamOPSType: Grid;
-const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
+const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditProps) => {
+    const [status, setStatus] = React.useState(false);
     const [title, setTitle] = React.useState('Customer Baru');
     const [showLoader, setShowLoader] = React.useState(false);
     const [formBaseStateField, setFormBaseStateField] = React.useState<FieldProps[]>(BaseFormField);
     const [formJamOpsField, setFormJamOpsField] = React.useState<JamOpsProps[]>(JamOpsField);
+    const [formDKField, setFormDKField] = React.useState<dKTabInterface[]>([]);
+    const [selectRelasiDialog, setSelectRelasiDialog] = React.useState(false);
+    const [relasiSource, setRelasiSource] = React.useState<RelasiProps[]>([]);
+
     const footerTemplateDlg = () => {
         return (
             <div className="mx-auto flex items-center justify-between">
@@ -47,7 +58,9 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                             color: 'black',
                         }}
                         //  {/*  TODO: onClick */}
-                        onClick={() => {}}
+                        onClick={() => {
+                            console.log(params);
+                        }}
                         content="History Kunjungan Sales"
                         iconCss="e-icons e-medium e-chevron-right"
                     ></ButtonComponent>
@@ -63,6 +76,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                         className="e-btn e-danger e-small"
                         onClick={() => {
                             console.log('formBaseStateField ', formBaseStateField);
+                            console.log('formJamOpsField', formJamOpsField);
                         }}
                     >
                         Simpan
@@ -71,7 +85,6 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                         className="e-btn e-danger e-small"
                         onClick={() => {
                             setFormBaseStateField(BaseFormField);
-                            gridJamOPSType.refresh();
                         }}
                     >
                         Batal
@@ -110,7 +123,6 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
             const pushedData = [...newData, ...formBaseStateField.filter((item) => item.group !== grup)];
             setFormBaseStateField(pushedData.sort((a, b) => a.id - b.id));
         } else if (grup === 'detail') {
-            console.log('detail', name, value, grup);
             const newData = formBaseStateField
                 .filter((itemF) => itemF.group === grup)
                 .map((item) => {
@@ -120,7 +132,6 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                                 ...item,
                                 Items: item.Items?.map((itemC) => {
                                     if (itemC.FieldName === itemName) {
-                                        console.log(itemC);
                                         return {
                                             ...itemC,
                                             Value: Boolean(value),
@@ -142,11 +153,21 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
             setFormBaseStateField(pushedData.sort((a, b) => a.id - b.id));
         } else if (grup === 'JamOps') {
             const newJamOps = formJamOpsField.map((item) => {
-                if (item.hasOwnProperty(name) && item.Hari === itemName) {
-                    return {
-                        ...item,
-                        [name]: value,
-                    };
+                if (item.Hari === itemName) {
+                    console.log('Item yang diperbarui:', item);
+                    if (value === false) {
+                        return {
+                            ...item,
+                            JamBuka: '',
+                            JamTutup: '',
+                            Buka: value,
+                        };
+                    } else {
+                        return {
+                            ...item,
+                            [name]: value,
+                        };
+                    }
                 }
                 return item;
             });
@@ -155,44 +176,250 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
     };
     const dialogClose = () => {
         onClose();
+        setFormBaseStateField(BaseFormField);
+        setFormJamOpsField(formJamOpsField);
     };
+    const fetchDetailCustomer = async () => {
+        let newData: FieldProps[] = [];
+        try {
+            setShowLoader(true);
+            await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'master').then((res) => {
+                const tempData = formBaseStateField
+                    .filter((item) => item.group.startsWith('master'))
+                    .map((itemField) => {
+                        return {
+                            ...itemField,
+                            Value: res[0][itemField.FieldName] ?? '',
+                        };
+                    });
+                newData.push(...tempData);
+                setTitle(`Customer : ${res[0].no_cust} - ${res[0].nama_relasi}`);
+                setParams({
+                    ...params,
+                    nama_relasi: res[0]?.nama_relasi,
+                });
+            });
+            await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'detail').then((res) => {
+                if (res.length > 0) {
+                    const tempData = formBaseStateField
+                        .filter((item) => item.group.startsWith('detail'))
+                        .map((itemField) => {
+                            if (itemField.Type === 'checkbox') {
+                                return {
+                                    ...itemField,
+                                    Items: itemField.Items?.map((itemC) => {
+                                        return {
+                                            ...itemC,
+                                            Value: Boolean(res[0][itemC.FieldName]),
+                                        };
+                                    }),
+                                };
+                            } else {
+                                return {
+                                    ...itemField,
+                                    Value: res[0][itemField.FieldName] ?? '',
+                                };
+                            }
+                        });
+                    newData.push(...tempData);
+                } else {
+                    const tempData = formBaseStateField.filter((item) => item.group.startsWith('detail'));
+                    newData.push(...tempData);
+                }
+            });
+            await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'jam_ops').then((result) => {
+                if (result.length > 0) {
+                    const operasional: any[] = result
+                        .sort((a: any, b: any) => b.id - a.id)
+                        .slice(0, 1)
+                        .map((item: any) => {
+                            return [
+                                { id: 1, Hari: 'Senin', JamBuka: item['jam_buka_1'], JamTutup: item['jam_tutup_1'], Buka: item['buka_1'] },
+                                { id: 2, Hari: 'Selasa', JamBuka: item['jam_buka_2'], JamTutup: item['jam_tutup_2'], Buka: item['buka_2'] },
+                                { id: 3, Hari: 'Rabu', JamBuka: item['jam_buka_3'], JamTutup: item['jam_tutup_3'], Buka: item['buka_3'] },
+                                { id: 4, Hari: 'Kamis', JamBuka: item['jam_buka_4'], JamTutup: item['jam_tutup_4'], Buka: item['buka_4'] },
+                                { id: 5, Hari: 'Jum`at', JamBuka: item['jam_buka_5'], JamTutup: item['jam_tutup_5'], Buka: item['buka_5'] },
+                                { id: 6, Hari: 'Sabtu', JamBuka: item['jam_buka_6'], JamTutup: item['jam_tutup_6'], Buka: item['buka_6'] },
+                                { id: 7, Hari: 'Minggu', JamBuka: item['jam_buka_7'], JamTutup: item['jam_tutup_7'], Buka: item['buka_7'] },
+                            ];
+                        });
+                    console.log(operasional[0]);
+                    setFormJamOpsField(operasional[0]);
+                    gridJamOPSType.refresh();
+                }
+            });
+            await getDataMasterCustomer(params.entitas, params?.kode_relasi ?? '', params.token, 'person').then((result) => {
+                setFormDKField(result);
+            });
+            setFormBaseStateField(newData.sort((a, b) => a.id - b.id));
+        } catch (error) {
+            setShowLoader(false);
+            myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
+        } finally {
+            setShowLoader(false);
+        }
+    };
+    const fetchListRelasi = async () => {
+        try {
+            await fetchDaftarRelasi(params.entitas, params.token).then((result) => {
+                setRelasiSource(result);
+            });
+        } catch (error) {
+            myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
+        }
+    };
+    const actionsHandler = async (actionName: string) => {
+        if (actionName === 'nama_relasi') {
+            setSelectRelasiDialog(true);
+        } else if (actionName === 'no_cust') {
+            await generateNoCust(params?.entitas, params?.token).then((result) => {
+                setFormBaseStateField((prev) => {
+                    return prev.map((item) => {
+                        if (item.FieldName === 'no_cust') {
+                            return {
+                                ...item,
+                                Value: result,
+                            };
+                        }
+                        return item;
+                    });
+                });
+            });
+        }
+    };
+    const onSelect = async (args: any) => {
+        console.log(args);
+        setParams({
+            ...params,
+            kode_relasi: args[0]?.kode_relasi,
+            nama_relasi: args[0]?.nama_relasi,
+        });
+        const newDataValue = {
+            kode_relasi: args[0]?.kode_relasi,
+            nama_relasi: args[0]?.nama_relasi,
+            alamat: args[0]?.alamat,
+            alamat2: args[0]?.alamat2,
+            kodepos: args[0]?.kodepos,
+            kelurahan: args[0]?.kelurahan,
+            kecamatan: args[0]?.kecamatan,
+            kota: args[0]?.kota,
+            propinsi: args[0]?.propinsi,
+            negara: args[0]?.negara,
+            npwp: args[0]?.npwp,
+            siup: args[0]?.siup,
+            personal: args[0]?.personal,
+            ktp: args[0]?.ktp,
+            sim: args[0]?.sim,
+            telp: args[0]?.telp,
+            telp2: args[0]?.telp2,
+            hp: args[0]?.hp,
+            hp2: args[0]?.hp2,
+            fax: args[0]?.fax,
+            email: args[0]?.email,
+            website: args[0]?.website,
+            alamat_kirim1: args[0]?.alamat,
+            alamat_kirim2: args[0]?.alamat2,
+            kota_kirim: args[0]?.kota,
+            propinsi_kirim: args[0]?.propinsi,
+            negara_kirim: args[0]?.negara,
+        };
+        setFormBaseStateField((prev: FieldProps[]) => {
+            return prev.map((item) => {
+                if (newDataValue.hasOwnProperty(item.FieldName)) {
+                    return {
+                        ...item,
+                        Value: args[0][item.FieldName] ?? '',
+                    };
+                }
+                return item;
+            });
+        });
+
+        await getDataMasterCustomer(params.entitas, newDataValue?.kode_relasi ?? '', params.token, 'person').then((result) => {
+            setFormDKField(result);
+        });
+    };
+    React.useEffect(() => {
+        if (isOpen) {
+            if (state === 'edit' || status) {
+                fetchDetailCustomer();
+            }
+            fetchListRelasi();
+        }
+    }, [isOpen, status]);
     return (
-        <DialogComponent
-            id="dialogCustomer"
-            isModal={true}
-            width="95%"
-            height="100%"
-            visible={isOpen}
-            close={dialogClose}
-            header={title.toString()}
-            showCloseIcon={true}
-            target="#main-target"
-            closeOnEscape={false}
-            footerTemplate={footerTemplateDlg}
-            allowDragging={true}
-            animationSettings={{ effect: 'FadeZoom', duration: 400, delay: 0 }}
-            enableResize={true}
-        >
-            {showLoader && contentLoader()}
-            <div>
-                <div className="grid grid-cols-12 gap-2">
-                    <div className={`panel-tabel ${state === 'new' && formBaseStateField[8].Value === false ? 'col-span-10' : 'col-span-full'}`} style={{ width: '100%' }}>
-                        <table className={stylesHeader.table}>
-                            <thead>
-                                <tr>
-                                    <th style={{ width: '20%' }}>No. Register</th>
-                                    <th style={{ width: '50%' }}>Nama</th>
-                                    <th style={{ width: '30%' }}>No. Customer</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    {formBaseStateField
-                                        .filter((item) => item.Visible && item.Type !== 'checkbox' && item.TabId == 0)
-                                        .map((item: FieldProps, index) => (
-                                            <td key={index}>
-                                                {item.IsAction ? (
-                                                    <div className="flex">
+        <>
+            <DialogComponent
+                id="dialogCustomer"
+                isModal={true}
+                width="95%"
+                height="100%"
+                visible={isOpen}
+                close={dialogClose}
+                header={title.toString()}
+                showCloseIcon={true}
+                target="#main-target"
+                closeOnEscape={false}
+                footerTemplate={footerTemplateDlg}
+                allowDragging={true}
+                animationSettings={{ effect: 'FadeZoom', duration: 400, delay: 0 }}
+                enableResize={true}
+            >
+                <div>
+                    {showLoader && contentLoader()}
+                    <div className="grid grid-cols-12 gap-2">
+                        <div className={`panel-tabel ${state === 'new' && formBaseStateField[8].Value === false ? 'col-span-10' : 'col-span-full'}`} style={{ width: '100%' }}>
+                            <table className={stylesHeader.table}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ width: '20%' }}>No. Register</th>
+                                        <th style={{ width: '50%' }}>Nama</th>
+                                        <th style={{ width: '30%' }}>No. Customer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        {formBaseStateField
+                                            .filter((item) => item.Visible && item.Type !== 'checkbox' && item.TabId == 0)
+                                            .map((item: FieldProps, index) => (
+                                                <td key={index}>
+                                                    {item.IsAction ? (
+                                                        <div className="flex">
+                                                            <div className="container form-input" style={{ border: 'none' }}>
+                                                                <TextBoxComponent
+                                                                    id={item.FieldName}
+                                                                    className={`${stylesHeader.inputTableBasic}`}
+                                                                    style={{ backgroundColor: 'white', borderRadius: '5px' }}
+                                                                    value={item.Value?.toString()}
+                                                                    readOnly={item.ReadOnly}
+                                                                    onBlur={(event: any) => {}}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <button
+                                                                    className="flex items-center justify-center border border-white-light bg-[#eee] pr-1 font-semibold dark:border-[#17263c] dark:bg-[#1b2e4b] ltr:rounded-r-md ltr:border-l-0 rtl:rounded-l-md rtl:border-r-0"
+                                                                    onClick={() => {
+                                                                        actionsHandler(item.FieldName);
+                                                                    }}
+                                                                    style={{
+                                                                        height: 28,
+                                                                        background: 'white',
+                                                                        borderColor: 'white',
+                                                                    }}
+                                                                >
+                                                                    {item.IsAction && (
+                                                                        <FontAwesomeIcon
+                                                                            icon={item.FieldName === 'nama_relasi' ? faMagnifyingGlass : faBarcode}
+                                                                            className="ml-2"
+                                                                            width="15"
+                                                                            height="15"
+                                                                            style={{ margin: '7px 2px 0px 6px' }}
+                                                                        />
+                                                                    )}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
                                                         <div className="container form-input" style={{ border: 'none' }}>
                                                             <TextBoxComponent
                                                                 id={item.FieldName}
@@ -200,113 +427,101 @@ const NewEditDialog = ({ isOpen, onClose, params, state }: NewEditProps) => {
                                                                 style={{ backgroundColor: 'white', borderRadius: '5px' }}
                                                                 value={item.Value?.toString()}
                                                                 readOnly={item.ReadOnly}
-                                                                onBlur={(event: any) => {}}
                                                             />
                                                         </div>
-                                                        <div>
-                                                            <button
-                                                                className="flex items-center justify-center border border-white-light bg-[#eee] pr-1 font-semibold dark:border-[#17263c] dark:bg-[#1b2e4b] ltr:rounded-r-md ltr:border-l-0 rtl:rounded-l-md rtl:border-r-0"
-                                                                onClick={() => {
-                                                                    // actionsHandler(item.name);
-                                                                }}
-                                                                style={{
-                                                                    height: 28,
-                                                                    background: 'white',
-                                                                    borderColor: 'white',
-                                                                }}
-                                                            >
-                                                                {item.IsAction && (
-                                                                    <FontAwesomeIcon
-                                                                        icon={item.FieldName === 'nama_relasi' ? faMagnifyingGlass : faBarcode}
-                                                                        className="ml-2"
-                                                                        width="15"
-                                                                        height="15"
-                                                                        style={{ margin: '7px 2px 0px 6px' }}
-                                                                    />
-                                                                )}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="container form-input" style={{ border: 'none' }}>
-                                                        <TextBoxComponent
-                                                            id={item.FieldName}
-                                                            className={`${stylesHeader.inputTableBasic}`}
-                                                            style={{ backgroundColor: 'white', borderRadius: '5px' }}
-                                                            value={item.Value?.toString()}
-                                                            readOnly={item.ReadOnly}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </td>
-                                        ))}
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    {state === 'new' && formBaseStateField[8].Value === false && (
-                        <div className="col-span-2 flex items-center justify-center rounded-lg bg-[#80FFFF]">
-                            <div className="text-sm font-bold text-[#000000]">
-                                <p>NEW OPEN OUTLET</p>
-                            </div>
+                                                    )}
+                                                </td>
+                                            ))}
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    )}
-                </div>
-                <div className="ml-2 mt-2 flex items-start justify-start gap-12">
-                    {formBaseStateField
-                        .filter((item: FieldProps) => item.Type === 'checkbox' && item.TabId == 0)
-                        .map((item, index) => (
-                            <CheckboxCustomerCustom
-                                isRed={true}
-                                name={item.FieldName + index}
-                                key={item.FieldName + index}
-                                id={item.FieldName + index}
-                                label={item.Label}
-                                checked={Boolean(item.Value)}
-                                change={(event: any) => {
-                                    handleChange(item.FieldName, event.target.checked, item.group);
-                                }}
-                            />
-                        ))}
-                </div>
-                <div>
-                    <Tab.Group defaultIndex={0}>
-                        <Tab.List className="mt-3 flex max-h-20 w-full flex-wrap border-b border-white-light dark:border-[#191e3a]">
-                            {customerTab.map((item: { id: number; name: string }) => (
-                                <Tab key={item.id} as={React.Fragment}>
-                                    {({ selected }) => (
-                                        <button
-                                            className={`${selected ? '!border-white-light !border-b-white font-bold text-gray-900 dark:!border-[#191e3a] dark:!border-b-black' : 'text-gray-400'}
+                        {state === 'new' && formBaseStateField[8].Value === false && (
+                            <div className="col-span-2 flex items-center justify-center rounded-lg bg-[#80FFFF]">
+                                <div className="text-sm font-bold text-[#000000]">
+                                    <p>NEW OPEN OUTLET</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    <div className="ml-2 mt-2 flex items-start justify-start gap-12">
+                        {formBaseStateField
+                            .filter((item: FieldProps) => item.Type === 'checkbox' && item.TabId == 0)
+                            .map((item, index) => (
+                                <CheckboxCustomerCustom
+                                    isRed={true}
+                                    name={item.FieldName + index}
+                                    key={item.FieldName + index}
+                                    id={item.FieldName + index}
+                                    label={item.Label}
+                                    checked={Boolean(item.Value)}
+                                    change={(event: any) => {
+                                        handleChange(item.FieldName, event.target.checked, item.group);
+                                    }}
+                                />
+                            ))}
+                    </div>
+                    <div>
+                        <Tab.Group defaultIndex={1}>
+                            <Tab.List className="mt-3 flex max-h-20 w-full flex-wrap border-b border-white-light dark:border-[#191e3a]">
+                                {customerTab.map((item: { id: number; name: string }) => (
+                                    <Tab key={item.id} as={React.Fragment}>
+                                        {({ selected }) => (
+                                            <button
+                                                className={`${selected ? '!border-white-light !border-b-white font-bold text-gray-900 dark:!border-[#191e3a] dark:!border-b-black' : 'text-gray-400'}
                                                         -mb-[1px] flex items-center border border-transparent p-3.5 py-2 !outline-none transition duration-300 hover:text-danger`}
-                                            id={`tab-${item.id}`}
-                                        >
-                                            {item.name}
-                                        </button>
-                                    )}
-                                </Tab>
-                            ))}
-                        </Tab.List>
-                        <Tab.Panels className="w-full flex-1 border border-t-0 border-white-light bg-[#f8f7ff]  p-2 text-sm dark:border-[#191e3a]">
-                            {customerTab.map((item: { id: number; name: string }) => (
-                                <Tab.Panel key={item.id} className={'h-[450px] overflow-auto'}>
-                                    {item.id == 1 ? (
-                                        <InfoPerusahaan
-                                            Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 1)}
-                                            handleChange={handleChange}
-                                            onRenderDayCell={onRenderDayCell}
-                                            gridRef={(gridJamOps: GridComponent) => (gridJamOPSType = gridJamOps as GridComponent)}
-                                            OpsField={formJamOpsField}
-                                        />
-                                    ) : (
-                                        <></>
-                                    )}
-                                </Tab.Panel>
-                            ))}
-                        </Tab.Panels>
-                    </Tab.Group>
+                                                id={`tab-${item.id}`}
+                                            >
+                                                {item.name}
+                                            </button>
+                                        )}
+                                    </Tab>
+                                ))}
+                            </Tab.List>
+                            <Tab.Panels className="w-full flex-1 border border-t-0 border-white-light bg-[#f8f7ff]  p-2 text-sm dark:border-[#191e3a]">
+                                {customerTab.map((item: { id: number; name: string }) => (
+                                    <Tab.Panel key={item.id} className={'h-[450px] overflow-auto'}>
+                                        {item.id == 1 ? (
+                                            <InfoPerusahaan
+                                                Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 1)}
+                                                handleChange={handleChange}
+                                                onRenderDayCell={onRenderDayCell}
+                                                gridRef={(gridJamOps: GridComponent) => (gridJamOPSType = gridJamOps as GridComponent)}
+                                                OpsField={formJamOpsField}
+                                            />
+                                        ) : item.id == 2 ? (
+                                            <InfoPemilik
+                                                setStatus={setStatus}
+                                                Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 2)}
+                                                handleChange={handleChange}
+                                                params={params}
+                                                state={state}
+                                            />
+                                        ) : item.id == 3 ? (
+                                            <DaftarKontak dataSource={formDKField} params={params} />
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </Tab.Panel>
+                                ))}
+                            </Tab.Panels>
+                        </Tab.Group>
+                    </div>
                 </div>
-            </div>
-        </DialogComponent>
+            </DialogComponent>
+            {selectRelasiDialog && (
+                <SelectRelasiDialog
+                    isOpen={selectRelasiDialog}
+                    onClose={(args): void => {
+                        setSelectRelasiDialog(false);
+                        onSelect(args);
+                    }}
+                    params={params}
+                    relasiSource={relasiSource}
+                    state={state}
+                />
+            )}
+        </>
     );
 };
 

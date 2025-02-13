@@ -1,5 +1,5 @@
 import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FieldProps, JamOpsProps } from '../functions/definition';
+import { FieldDKProps, FieldProps, JamOpsProps } from '../functions/definition';
 
 interface CheckboxProps {
     id: string;
@@ -79,272 +79,18 @@ export const diHubunginArray = [
         value: 'N',
     },
 ];
-export const iPTabValue = [
+export const statusPerkawinanArray = [
     {
-        id: 1,
-        label: 'Alamat Pemilik',
-        name: 'alamat_pemilik1',
-        type: 'string',
-        value: '',
-        readOnly: false,
+        label: 'Menikah',
+        value: 'Menikah',
     },
     {
-        id: 2,
-        name: 'alamat_pemilik2',
-        label: '',
-        type: 'string',
-        value: '',
-        readOnly: false,
+        label: 'Belum Menikah',
+        value: 'Belum Menikah',
     },
     {
-        id: 3,
-        name: 'kota_pemilik',
-        label: 'Kota',
-        type: 'select',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 4,
-        name: 'kodepos_pemilik',
-        label: 'Kode Pos',
-        type: 'number',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 5,
-        name: 'kecamatan_pemilik',
-        label: 'Kecamatan',
-        type: 'select',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 6,
-        name: 'propinsi_pemilik',
-        label: 'Provinsi',
-        type: 'select',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 7,
-        name: 'kelurahan_pemilik',
-        label: 'Kelurahan',
-        type: 'select',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 8,
-        name: 'negara_pemilik',
-        label: 'Negara',
-        type: 'select',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 9,
-        name: 'status_rumah',
-        label: 'Status Rumah Tinggal',
-        type: 'select',
-        value: '',
-        readOnly: false,
-        selection: statusRumah,
-    },
-    {
-        id: 10,
-        name: 'tinggal_sejak',
-        label: 'Tinggal Sejak',
-        type: 'number',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 11,
-        name: 'personal',
-        label: 'Nama Pemilik',
-        type: 'personalString',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 12,
-        name: 'tempat_lahir',
-        label: 'Tempat Lahir',
-        type: 'ttl',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 13,
-        name: 'tanggal_lahir',
-        label: 'Tanggal Lahir',
-        type: 'ttlDate',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 14,
-        name: 'jenis_kelamin',
-        label: 'Jenis Kelamin',
-        type: 'select',
-        value: '',
-        readOnly: false,
-        selection: jenisKelaminArray,
-    },
-    {
-        id: 15,
-        name: 'space',
-        label: 'Space',
-        type: 'space',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 16,
-        name: 'status_perkawinan',
-        label: 'Status Perkawinan',
-        type: 'string',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 17,
-        name: 'warganegara',
-        label: 'Warga Negara',
-        type: 'string',
-        value: '',
-        readOnly: false,
-    },
-    {
-        id: 18,
-        name: 'ktp',
-        label: 'No. KTP / Paspor',
-        type: 'string',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 19,
-        name: 'sim',
-        label: 'No. SIM',
-        type: 'number',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 20,
-        name: 'telp',
-        label: 'Telepon 1',
-        type: 'number',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 21,
-        name: 'telp2',
-        label: 'Telepon 2',
-        type: 'number',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 22,
-        name: 'hp',
-        label: 'Handphone',
-        type: 'number',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 23,
-        name: 'hp2',
-        label: 'WhatsApp',
-        type: 'number',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 24,
-        name: 'fax',
-        label: 'Facimile',
-        type: 'number',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 25,
-        name: 'space',
-        label: 'Space',
-        type: 'space',
-        value: '',
-        readOnly: true,
-    },
-    {
-        id: 26,
-        name: 'email',
-        label: 'Email',
-        type: 'action',
-        value: '',
-        readOnly: true,
-        isAction: true,
-        icon: (props: any) => (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                {...props}
-                viewBox="0 0 24 24"
-            >
-                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-            </svg>
-        ),
-        hint: 'Kirimkan Email',
-    },
-    {
-        id: 27,
-        name: 'website',
-        label: 'Website',
-        type: 'action',
-        value: '',
-        readOnly: true,
-        isAction: true,
-        icon: (props: any) => (
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                {...props}
-            >
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-            </svg>
-        ),
-
-        hint: 'Kunjungi Website',
-    },
-    {
-        id: 28,
-        name: 'dikontak',
-        label: 'Kontak aktif yang bisa dihubungi',
-        type: 'select',
-        value: '',
-        readOnly: false,
-        selection: diHubunginArray,
+        label: 'Duda / Janda',
+        value: 'Duda / Janda',
     },
 ];
 export const dKTabValue = [
@@ -369,6 +115,26 @@ export const dKTabValue = [
         aktif_kontak: '',
     },
 ];
+export type dKTabInterface = {
+    kode_relasi: string;
+    id_relasi: number;
+    nama_lengkap: string;
+    nama_person: string;
+    jab: string;
+    hubungan: string;
+    bisnis: string;
+    bisnis2: string;
+    telp: string;
+    hp: string;
+    hp2: string;
+    fax: string;
+    email: string;
+    catatan: string;
+    file_kuasa: string;
+    file_ktp: string;
+    file_ttd: string;
+    aktif_kontak: string;
+};
 export const JamOpsField: JamOpsProps[] = [
     { id: 1, Hari: 'Senin', JamBuka: '', JamTutup: '', Buka: false },
     { id: 2, Hari: 'Selasa', JamBuka: '', JamTutup: '', Buka: false },
@@ -401,8 +167,8 @@ export const BaseFormField: FieldProps[] = [
     { id: id++, FieldName: 'manual_hks_mobile', Label: 'Manual HKS Mobile', Type: 'checkbox', Value: false, TabId: 0, ReadOnly: false, IsAction: false, group: 'masterTop', Visible: true },
     { id: id++, FieldName: 'pabrik', Label: 'Pabrik', Type: 'checkbox', Value: false, TabId: 0, ReadOnly: false, IsAction: false, group: 'masterTop', Visible: true },
     // TABID 1
-    { id: id++, FieldName: 'tgl_register', Label: 'Tanggal Register', Type: 'date', Value: new Date(), TabId: 1, ReadOnly: true, IsAction: false, group: 'masterLeft', Visible: true },
-    { id: id++, FieldName: 'tgl_cust', Label: 'Tanggal NOO', Type: 'date', Value: new Date(), TabId: 1, ReadOnly: true, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'tgl_register', Label: 'Tanggal Register', Type: 'date', Value: '', TabId: 1, ReadOnly: true, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'tgl_cust', Label: 'Tanggal NOO', Type: 'date', Value: '', TabId: 1, ReadOnly: true, IsAction: false, group: 'masterLeft', Visible: true },
     { id: id++, FieldName: 'alamat', Label: 'Alamat', Type: 'longString', Value: '', TabId: 1, ReadOnly: true, IsAction: false, group: 'masterLeft', Visible: true },
     { id: id++, FieldName: 'alamat2', Label: '', Type: 'longString', Value: '', TabId: 1, ReadOnly: true, IsAction: false, group: 'masterLeft', Visible: true },
     { id: id++, FieldName: 'telp_toko', Label: 'No. Telp', Type: 'number', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
@@ -463,8 +229,66 @@ export const BaseFormField: FieldProps[] = [
         ],
     },
     { id: id++, FieldName: 'jam_ops', Label: 'Hari / Jam Operasional', Type: 'Grid', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    {
+        id: id++,
+        FieldName: 'alasan',
+        Label: 'Alasan BlackList / Open Blacklist / NOO Batal / Tidak digarap',
+        Type: 'textarea',
+        Value: '',
+        TabId: 1,
+        ReadOnly: true,
+        IsAction: false,
+        group: 'masterRight',
+        Visible: true,
+    },
+    // Info Pemilik TabID 2
+    { id: id++, FieldName: 'alamat_pemilik', Label: 'Alamat Pemilik', Type: 'longString', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'alamat_pemilik2', Label: '', Type: 'longString', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'kota_pemilik', Label: 'Kota', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'kodepos_pemilik', Label: 'Kode Pos', Type: 'number', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'kecamatan_pemilik', Label: 'Kecamatan', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'propinsi_pemilik', Label: 'Provinsi', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'kelurahan_pemilik', Label: 'Kelurahan', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'negara_pemilik', Label: '', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'status_rumah', Label: 'Status Rumah Tinggal', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'tinggal_sejak', Label: 'Tinggal Sejak', Type: 'number', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'personal', Label: 'Nama Pemilik', Type: 'longString', Value: '', TabId: 2, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'tempat_lahir', Label: 'Tempat/Tanggal Lahir', Type: 'string', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'tanggal_lahir', Label: '', Type: 'date', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'jenis_kelamin', Label: 'Jenis Kelamin', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: '', Label: '', Type: 'space', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'status_perkawinan', Label: 'Status Perkawinan', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'warganegara', Label: 'Warga Negara', Type: 'string', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'ktp', Label: 'No. KTP / Paspor', Type: 'number', Value: '', TabId: 2, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'sim', Label: 'No. SIM', Type: 'number', Value: '', TabId: 2, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'telp', Label: 'Telepon 1', Type: 'number', Value: '', TabId: 2, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'telp2', Label: 'Telepon 2', Type: 'number', Value: '', TabId: 2, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'hp', Label: 'Handphone', Type: 'number', Value: '', TabId: 2, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'hp2', Label: 'WhatsApp', Type: 'number', Value: '', TabId: 2, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'fax', Label: 'Facimile', Type: 'number', Value: '', TabId: 2, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: '', Label: '', Type: 'space', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: 'email', Label: 'Email', Type: 'longString', Value: '', TabId: 2, ReadOnly: true, IsAction: true, group: 'master', Visible: true },
+    { id: id++, FieldName: 'website', Label: 'Website', Type: 'longString', Value: '', TabId: 2, ReadOnly: true, IsAction: true, group: 'master', Visible: true },
+    { id: id++, FieldName: 'dikontak', Label: 'Kontak Aktif Yang Bisa di Hubungi', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    { id: id++, FieldName: '', Label: '', Type: 'space', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
 ];
-
+export const baseFormDKField: FieldDKProps[] = [
+    { id: 1, FieldName: 'nama_lengkap', Type: 'string', Value: '', TabId: 0, ReadOnly: false, IsAction: false, Visible: false, Label: 'Nama' },
+    { id: 2, FieldName: 'nama_person', Type: 'string', Value: '', TabId: 0, ReadOnly: false, IsAction: false, Visible: false, Label: 'Panggilan' },
+    { id: 3, FieldName: 'aktif_kontak', Type: 'checkbox', Value: false, TabId: 0, ReadOnly: false, IsAction: false, Visible: false, Label: 'Non Aktif' },
+    { id: 4, FieldName: 'jab', Type: 'select', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: 'Jabatan' },
+    { id: 5, FieldName: 'hubungan', Type: 'select', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: 'Hubungan Kepemilikan' },
+    { id: 6, FieldName: 'bisnis', Type: 'number', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: 'Telp. Kantor 1' },
+    { id: 7, FieldName: 'hp', Type: 'number', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: 'Handphone' },
+    { id: 8, FieldName: 'bisnis2', Type: 'number', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: 'Telp. Kantor 2' },
+    { id: 9, FieldName: 'hp2', Type: 'number', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: 'WhatsApp' },
+    { id: 10, FieldName: 'telp', Type: 'number', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: 'Telp. Rumah' },
+    { id: 11, FieldName: '', Type: 'space', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: '' },
+    { id: 12, FieldName: 'fax', Type: 'number', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: 'Facimile' },
+    { id: 13, FieldName: '', Type: 'space', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: '' },
+    { id: 14, FieldName: 'email', Type: 'longString', Value: '', TabId: 1, ReadOnly: false, IsAction: true, Visible: false, Label: 'Email' },
+    { id: 15, FieldName: 'catatan', Type: 'string', Value: '', TabId: 2, ReadOnly: false, IsAction: true, Visible: false, Label: '' },
+];
 const Template = () => {
     return <div>Template</div>;
 };

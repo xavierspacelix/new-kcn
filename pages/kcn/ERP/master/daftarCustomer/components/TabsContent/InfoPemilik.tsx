@@ -1,12 +1,15 @@
 import React from 'react';
+import { FieldProps, onRenderDayCell } from '../../functions/definition';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
-import { classNames, onRenderDayCell } from '../../functions/definition';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
+
+import { diHubunginArray, jenisKelaminArray, statusPerkawinanArray, statusRumah } from '../Template';
 import { myAlertGlobal } from '@/utils/routines';
 import DialogRelasi from '../../../daftarRelasi/component/DialogRelasi';
+
 type ParamsType = {
     userid: string;
     kode_cust: string;
@@ -19,15 +22,15 @@ type ParamsType = {
     kelurahanArray: { label: string; value: string }[];
     negaraArray: { label: string; value: string }[];
 };
-
-type iPParams = {
-    iPTab: any[];
-    handleChange: (name: string, type: string, value: any, tab: string, hari?: string, itemKey?: string, valueItem?: string) => void;
+interface InfoPemilikProps {
+    Field: FieldProps[];
+    handleChange: (name: string, value: string | Date | boolean, grup: string, itemName?: string) => void;
     params: ParamsType;
-    setStatus: any;
     state: string;
-};
-const InfoPemilik = ({ iPTab, handleChange, params, state, setStatus }: iPParams) => {
+    setStatus: any;
+}
+const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemilikProps) => {
+    const [isEdit, setIsEdit] = React.useState(false);
     const isActionHandle = (name: string, url: string) => {
         if (name === 'email') {
             if (url && typeof url === 'string' && url.includes('@')) {
@@ -47,7 +50,6 @@ const InfoPemilik = ({ iPTab, handleChange, params, state, setStatus }: iPParams
             }
         }
     };
-    const [isEdit, setIsEdit] = React.useState(false);
     return (
         <>
             <div className="grid grid-cols-12 px-3">
@@ -62,86 +64,126 @@ const InfoPemilik = ({ iPTab, handleChange, params, state, setStatus }: iPParams
                         }}
                         onClick={() => {
                             setIsEdit(true);
-                            console.log('params', params);
                         }}
                         content="Update"
                         disabled={params?.kode_relasi === ''}
                         iconCss="e-icons e-medium e-description"
-                    ></ButtonComponent>
+                    />
                 </div>
                 <div className="col-span-11">
                     <div className="grid grid-cols-1 gap-1 md:grid-cols-2">
-                        {iPTab?.map((item, index) =>
-                            item.type === 'string' ? (
-                                item.name.startsWith('alamat_pemilik') ? (
-                                    <div className="col-span-2" key={item.name + index}>
-                                        {item.label && <span className="e-label font-bold">{item.label}</span>}
+                        {Field?.map((item: FieldProps, index: number) =>
+                            item.Type === 'longString' ? (
+                                <div className="col-span-2" key={item.FieldName + index}>
+                                    {item.Label && <span className="e-label font-bold">{item.Label}</span>}
+                                    <div className="flex items-center justify-between gap-3">
                                         <div className="form-input">
                                             <TextBoxComponent
-                                                id={item.name + index}
-                                                value={item.value}
+                                                id={item.FieldName + index}
+                                                value={String(item.Value)}
                                                 onChange={(event: any) => {
-                                                    handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                                    // handleChange(item.FieldName, 'value', event.target.value);
                                                 }}
+                                                readOnly={item.ReadOnly}
                                             />
                                         </div>
+                                        {item.IsAction && (
+                                            <TooltipComponent content={item.FieldName === 'website' ? 'Kunjungi Website' : 'Kirimkan Email'} position="TopCenter">
+                                                <ButtonComponent
+                                                    onClick={() => isActionHandle(item.FieldName, String(item.Value))}
+                                                    id={item.FieldName + index}
+                                                    cssClass="e-primary e-small"
+                                                    style={{
+                                                        width: 'auto',
+                                                        backgroundColor: '#e6e6e6',
+                                                        color: 'black',
+                                                    }}
+                                                >
+                                                    {item.FieldName === 'website' ? (
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="24"
+                                                            height="24"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            className="lucide lucide-link h-4 w-4"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                                                        </svg>
+                                                    ) : (
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            width="24"
+                                                            height="24"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            className="lucide lucide-send h-4 w-4"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11zM21.854 2.147l-10.94 10.939"></path>
+                                                        </svg>
+                                                    )}
+                                                </ButtonComponent>
+                                            </TooltipComponent>
+                                        )}
                                     </div>
-                                ) : (
-                                    <div key={item.name + index}>
-                                        <span className="e-label font-bold">{item.label}</span>
-                                        <div className="container form-input">
-                                            <TextBoxComponent
-                                                id={item.name + index}
-                                                name={item.name}
-                                                value={item.value}
-                                                onBlur={(event: any) => {
-                                                    handleChange(item.name, 'value', event.target.value, 'iPTab');
-                                                }}
-                                                readOnly={item.readonly}
-                                            />
-                                        </div>
-                                    </div>
-                                )
-                            ) : item.type === 'select' ? (
-                                <div key={item.name + index}>
-                                    <span className="e-label font-bold">{item.label}</span>
+                                </div>
+                            ) : item.Type === 'select' ? (
+                                <div key={item.FieldName + index}>
+                                    {item.Label ? <span className="e-label font-bold">{item.Label}</span> : <span className="e-label font-bold text-[#f8f7ff]">&</span>}
                                     <div className="container form-input">
                                         <ComboBoxComponent
-                                            id={item.name}
+                                            id={item.FieldName}
                                             fields={{ text: 'label', value: 'value' }}
-                                            value={item.value}
-                                            key={item.name}
+                                            value={String(item.Value)}
+                                            key={item.FieldName}
                                             dataSource={
-                                                item.name === 'propinsi_pemilik'
+                                                item.FieldName === 'propinsi_pemilik'
                                                     ? params?.provinsiArray
-                                                    : item.name === 'kota_pemilik'
+                                                    : item.FieldName === 'kota_pemilik'
                                                     ? params?.kotaArray
-                                                    : item.name === 'kecamatan_pemilik'
+                                                    : item.FieldName === 'kecamatan_pemilik'
                                                     ? params?.kecamatanArray
-                                                    : item.name === 'kelurahan_pemilik'
+                                                    : item.FieldName === 'kelurahan_pemilik'
                                                     ? params?.kelurahanArray
-                                                    : item.name === 'negara_pemilik'
+                                                    : item.FieldName === 'negara_pemilik'
                                                     ? params?.negaraArray
-                                                    : item.selection
+                                                    : item.FieldName === 'status_rumah'
+                                                    ? statusRumah
+                                                    : item.FieldName === 'jenis_kelamin'
+                                                    ? jenisKelaminArray
+                                                    : item.FieldName === 'dikontak'
+                                                    ? diHubunginArray
+                                                    : item.FieldName === 'status_perkawinan'
+                                                    ? statusPerkawinanArray
+                                                    : []
                                             }
-                                            onChange={(event: { target: { value: string } }) => {
-                                                handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                            onChange={(event: any) => {
+                                                // handleChange(item.FieldName, 'value', event.target.value, 'iPTab');
                                             }}
                                         />
                                     </div>
                                 </div>
-                            ) : item.type === 'number' ? (
-                                <div key={item.name + index}>
-                                    <span className="e-label font-bold">{item.label}</span>
+                            ) : item.Type === 'number' ? (
+                                <div key={item.FieldName + index}>
+                                    <span className="e-label font-bold">{item.Label}</span>
                                     <div className="container form-input">
                                         <span className="e-input-group e-control-wrapper">
                                             <input
-                                                id={item.name + index}
-                                                name={item.name}
+                                                id={item.FieldName + index}
+                                                name={item.FieldName}
                                                 type="text"
                                                 className="e-control e-textbox e-lib e-input"
-                                                value={item.value}
-                                                readOnly={item.readonly}
+                                                value={String(item.Value)}
+                                                readOnly={item.ReadOnly}
                                                 onKeyDown={(event: any) => {
                                                     const char = (event as React.KeyboardEvent<HTMLInputElement>).key;
                                                     const isValidChar = /[0-9.\s]/.test(char) || char === 'Backspace';
@@ -155,98 +197,49 @@ const InfoPemilik = ({ iPTab, handleChange, params, state, setStatus }: iPParams
                                                     }
                                                 }}
                                                 onChange={(event: any) => {
-                                                    handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                                    // handleChange(item.name, 'value', event.target.value, 'iPTab');
                                                 }}
                                             />
                                         </span>
                                     </div>
                                 </div>
-                            ) : item.type.startsWith('ttl') ? (
-                                item.name === 'tempat_lahir' ? (
-                                    <div key={item.name + index}>
-                                        <span className="e-label font-bold">{item.label}</span>
-                                        <div className="container form-input">
-                                            <TextBoxComponent
-                                                id={item.name + index}
-                                                name={item.name}
-                                                value={item.value}
-                                                onBlur={(event: any) => {
-                                                    handleChange(item.name, 'value', event.target.value, 'iPTab');
-                                                }}
-                                                readOnly={item.readonly}
-                                            />
-                                        </div>
-                                    </div>
-                                ) : item.name === 'tanggal_lahir' ? (
-                                    <div key={item.name + index}>
-                                        <span className="e-label font-bold">{item.label}</span>
-                                        <div className="flex flex-col gap-2">
-                                            <div className="container form-input">
-                                                <DatePickerComponent
-                                                    id={item.name + index}
-                                                    value={new Date(item.value) ?? null}
-                                                    name={item.name}
-                                                    format="dd-MM-yyyy"
-                                                    renderDayCell={onRenderDayCell}
-                                                    locale="id"
-                                                    readOnly={item.readonly}
-                                                    onChange={(event: any) => {
-                                                        handleChange(item.name, 'DateValue', event.value, 'iPTab');
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                ) : null
-                            ) : item.type === 'action' ? (
-                                <div key={item.name + index} className="col-span-2 ">
-                                    <span className="e-label font-bold">{item.label}</span>
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="form-input">
-                                            <TextBoxComponent
-                                                id={item.name + index}
-                                                type={item.name === 'email' ? 'email' : item.name === 'url' ? 'url' : 'text'}
-                                                name={item.name}
-                                                value={item.value}
-                                                onBlur={(event: any) => {
-                                                    handleChange(item.name, 'value', event.target.value, 'iPTab');
-                                                }}
-                                                readOnly={item.readonly}
-                                            />
-                                        </div>
-                                        <TooltipComponent content={item.hint} position="TopCenter">
-                                            <ButtonComponent
-                                                onClick={() => isActionHandle(item.name, item.value)}
-                                                id={item.name + index}
-                                                cssClass="e-primary e-small"
-                                                style={{
-                                                    width: 'auto',
-                                                    backgroundColor: '#e6e6e6',
-                                                    color: 'black',
-                                                }}
-                                            >
-                                                {item.icon && item.icon({ className: 'w-4 h-4' })}
-                                            </ButtonComponent>
-                                        </TooltipComponent>
-                                    </div>
-                                </div>
-                            ) : item.type === 'space' ? (
-                                <div key={item.name + index}></div>
-                            ) : item.type === 'personalString' ? (
-                                <div key={item.name + index} className="col-span-2">
-                                    <span className="e-label font-bold">{item.label}</span>
-                                    <div className="form-input">
+                            ) : item.Type === 'string' ? (
+                                <div key={item.FieldName + index}>
+                                    <span className="e-label font-bold">{item.Label}</span>
+                                    <div className="container form-input">
                                         <TextBoxComponent
-                                            id={item.name + index}
-                                            name={item.name}
-                                            value={item.value}
+                                            id={item.FieldName + index}
+                                            name={item.FieldName}
+                                            value={String(item.Value)}
                                             onBlur={(event: any) => {
-                                                handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                                // handleChange(item.name, 'value', event.target.value, 'iPTab');
                                             }}
-                                            readOnly={item.readonly}
+                                            readOnly={item.ReadOnly}
                                         />
                                     </div>
                                 </div>
+                            ) : item.Type === 'date' ? (
+                                <div key={item.FieldName + index}>
+                                    {item.Label ? <span className="e-label font-bold">{item.Label}</span> : <span className="e-label font-bold text-[#f8f7ff]">&</span>}
+                                    <div className="flex flex-col gap-2">
+                                        <div className="container form-input">
+                                            <DatePickerComponent
+                                                id={item.FieldName + index}
+                                                value={new Date(String(item.Value))}
+                                                name={item.FieldName}
+                                                format="dd-MM-yyyy"
+                                                renderDayCell={onRenderDayCell}
+                                                locale="id"
+                                                readOnly={item.ReadOnly}
+                                                onChange={(event: any) => {
+                                                    // handleChange(item.name, 'DateValue', event.value, 'iPTab');
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : item.Type === 'space' ? (
+                                <div></div>
                             ) : (
                                 <></>
                             )
