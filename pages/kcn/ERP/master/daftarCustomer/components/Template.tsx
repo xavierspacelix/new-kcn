@@ -1,5 +1,5 @@
 import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FieldDKProps, FieldProps, JamOpsProps } from '../functions/definition';
+import { FieldDKProps, FieldProps, JamOpsProps, PotensiaProdukProps } from '../functions/definition';
 
 interface CheckboxProps {
     id: string;
@@ -93,28 +93,27 @@ export const statusPerkawinanArray = [
         value: 'Duda / Janda',
     },
 ];
-export const dKTabValue = [
-    {
-        kode_relasi: '',
-        id_relasi: '',
-        nama_lengkap: '',
-        nama_person: '',
-        jab: '',
-        hubungan: '',
-        bisnis: '',
-        bisnis2: '',
-        telp: '',
-        hp: '',
-        hp2: '',
-        fax: '',
-        email: '',
-        catatan: '',
-        file_kuasa: '',
-        file_ktp: '',
-        file_ttd: '',
-        aktif_kontak: '',
-    },
-];
+
+export const dKTabValue = {
+    kode_relasi: '',
+    id_relasi: 0,
+    nama_lengkap: '',
+    nama_person: '',
+    jab: '',
+    hubungan: '',
+    bisnis: '',
+    bisnis2: '',
+    telp: '',
+    hp: '',
+    hp2: '',
+    fax: '',
+    email: '',
+    catatan: '',
+    file_kuasa: '',
+    file_ktp: '',
+    file_ttd: '',
+    aktif_kontak: true,
+};
 export type dKTabInterface = {
     kode_relasi: string;
     id_relasi: number;
@@ -133,7 +132,7 @@ export type dKTabInterface = {
     file_kuasa: string;
     file_ktp: string;
     file_ttd: string;
-    aktif_kontak: string;
+    aktif_kontak: boolean;
 };
 export const JamOpsField: JamOpsProps[] = [
     { id: 1, Hari: 'Senin', JamBuka: '', JamTutup: '', Buka: false },
@@ -144,6 +143,15 @@ export const JamOpsField: JamOpsProps[] = [
     { id: 6, Hari: 'Sabtu', JamBuka: '', JamTutup: '', Buka: false },
     { id: 7, Hari: 'Minggu', JamBuka: '', JamTutup: '', Buka: false },
 ];
+
+export const PotensialProdukField: PotensiaProdukProps[] = [
+    {
+        kode_cust: '',
+        kategori: '',
+        kelompok: '',
+        catatan: '',
+    },
+]
 let id: number = 1;
 export const BaseFormField: FieldProps[] = [
     { id: id++, FieldName: 'kode_cust', Label: '', Type: 'string', Value: '', TabId: 0, ReadOnly: true, IsAction: false, group: 'masterTop', Visible: false },
@@ -288,6 +296,28 @@ export const baseFormDKField: FieldDKProps[] = [
     { id: 13, FieldName: '', Type: 'space', Value: '', TabId: 1, ReadOnly: false, IsAction: false, Visible: false, Label: '' },
     { id: 14, FieldName: 'email', Type: 'longString', Value: '', TabId: 1, ReadOnly: false, IsAction: true, Visible: false, Label: 'Email' },
     { id: 15, FieldName: 'catatan', Type: 'string', Value: '', TabId: 2, ReadOnly: false, IsAction: true, Visible: false, Label: '' },
+];
+export const headertext = [
+    { id: 1, text: '1. Informasi' },
+    { id: 2, text: '2. Catatan' },
+];
+export const jabatanArray = [
+    { label: 'Anggota keluarga pemilik', value: 'Anggota keluarga pemilik' },
+    { label: 'Manager keuangan', value: 'Manager keuangan' },
+    { label: 'Manager pembelian', value: 'Manager pembelian' },
+    { label: 'Admin keuangan', value: 'Admin keuangan' },
+    { label: 'Admin pembelian', value: 'Admin pembelian' },
+    { label: 'Karyawan toko', value: 'Karyawan toko' },
+    { label: 'Lainnya', value: 'Lainnya' },
+];
+export const hubArray = [
+    { label: 'Pemilik', value: 'Pemilik' },
+    { label: 'Suami / istri pemilik', value: 'Suami / istri pemilik' },
+    { label: 'Anak pemilik', value: 'Anak pemilik' },
+    { label: 'Orang tua pemilik', value: 'Orang tua pemilik' },
+    { label: 'Saudara lain', value: 'Saudara lain' },
+    { label: 'Orang lain (tidak memiliki hub dengan pemilik)', value: 'Orang lain (tidak memiliki hub dengan pemilik)' },
+    { label: 'Lainnya', value: 'Lainnya' },
 ];
 const Template = () => {
     return <div>Template</div>;

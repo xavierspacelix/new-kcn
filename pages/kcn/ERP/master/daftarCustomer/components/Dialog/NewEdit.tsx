@@ -5,7 +5,18 @@ import { BaseFormField, CheckboxCustomerCustom, contentLoader, dKTabInterface, J
 import stylesHeader from './customerHeader.module.css';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { customerTab, fetchDaftarRelasi, FieldProps, generateNoCust, getDataMasterCustomer, JamOpsProps, onRenderDayCell, RelasiProps } from '../../functions/definition';
+import {
+    convertJamOpsToObject,
+    customerTab,
+    fetchDaftarRelasi,
+    FieldProps,
+    generateNoCust,
+    getDataMasterCustomer,
+    JamOpsProps,
+    onRenderDayCell,
+    PotensiaProdukProps,
+    RelasiProps,
+} from '../../functions/definition';
 import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Tab } from '@headlessui/react';
 import InfoPerusahaan from '../TabsContent/InfoPerusahaan';
@@ -14,6 +25,7 @@ import { myAlertGlobal } from '@/utils/routines';
 import DaftarKontak from '../TabsContent/DaftarKontak';
 import InfoPemilik from '../TabsContent/InfoPemilik';
 import SelectRelasiDialog from './SelectRelasiDialog';
+import PotentialProduk from '../TabsContent/PotentialProduk';
 
 interface NewEditProps {
     isOpen: boolean;
@@ -34,7 +46,7 @@ interface NewEditProps {
     state: string;
     setParams: any;
 }
-let gridJamOPSType: Grid;
+let gridJamOPSType: GridComponent;
 const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditProps) => {
     const [status, setStatus] = React.useState(false);
     const [title, setTitle] = React.useState('Customer Baru');
@@ -42,6 +54,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
     const [formBaseStateField, setFormBaseStateField] = React.useState<FieldProps[]>(BaseFormField);
     const [formJamOpsField, setFormJamOpsField] = React.useState<JamOpsProps[]>(JamOpsField);
     const [formDKField, setFormDKField] = React.useState<dKTabInterface[]>([]);
+    const [formPotensialProdukField, setFormPotensialProdukField] = React.useState<PotensiaProdukProps[]>([]);
     const [selectRelasiDialog, setSelectRelasiDialog] = React.useState(false);
     const [relasiSource, setRelasiSource] = React.useState<RelasiProps[]>([]);
 
@@ -75,8 +88,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     <div
                         className="e-btn e-danger e-small"
                         onClick={() => {
-                            console.log('formBaseStateField ', formBaseStateField);
-                            console.log('formJamOpsField', formJamOpsField);
+                            saveDoc();
                         }}
                     >
                         Simpan
@@ -154,7 +166,6 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
         } else if (grup === 'JamOps') {
             const newJamOps = formJamOpsField.map((item) => {
                 if (item.Hari === itemName) {
-                    console.log('Item yang diperbarui:', item);
                     if (value === false) {
                         return {
                             ...item,
@@ -243,13 +254,15 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                 { id: 7, Hari: 'Minggu', JamBuka: item['jam_buka_7'], JamTutup: item['jam_tutup_7'], Buka: item['buka_7'] },
                             ];
                         });
-                    console.log(operasional[0]);
                     setFormJamOpsField(operasional[0]);
-                    gridJamOPSType.refresh();
+                    // gridJamOPSType.refresh();
                 }
             });
             await getDataMasterCustomer(params.entitas, params?.kode_relasi ?? '', params.token, 'person').then((result) => {
                 setFormDKField(result);
+            });
+            await getDataMasterCustomer(params.entitas, params?.kode_relasi ?? '', params.token, 'produk_potensial').then((result) => {
+                setFormPotensialProdukField(result);
             });
             setFormBaseStateField(newData.sort((a, b) => a.id - b.id));
         } catch (error) {
@@ -288,7 +301,6 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
         }
     };
     const onSelect = async (args: any) => {
-        console.log(args);
         setParams({
             ...params,
             kode_relasi: args[0]?.kode_relasi,
@@ -338,6 +350,27 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
         await getDataMasterCustomer(params.entitas, newDataValue?.kode_relasi ?? '', params.token, 'person').then((result) => {
             setFormDKField(result);
         });
+    };
+    const beforeSaveDoc = async () => {
+        // Create Object Master
+        const master = formBaseStateField
+            .filter((item) => item.group.startsWith('master') && item.Type !== 'space')
+            .reduce((acc: { [key: string]: any }, curr) => {
+                acc[curr.FieldName] = curr.Value;
+                return acc;
+            }, {});
+        const detail = formBaseStateField
+            .filter((item) => item.group.startsWith('detail') && item.Type !== 'space')
+            .reduce((acc: { [key: string]: any }, curr) => {
+                acc[curr.FieldName] = curr.Value;
+                return acc;
+            }, {});
+        const jamOps = convertJamOpsToObject(formJamOpsField, master.kode_cust, params.userid);
+    };
+    const saveDoc = async () => {
+        try {
+            await beforeSaveDoc();
+        } catch (error) {}
     };
     React.useEffect(() => {
         if (isOpen) {
@@ -498,7 +531,17 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                                 state={state}
                                             />
                                         ) : item.id == 3 ? (
-                                            <DaftarKontak dataSource={formDKField} params={params} />
+                                            <DaftarKontak dataSource={formDKField} params={params} setFormDKField={setFormDKField} />
+                                        ) : item.id == 5 ? (
+                                            <PotentialProduk
+                                                dataSource={formPotensialProdukField}
+                                                params={{
+                                                    userid: '',
+                                                    kode_cust: '',
+                                                }}
+                                                setFormPotensialProdukField={setFormPotensialProdukField}
+                                                
+                                            />
                                         ) : (
                                             <></>
                                         )}

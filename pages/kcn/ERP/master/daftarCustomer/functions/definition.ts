@@ -311,6 +311,23 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
                 Authorization: `Bearer ${token}`,
             },
         });
+        const newData = data.data.data.map((item: any) => {
+            return {
+                ...item,
+                aktif_kontak: item.aktif_kontak === 'Y' ? true : false,
+            };
+        });
+        return newData;
+    } else if (type === 'produk_potensial') {
+        const data = await axios.get(`${apiUrl}/erp/potensial_produk_customer?`, {
+            params: {
+                entitas: entitas,
+                param1: kode_cust,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return data.data.data;
     }
 };
@@ -468,6 +485,12 @@ export type FieldDKProps = {
     Visible: boolean;
     Label: string;
 };
+export type PotensiaProdukProps = {
+    kode_cust: string;
+    kategori: string;
+    kelompok: string;
+    catatan: string;
+};
 let id: number = 1;
 export const customerTab = [
     {
@@ -539,4 +562,43 @@ export const fetchDaftarRelasi = async (entitas: string, token: string) => {
         },
     });
     return responseData.data.data;
+};
+
+export const convertJamOpsToObject = (jamOps: JamOpsProps[], kodeCust: string, userid: string) => {
+    const jamOpsObject: any = {
+        id: '',
+        kode_cust: kodeCust,
+        jam_buka_1: '',
+        jam_buka_2: '',
+        jam_buka_3: '',
+        jam_buka_4: '',
+        jam_buka_5: '',
+        jam_buka_6: '',
+        jam_buka_7: '',
+        jam_tutup_1: '',
+        jam_tutup_2: '',
+        jam_tutup_3: '',
+        jam_tutup_4: '',
+        jam_tutup_5: '',
+        jam_tutup_6: '',
+        jam_tutup_7: '',
+        hari_libur: '',
+        buka_1: 'N',
+        buka_2: 'N',
+        buka_3: 'N',
+        buka_4: 'N',
+        buka_5: 'N',
+        buka_6: 'N',
+        buka_7: 'N',
+        tgl_update: moment(),
+        userid: userid.toUpperCase(),
+    };
+
+    jamOps.forEach((item) => {
+        jamOpsObject[`jam_buka_${item.id}`] = item.JamBuka;
+        jamOpsObject[`jam_tutup_${item.id}`] = item.JamTutup;
+        jamOpsObject[`buka_${item.id}`] = item.Buka ? 'Y' : 'N';
+    });
+
+    return jamOpsObject;
 };
