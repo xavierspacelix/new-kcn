@@ -151,7 +151,7 @@ export const PotensialProdukField: PotensiaProdukProps[] = [
         kelompok: '',
         catatan: '',
     },
-]
+];
 let id: number = 1;
 export const BaseFormField: FieldProps[] = [
     { id: id++, FieldName: 'kode_cust', Label: '', Type: 'string', Value: '', TabId: 0, ReadOnly: true, IsAction: false, group: 'masterTop', Visible: false },
@@ -279,6 +279,11 @@ export const BaseFormField: FieldProps[] = [
     { id: id++, FieldName: 'website', Label: 'Website', Type: 'longString', Value: '', TabId: 2, ReadOnly: true, IsAction: true, group: 'master', Visible: true },
     { id: id++, FieldName: 'dikontak', Label: 'Kontak Aktif Yang Bisa di Hubungi', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
     { id: id++, FieldName: '', Label: '', Type: 'space', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
+    // Tab 4
+    { id: id++, FieldName: 'tipe2', Label: 'Tipe Customer', Type: 'selectTipe', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'tipe', Label: '', Type: 'selectTipe', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'no_piutang', Label: 'Akun Piutang', Type: 'selectPiutang', Value: '', TabId: 4, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'kode_akun_piutang', Label: '', Type: 'selectPiutang', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'master', Visible: true },
 ];
 export const baseFormDKField: FieldDKProps[] = [
     { id: 1, FieldName: 'nama_lengkap', Type: 'string', Value: '', TabId: 0, ReadOnly: false, IsAction: false, Visible: false, Label: 'Nama' },

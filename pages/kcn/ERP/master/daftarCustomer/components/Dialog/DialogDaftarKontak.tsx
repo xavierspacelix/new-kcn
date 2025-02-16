@@ -44,7 +44,7 @@ interface dKTabInterface {
 }
 const DialogDaftarKontak = ({ isOpen, onClose, params, state }: NewEditProps) => {
     const textareaRef = React.useRef<HTMLTextAreaElement>(null);
-    const title = state === 'beginEdit' ? `${params.dataKontak[0].nama_lengkap} atas ${params.nama_relasi}` : 'Kontak baru atas ' + params.nama_relasi;
+    const title = state === 'beginEdit' ? `${params?.dataKontak[0].nama_lengkap} atas ${params?.nama_relasi}` : 'Kontak baru atas ' + params?.nama_relasi;
     const [args, SetArgs] = React.useState<dKTabInterface>({
         kode_relasi: '',
         id_relasi: 0,
@@ -266,8 +266,8 @@ const DialogDaftarKontak = ({ isOpen, onClose, params, state }: NewEditProps) =>
         );
     };
     React.useEffect(() => {
-        if (params.dataKontak.length > 0) {
-            SetArgs(params.dataKontak[0]);
+        if (params?.dataKontak.length > 0) {
+            SetArgs(params?.dataKontak[0]);
         }
         const textarea = textareaRef.current;
         if (textarea) {
@@ -287,7 +287,7 @@ const DialogDaftarKontak = ({ isOpen, onClose, params, state }: NewEditProps) =>
             }
         }
     }, []);
-    console.log('params.dataKontak :', params.dataKontak);
+    console.log('params?.dataKontak :', params?.dataKontak);
     console.log('args :', args);
     const onChangeHandle = (e: any) => {
         const { name, value } = e.target;

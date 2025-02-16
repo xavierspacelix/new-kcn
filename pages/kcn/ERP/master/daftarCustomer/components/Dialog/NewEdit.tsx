@@ -8,13 +8,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     convertJamOpsToObject,
     customerTab,
+    fetchBank,
     fetchDaftarRelasi,
+    fetchKategoriKelompok,
     FieldProps,
     generateNoCust,
     getDataMasterCustomer,
     JamOpsProps,
     onRenderDayCell,
     PotensiaProdukProps,
+    RekeningBankkProps,
     RelasiProps,
 } from '../../functions/definition';
 import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -26,6 +29,9 @@ import DaftarKontak from '../TabsContent/DaftarKontak';
 import InfoPemilik from '../TabsContent/InfoPemilik';
 import SelectRelasiDialog from './SelectRelasiDialog';
 import PotentialProduk from '../TabsContent/PotentialProduk';
+import RekeningBank from '../TabsContent/RekeningBank';
+import LainLain from '../TabsContent/LainLain';
+import Penjualan from '../TabsContent/LainLain';
 
 interface NewEditProps {
     isOpen: boolean;
@@ -55,6 +61,9 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
     const [formJamOpsField, setFormJamOpsField] = React.useState<JamOpsProps[]>(JamOpsField);
     const [formDKField, setFormDKField] = React.useState<dKTabInterface[]>([]);
     const [formPotensialProdukField, setFormPotensialProdukField] = React.useState<PotensiaProdukProps[]>([]);
+    const [formRekeningBankField, setFormRekeningBankField] = React.useState<RekeningBankkProps[]>([]);
+    const [dsProdukKategori, setDsProdukKategori] = React.useState<any[]>([]);
+    const [dsProdukKelompok, setDsProdukKelompok] = React.useState<any[]>([]);
     const [selectRelasiDialog, setSelectRelasiDialog] = React.useState(false);
     const [relasiSource, setRelasiSource] = React.useState<RelasiProps[]>([]);
 
@@ -194,7 +203,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
         let newData: FieldProps[] = [];
         try {
             setShowLoader(true);
-            await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'master').then((res) => {
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust, params?.token, 'master').then((res) => {
                 const tempData = formBaseStateField
                     .filter((item) => item.group.startsWith('master'))
                     .map((itemField) => {
@@ -210,7 +219,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     nama_relasi: res[0]?.nama_relasi,
                 });
             });
-            await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'detail').then((res) => {
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust, params?.token, 'detail').then((res) => {
                 if (res.length > 0) {
                     const tempData = formBaseStateField
                         .filter((item) => item.group.startsWith('detail'))
@@ -238,7 +247,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     newData.push(...tempData);
                 }
             });
-            await getDataMasterCustomer(params.entitas, params.kode_cust, params.token, 'jam_ops').then((result) => {
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust, params?.token, 'jam_ops').then((result) => {
                 if (result.length > 0) {
                     const operasional: any[] = result
                         .sort((a: any, b: any) => b.id - a.id)
@@ -258,11 +267,19 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     // gridJamOPSType.refresh();
                 }
             });
-            await getDataMasterCustomer(params.entitas, params?.kode_relasi ?? '', params.token, 'person').then((result) => {
+            await getDataMasterCustomer(params?.entitas, params?.kode_relasi ?? '', params?.token, 'person').then((result) => {
                 setFormDKField(result);
             });
-            await getDataMasterCustomer(params.entitas, params?.kode_relasi ?? '', params.token, 'produk_potensial').then((result) => {
+            await getDataMasterCustomer(params?.entitas, params?.kode_relasi ?? '', params?.token, 'produk_potensial').then((result) => {
                 setFormPotensialProdukField(result);
+            });
+
+            await fetchKategoriKelompok(params?.entitas, params?.token).then((result) => {
+                setDsProdukKategori(result['kategori']);
+                setDsProdukKelompok(result['kelompok']);
+            });
+            await fetchBank(params?.entitas, params?.token, params?.kode_cust).then((result) => {
+                setFormRekeningBankField(result);
             });
             setFormBaseStateField(newData.sort((a, b) => a.id - b.id));
         } catch (error) {
@@ -274,7 +291,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
     };
     const fetchListRelasi = async () => {
         try {
-            await fetchDaftarRelasi(params.entitas, params.token).then((result) => {
+            await fetchDaftarRelasi(params?.entitas, params?.token).then((result) => {
                 setRelasiSource(result);
             });
         } catch (error) {
@@ -347,7 +364,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
             });
         });
 
-        await getDataMasterCustomer(params.entitas, newDataValue?.kode_relasi ?? '', params.token, 'person').then((result) => {
+        await getDataMasterCustomer(params?.entitas, newDataValue?.kode_relasi ?? '', params?.token, 'person').then((result) => {
             setFormDKField(result);
         });
     };
@@ -365,7 +382,8 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 acc[curr.FieldName] = curr.Value;
                 return acc;
             }, {});
-        const jamOps = convertJamOpsToObject(formJamOpsField, master.kode_cust, params.userid);
+        const jamOps = convertJamOpsToObject(formJamOpsField, master.kode_cust, params?.userid);
+        // console.log('formPotensialProdukField', formPotensialProdukField);
     };
     const saveDoc = async () => {
         try {
@@ -532,15 +550,41 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                             />
                                         ) : item.id == 3 ? (
                                             <DaftarKontak dataSource={formDKField} params={params} setFormDKField={setFormDKField} />
+                                        ) : item.id == 4 ? (
+                                            <Penjualan
+                                                Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 4)}
+                                                handleChange={handleChange}
+                                            />
                                         ) : item.id == 5 ? (
                                             <PotentialProduk
                                                 dataSource={formPotensialProdukField}
                                                 params={{
-                                                    userid: '',
-                                                    kode_cust: '',
+                                                    userid: params?.userid,
+                                                    kode_cust: params?.kode_cust,
+                                                    token: params?.token,
+                                                    entitas: params?.entitas,
                                                 }}
                                                 setFormPotensialProdukField={setFormPotensialProdukField}
-                                                
+                                                dsProdukKategori={dsProdukKategori}
+                                                dsProdukKelompok={dsProdukKelompok}
+                                            />
+                                        ) : item.id == 6 ? (
+                                            <></>
+                                        ) : // <LainLain
+                                        // Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 4)}
+                                        // handleChange={handleChange}
+                                        // onRenderDayCell={onRenderDayCell}
+                                        // />
+                                        item.id == 9 ? (
+                                            <RekeningBank
+                                                dataSource={formRekeningBankField}
+                                                params={{
+                                                    userid: params?.userid,
+                                                    kode_cust: params?.kode_cust,
+                                                    token: params?.token,
+                                                    entitas: params?.entitas,
+                                                }}
+                                                setFormRekeningBankField={setFormRekeningBankField}
                                             />
                                         ) : (
                                             <></>

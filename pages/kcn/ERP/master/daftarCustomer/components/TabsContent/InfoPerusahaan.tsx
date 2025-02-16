@@ -215,7 +215,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                 <div className="md:col-span-5">
                     <div className="flex flex-col">
                         <div>
-                            <span className="e-label font-bold">Hari / Jam Operasional</span>
+                            <span className="e-label font-bold !text-black">Hari / Jam Operasional</span>
                             <GridComponent
                                 selectionSettings={{
                                     mode: 'Row',

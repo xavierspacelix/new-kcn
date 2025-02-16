@@ -491,6 +491,15 @@ export type PotensiaProdukProps = {
     kelompok: string;
     catatan: string;
 };
+export type RekeningBankkProps = {
+    kode_cust: string;
+    nama_bank: string;
+    no_rekening: string;
+    nama_rekening: string;
+    aktif: string;
+    tgl_update: string;
+    userid: string;
+};
 let id: number = 1;
 export const customerTab = [
     {
@@ -601,4 +610,30 @@ export const convertJamOpsToObject = (jamOps: JamOpsProps[], kodeCust: string, u
     });
 
     return jamOpsObject;
+};
+
+export const fetchKategoriKelompok = async (entitas: string, token: string) => {
+    const data = await axios.get(`${apiUrl}/erp/list_produk_potensial`, {
+        params: {
+            entitas: entitas,
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    return data.data.data;
+};
+
+export const fetchBank = async (entitas: string, token: string, kode_cust: string) => {
+    const data = await axios.get(`${apiUrl}/erp/rekening_customer?`, {
+        params: {
+            entitas: entitas,
+            param1: kode_cust,
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return data.data.data;
 };
