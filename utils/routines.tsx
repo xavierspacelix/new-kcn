@@ -381,6 +381,23 @@ export const FillFromSQL = async (entitas: string, fld: string, kode_user?: any,
             console.error('Error fetching data:', error);
             throw error;
         }
+    } else if (fld === 'salesman') {
+        try {
+            const response = await axios.get(`${apiUrl}/erp/salesman`, {
+                params: {
+                    entitas: entitas,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const responseData = response.data.data;
+
+            return responseData;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            throw error;
+        }
     }
 };
 

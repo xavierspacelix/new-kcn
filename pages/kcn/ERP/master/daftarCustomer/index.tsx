@@ -127,8 +127,8 @@ const DaftarCustomer = () => {
                     value: 'Lokal',
                 },
                 {
-                    label: 'Group',
-                    value: 'Group',
+                    label: 'Grup',
+                    value: 'Grup',
                 },
             ],
         },

@@ -5,6 +5,7 @@ interface CheckboxProps {
     id: string;
     label: string;
     checked: boolean;
+    value?: string;
     change: (event: React.ChangeEvent<HTMLInputElement>) => void;
     name: string;
     isRed?: boolean;
@@ -33,11 +34,11 @@ export const contentLoader = () => {
     );
 };
 
-export const CheckboxCustomerCustom: React.FC<CheckboxProps> = ({ id, label, checked, change, name, isRed }) => {
+export const CheckboxCustomerCustom: React.FC<CheckboxProps> = ({ id, label, checked, change, name, isRed, value }) => {
     return (
         <div className="e-checkbox-wrapper e-wrapper">
             <label htmlFor={id}>
-                <input id={id} className="e-control e-checkbox e-lib" type="checkbox" name={name} checked={checked} onChange={change} />
+                <input id={id} className="e-control e-checkbox e-lib" type="checkbox" name={name} checked={checked} onChange={change} value={value} />
                 <span className={`e-ripple-container ${checked ? 'e-ripple-check' : ''}`} data-ripple="true" />
                 <span className={`e-icons e-frame ${checked ? 'e-check' : ''}`} />
                 <span className={`e-label ${isRed ? '' : '!text-red-600'}`}>{label}</span>
@@ -280,10 +281,62 @@ export const BaseFormField: FieldProps[] = [
     { id: id++, FieldName: 'dikontak', Label: 'Kontak Aktif Yang Bisa di Hubungi', Type: 'select', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
     { id: id++, FieldName: '', Label: '', Type: 'space', Value: '', TabId: 2, ReadOnly: false, IsAction: false, group: 'detail', Visible: true },
     // Tab 4
-    { id: id++, FieldName: 'tipe2', Label: 'Tipe Customer', Type: 'selectTipe', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'master', Visible: true },
-    { id: id++, FieldName: 'tipe', Label: '', Type: 'selectTipe', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'master', Visible: true },
-    { id: id++, FieldName: 'no_piutang', Label: 'Akun Piutang', Type: 'selectPiutang', Value: '', TabId: 4, ReadOnly: true, IsAction: false, group: 'master', Visible: true },
-    { id: id++, FieldName: 'kode_akun_piutang', Label: '', Type: 'selectPiutang', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'master', Visible: true },
+    { id: id++, FieldName: 'tipe2', Label: 'Tipe Customer', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'tipe', Label: '', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: false },
+    { id: id++, FieldName: 'no_piutang', Label: '', Type: 'selectKodeAKun', Value: '', TabId: 4, ReadOnly: true, IsAction: false, group: 'masterLeft', Visible: false },
+    { id: id++, FieldName: 'kode_akun_piutang', Label: 'Akun Piutang', Type: 'selectKodeAKun', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'kode_mu', Label: 'Mata Uang', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: '', Label: '', Type: 'space', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'kode_termin', Label: 'Termin Pembayaran', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'kode_termin2', Label: 'Termin Cetak', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'plafond_atas', Label: 'Plafond Maksimal', Type: 'number', Value: '', TabId: 4, ReadOnly: false, IsAction: true, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'plafond', Label: 'Plafond Kredit', Type: 'number', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'bayar_tunai', Label: 'Customer TUNAI', Type: 'checkbox', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterLeft', Visible: true },
+    { id: id++, FieldName: 'kode_area', Label: 'Rayon (Wilayah Penjualan)', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'kode_sales', Label: 'Salesman', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'kode_pajak', Label: 'Pajak Penjualan', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'harga_def', Label: 'Tingkat Hrg. Jual', Type: 'select', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: true },
+    {
+        id: id++,
+        FieldName: 'kelas',
+        Label: 'Klasifikasi Customer',
+        Type: 'radioButton',
+        Value: '',
+        TabId: 4,
+        ReadOnly: false,
+        IsAction: false,
+        group: 'masterRight',
+        Visible: true,
+        Items: [
+            { id: 1, FieldName: 'A', Value: false, Label: 'A' },
+            { id: 2, FieldName: 'C', Value: false, Label: 'C' },
+            { id: 3, FieldName: 'E', Value: false, Label: 'E' },
+            { id: 5, FieldName: 'G', Value: false, Label: 'G' },
+            { id: 6, FieldName: 'N', Value: false, Label: 'Calon NOO' },
+            { id: 7, FieldName: 'L', Value: false, Label: 'TIDAK DIGARAP' },
+            { id: 8, FieldName: 'B', Value: false, Label: 'B' },
+            { id: 9, FieldName: 'D', Value: false, Label: 'D' },
+            { id: 10, FieldName: 'F', Value: false, Label: 'F' },
+            { id: 11, FieldName: 'H', Value: false, Label: 'H' },
+            { id: 12, FieldName: 'M', Value: false, Label: 'BATAL NOO' },
+        ],
+    },
+    { id: id++, FieldName: 'rks', Label: 'Rencana Kunjungan', Type: 'checkbox', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'no_beban', Label: 'Akun Beban Antar Cabang', Type: 'pnACAkun', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: false },
+    { id: id++, FieldName: 'kode_akun_piutang', Label: 'Akun Beban Antar Cabang', Type: 'pnACAkun', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'beban_kirim', Label: 'Prosentasi Biaya Barang Dikirim', Type: 'pnACText', Value: '', TabId: 4, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: true },
+    {
+        id: id++,
+        FieldName: 'beban_diambil',
+        Label: 'Prosentasi Biaya Barang Diambil sendiri',
+        Type: 'pnACText',
+        Value: '',
+        TabId: 4,
+        ReadOnly: false,
+        IsAction: false,
+        group: 'masterRight',
+        Visible: true,
+    },
 ];
 export const baseFormDKField: FieldDKProps[] = [
     { id: 1, FieldName: 'nama_lengkap', Type: 'string', Value: '', TabId: 0, ReadOnly: false, IsAction: false, Visible: false, Label: 'Nama' },

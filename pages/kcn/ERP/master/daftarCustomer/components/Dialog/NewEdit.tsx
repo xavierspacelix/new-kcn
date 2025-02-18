@@ -8,15 +8,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     convertJamOpsToObject,
     customerTab,
+    fetchAkun,
     fetchBank,
     fetchDaftarRelasi,
+    fetchInitialValue,
     fetchKategoriKelompok,
+    fetchWilayah,
     FieldProps,
     generateNoCust,
     getDataMasterCustomer,
     JamOpsProps,
     onRenderDayCell,
     PotensiaProdukProps,
+    prepareNewData,
     RekeningBankkProps,
     RelasiProps,
 } from '../../functions/definition';
@@ -24,7 +28,7 @@ import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { Tab } from '@headlessui/react';
 import InfoPerusahaan from '../TabsContent/InfoPerusahaan';
 import { Grid, GridComponent } from '@syncfusion/ej2-react-grids';
-import { myAlertGlobal } from '@/utils/routines';
+import { FillFromSQL, myAlertGlobal } from '@/utils/routines';
 import DaftarKontak from '../TabsContent/DaftarKontak';
 import InfoPemilik from '../TabsContent/InfoPemilik';
 import SelectRelasiDialog from './SelectRelasiDialog';
@@ -32,6 +36,7 @@ import PotentialProduk from '../TabsContent/PotentialProduk';
 import RekeningBank from '../TabsContent/RekeningBank';
 import LainLain from '../TabsContent/LainLain';
 import Penjualan from '../TabsContent/LainLain';
+import moment from 'moment';
 
 interface NewEditProps {
     isOpen: boolean;
@@ -64,6 +69,12 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
     const [formRekeningBankField, setFormRekeningBankField] = React.useState<RekeningBankkProps[]>([]);
     const [dsProdukKategori, setDsProdukKategori] = React.useState<any[]>([]);
     const [dsProdukKelompok, setDsProdukKelompok] = React.useState<any[]>([]);
+    const [dsAkunPiutang, setDsAkunPiutang] = React.useState<any[]>([]);
+    const [dsMataUang, setDsMataUang] = React.useState<any[]>([]);
+    const [dsTermin, setDsTermin] = React.useState<any[]>([]);
+    const [dsWilayah, setDsWilayah] = React.useState<any[]>([]);
+    const [dsSalesman, setDsSalesman] = React.useState<any[]>([]);
+    const [dsPajak, setDsPajak] = React.useState<any[]>([]);
     const [selectRelasiDialog, setSelectRelasiDialog] = React.useState(false);
     const [relasiSource, setRelasiSource] = React.useState<RelasiProps[]>([]);
 
@@ -192,6 +203,23 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 return item;
             });
             setFormJamOpsField(newJamOps);
+        } else if (grup === 'masterRight') {
+            console.log('grup', grup);
+            console.log('name', name);
+            console.log('value', value);
+            const newData = formBaseStateField
+                .filter((itemF) => itemF.group === grup)
+                .map((item) => {
+                    if (item.FieldName === name) {
+                        return {
+                            ...item,
+                            Value: value,
+                        };
+                    }
+                    return item;
+                });
+            const pushedData = [...newData, ...formBaseStateField.filter((item) => item.group !== grup)];
+            setFormBaseStateField(pushedData.sort((a, b) => a.id - b.id));
         }
     };
     const dialogClose = () => {
@@ -203,7 +231,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
         let newData: FieldProps[] = [];
         try {
             setShowLoader(true);
-            await getDataMasterCustomer(params?.entitas, params?.kode_cust, params?.token, 'master').then((res) => {
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'master').then((res) => {
                 const tempData = formBaseStateField
                     .filter((item) => item.group.startsWith('master'))
                     .map((itemField) => {
@@ -219,7 +247,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     nama_relasi: res[0]?.nama_relasi,
                 });
             });
-            await getDataMasterCustomer(params?.entitas, params?.kode_cust, params?.token, 'detail').then((res) => {
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'detail').then((res) => {
                 if (res.length > 0) {
                     const tempData = formBaseStateField
                         .filter((item) => item.group.startsWith('detail'))
@@ -247,7 +275,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     newData.push(...tempData);
                 }
             });
-            await getDataMasterCustomer(params?.entitas, params?.kode_cust, params?.token, 'jam_ops').then((result) => {
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'jam_ops').then((result) => {
                 if (result.length > 0) {
                     const operasional: any[] = result
                         .sort((a: any, b: any) => b.id - a.id)
@@ -278,10 +306,74 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 setDsProdukKategori(result['kategori']);
                 setDsProdukKelompok(result['kelompok']);
             });
-            await fetchBank(params?.entitas, params?.token, params?.kode_cust).then((result) => {
+            await fetchBank(params?.entitas, params?.token, params?.kode_cust ?? '').then((result) => {
                 setFormRekeningBankField(result);
             });
+
             setFormBaseStateField(newData.sort((a, b) => a.id - b.id));
+        } catch (error) {
+            console.error(error);
+            setShowLoader(false);
+            myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
+        } finally {
+            setShowLoader(false);
+        }
+    };
+    const fetchInitialData = async () => {
+        try {
+            setShowLoader(true);
+            await fetchAkun(params?.entitas, params?.token).then((result) => {
+                setDsAkunPiutang(result);
+            });
+            await FillFromSQL(params.entitas, 'mu', null, params.token)
+                .then((result) => {
+                    const newData = result.map((mu: { kode_mu: string }) => {
+                        return {
+                            label: mu.kode_mu,
+                            value: mu.kode_mu,
+                        };
+                    });
+                    setDsMataUang(newData);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            await FillFromSQL(params.entitas, 'termin', null, params.token)
+                .then((result) => {
+                    const newData = result.map((res: { kode_termin: string; nama_termin: string }) => {
+                        return {
+                            label: res.nama_termin,
+                            value: res.kode_termin,
+                        };
+                    });
+                    setDsTermin(newData);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            await FillFromSQL(params.entitas, 'salesman', null, params.token)
+                .then((result) => {
+                    setDsSalesman(result);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            await FillFromSQL(params.entitas, 'pajak', null, params.token)
+                .then((result) => {
+                    const newData = result.map((res: { catatan: string; kode_pajak: string }) => {
+                        return {
+                            label: res.catatan,
+                            value: res.kode_pajak,
+                        };
+                    });
+                    setDsPajak(newData);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            await fetchWilayah(params?.entitas, params?.token).then((result) => {
+                setDsWilayah(result);
+            });
         } catch (error) {
             setShowLoader(false);
             myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
@@ -379,24 +471,67 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
         const detail = formBaseStateField
             .filter((item) => item.group.startsWith('detail') && item.Type !== 'space')
             .reduce((acc: { [key: string]: any }, curr) => {
-                acc[curr.FieldName] = curr.Value;
+                if (curr.FieldName === 'jenis_bayar' || curr.FieldName === 'jenis_order') {
+                    // Jika FieldName 'jenis_bayar', ambil Items-nya dan buat key baru untuk setiap item
+                    if (curr.Items) {
+                        curr.Items.forEach((item, index) => {
+                            acc[item.FieldName] = item.Value;
+                        });
+                    }
+                } else {
+                    // Untuk FieldName lain, ambil Value biasa
+                    acc[curr.FieldName] = curr.Value;
+                }
                 return acc;
             }, {});
+
         const jamOps = convertJamOpsToObject(formJamOpsField, master.kode_cust, params?.userid);
-        // console.log('formPotensialProdukField', formPotensialProdukField);
     };
     const saveDoc = async () => {
         try {
             await beforeSaveDoc();
         } catch (error) {}
     };
+
+    const quCustNewRecord = async () => {
+        await prepareNewData(params?.entitas, params?.token, params?.userid).then((result: { [key: string]: any }) => {
+            // MASTER
+            setFormBaseStateField((prev: FieldProps[]) => {
+                return prev.map((item) => {
+                    if (result.hasOwnProperty(item.FieldName)) {
+                        return {
+                            ...item,
+                            Value: result[item.FieldName] ?? '',
+                        };
+                    }
+                    if (item.FieldName === 'jenis_order' || item.FieldName === 'jenis_bayar') {
+                        return {
+                            ...item,
+                            Items: item?.Items?.map((itemC) => {
+                                if (result.hasOwnProperty(itemC.FieldName)) {
+                                    return {
+                                        ...itemC,
+                                        Value: result[itemC.FieldName] ?? '',
+                                    };
+                                }
+                                console.log('itemC ', itemC);
+                                return itemC;
+                            }),
+                        };
+                    }
+                    return item;
+                });
+            });
+        });
+    };
     React.useEffect(() => {
-        if (isOpen) {
-            if (state === 'edit' || status) {
-                fetchDetailCustomer();
-            }
-            fetchListRelasi();
+        if ((isOpen && state === 'edit') || status) {
+            fetchDetailCustomer();
+        } else if (isOpen && state === 'new') {
+            quCustNewRecord();
         }
+        fetchListRelasi();
+        fetchInitialData();
     }, [isOpen, status]);
     return (
         <>
@@ -554,6 +689,17 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                             <Penjualan
                                                 Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 4)}
                                                 handleChange={handleChange}
+                                                dataSourceAkun={dsAkunPiutang}
+                                                dataSourceMataUang={dsMataUang}
+                                                dataSourceTermin={dsTermin}
+                                                dataSourceWilayah={dsWilayah}
+                                                dataSourceSales={dsSalesman}
+                                                dataSourcePajak={dsPajak}
+                                                params={{
+                                                    entitas: params.entitas,
+                                                    token: params.token,
+                                                }}
+                                                state={state}
                                             />
                                         ) : item.id == 5 ? (
                                             <PotentialProduk

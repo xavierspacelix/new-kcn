@@ -5,6 +5,7 @@ import { RenderDayCellEventArgs } from '@syncfusion/ej2-react-calendars';
 import { useState, ReactNode } from 'react';
 import Swal from 'sweetalert2';
 import moment from 'moment';
+import { SpreadNumber } from '../../../fa/pembayaran-uang-muka/utils';
 
 export const swalToast = Swal.mixin({
     toast: true,
@@ -233,8 +234,10 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
                 rks: item.rks === 'Y' ? true : false,
                 tgl_cust: item.tgl_cust === null ? null : moment(item.tgl_cust).format('YYYY-MM-DD'),
                 tgl_register: item.tgl_cust === null ? null : moment(item.tgl_register).format('YYYY-MM-DD'),
+                plafond_atas: SpreadNumber(item.plafond_atas),
             };
         });
+        console.log(newData);
         return newData;
     } else if (type === 'detail') {
         const data = await axios.get(`${apiUrl}/erp/detail_customer`, {
@@ -545,7 +548,47 @@ export function onRenderDayCell(args: RenderDayCellEventArgs): void {
         args.isDisabled = true;
     }
 }
+export async function prepareNewData(entitas: string, token: string, userid: any) {
+    const quSetting = await fetchInitialValue(entitas, token, 'setting');
+    const quInfo = await fetchInitialValue(entitas, token, 'mu');
+    const quListPlafond = await setPlafondFromKelas(entitas, 'N', token);
+    const newData = {
+        prospek: true,
+        aktif: true,
+        tgl_cust: moment(),
+        tipe: 'Lokal',
+        tipe2: 'Lokal',
+        plafond: 0,
+        pemakaian: 0,
+        harga_def: '1',
+        tipe_pajak: '1',
+        cetak_pesan: false,
+        no_piutang: quSetting[0].no_piutang,
+        kode_akun_piutang: quSetting[0].kode_akun_piutang,
+        kode_mu: quInfo[0].kode_mu,
+        kode_pajak: 'N',
+        kode_area: 'AR0000000001',
+        kelas: 'N',
+        rks: true,
+        Status_wa: false,
+        dikontak: 'A',
+        terima_dokumen: false,
+        manual_hks_mobile: false,
+        plafond_atas: quListPlafond.length > 0 ? quListPlafond[0].plafond : 0,
+        kode_termin: quSetting[0].kode_termin,
+        kode_termin2: quSetting[0].kode_termin,
+        userid: userid,
+        tgl_register: moment(),
+        bayar_transfer: false,
+        bayar_giro: false,
+        bayar_tunai: false,
+        order_cbd: false,
+        order_cod: false,
+        order_kredit: true,
+    };
 
+    return newData;
+}
 export const generateNoCust = async (entitas: string, token: string) => {
     const data = await axios.get(`${apiUrl}/erp/generate_no_customer`, {
         params: {
@@ -636,4 +679,64 @@ export const fetchBank = async (entitas: string, token: string, kode_cust: strin
         },
     });
     return data.data.data;
+};
+
+export const fetchAkun = async (entitas: string, token: string) => {
+    const data = await axios.get(`${apiUrl}/erp/list_akun_piutang`, {
+        params: {
+            entitas: entitas,
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return data.data.data;
+};
+
+export const setPlafondFromKelas = async (entitas: string, kelas: string, token: string) => {
+    const data = await axios.get(`${apiUrl}/erp/generate_plafond_customer`, {
+        params: {
+            entitas: entitas,
+            param1: kelas,
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return data.data.data;
+};
+export const fetchWilayah = async (entitas: string, token: string) => {
+    const data = await axios.get(`${apiUrl}/erp/master_wilayah?`, {
+        params: {
+            entitas: entitas,
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return data.data.data;
+};
+
+export const fetchInitialValue = async (entitas: string, token: string, type: string) => {
+    if (type === 'setting') {
+        const quSetting = await axios.get(`${apiUrl}/erp/setting`, {
+            params: {
+                entitas: entitas,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return quSetting.data.data;
+    } else if (type === 'mu') {
+        const quInfo = await axios.get(`${apiUrl}/erp/get_info`, {
+            params: {
+                entitas: entitas,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return quInfo.data.data;
+    }
 };

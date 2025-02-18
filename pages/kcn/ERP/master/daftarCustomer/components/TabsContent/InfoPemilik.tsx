@@ -82,7 +82,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                                 id={item.FieldName + index}
                                                 value={String(item.Value)}
                                                 onChange={(event: any) => {
-                                                    // handleChange(item.FieldName, 'value', event.target.value);
+                                                    handleChange(item.FieldName, event.target.value, item.group);
                                                 }}
                                                 readOnly={item.ReadOnly}
                                             />
@@ -167,7 +167,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                                     : []
                                             }
                                             onChange={(event: any) => {
-                                                // handleChange(item.FieldName, 'value', event.target.value, 'iPTab');
+                                                handleChange(item.FieldName, event.target.value, item.group);
                                             }}
                                         />
                                     </div>
@@ -197,7 +197,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                                     }
                                                 }}
                                                 onChange={(event: any) => {
-                                                    // handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                                    handleChange(item.FieldName, event.target.value, item.group);
                                                 }}
                                             />
                                         </span>
@@ -212,7 +212,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                             name={item.FieldName}
                                             value={String(item.Value)}
                                             onBlur={(event: any) => {
-                                                // handleChange(item.name, 'value', event.target.value, 'iPTab');
+                                                handleChange(item.FieldName, event.target.value, item.group);
                                             }}
                                             readOnly={item.ReadOnly}
                                         />
@@ -232,7 +232,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                                 locale="id"
                                                 readOnly={item.ReadOnly}
                                                 onChange={(event: any) => {
-                                                    // handleChange(item.name, 'DateValue', event.value, 'iPTab');
+                                                    handleChange(item.FieldName, event.target.value, item.group);
                                                 }}
                                             />
                                         </div>
