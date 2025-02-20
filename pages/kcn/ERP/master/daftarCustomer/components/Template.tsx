@@ -337,6 +337,18 @@ export const BaseFormField: FieldProps[] = [
         group: 'masterRight',
         Visible: true,
     },
+
+    // LAIN LAIN
+    { id: id++, FieldName: 'alamat_kirim1', Label: 'Alamat', Type: 'longString', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'alamat_kirim2', Label: '', Type: 'longString', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'kota_kirim', Label: 'Kota', Type: 'string', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'kodepos_kirim', Label: 'Kode Pos', Type: 'number', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'kecamatan_kirim', Label: 'Kecamatan', Type: 'string', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'propinsi_kirim', Label: 'Provinsi', Type: 'string', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'kelurahan_kirim', Label: 'Kelurahan', Type: 'string', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'negara_kirim', Label: 'Negara', Type: 'string', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'lat_kirim', Label: 'Latitude', Type: 'GeoLat', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+    { id: id++, FieldName: 'long_kirim', Label: 'Longitude', Type: 'GeoLat', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
 ];
 export const baseFormDKField: FieldDKProps[] = [
     { id: 1, FieldName: 'nama_lengkap', Type: 'string', Value: '', TabId: 0, ReadOnly: false, IsAction: false, Visible: false, Label: 'Nama' },
@@ -376,6 +388,27 @@ export const hubArray = [
     { label: 'Saudara lain', value: 'Saudara lain' },
     { label: 'Orang lain (tidak memiliki hub dengan pemilik)', value: 'Orang lain (tidak memiliki hub dengan pemilik)' },
     { label: 'Lainnya', value: 'Lainnya' },
+];
+
+export const MapFields = [
+    {
+        FieldName: 'kode_cust',
+        Label: 'Kode Cust',
+        Value: '',
+        Visible: false,
+    },
+    {
+        FieldName: 'latitude',
+        Label: 'Latitude',
+        Value: '',
+        Visible: true,
+    },
+    {
+        FieldName: 'longitude',
+        Label: 'Longitude',
+        Value: '',
+        Visible: true,
+    },
 ];
 const Template = () => {
     return <div>Template</div>;

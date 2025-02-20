@@ -332,6 +332,17 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
             },
         });
         return data.data.data;
+    } else if (type === 'fasmap') {
+        const data = await axios.get(`${apiUrl}/erp/fasmap_customer?`, {
+            params: {
+                entitas: entitas,
+                param1: kode_cust,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return data.data.data;
     }
 };
 export interface RelasiProps {

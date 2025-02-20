@@ -2,23 +2,7 @@ import { MenuEventArgs } from '@syncfusion/ej2-react-splitbuttons';
 import { ContextMenuComponent, MenuItemModel } from '@syncfusion/ej2-react-navigations';
 import { Tooltip, TooltipComponent, TooltipEventArgs } from '@syncfusion/ej2-react-popups';
 import { RenderDayCellEventArgs } from '@syncfusion/ej2-react-calendars';
-import {
-    Grid,
-    GridComponent,
-    ColumnDirective,
-    ColumnsDirective,
-    Inject,
-    Page,
-    Edit,
-    Sort,
-    Filter,
-    Group,
-    Resize,
-    Reorder,
-    Selection,
-    ExcelExport,
-    PdfExport,
-} from '@syncfusion/ej2-react-grids';
+import { Grid, GridComponent, ColumnDirective, ColumnsDirective, Inject, Page, Edit, Sort, Filter, Group, Resize, Reorder, Selection, ExcelExport, PdfExport } from '@syncfusion/ej2-react-grids';
 
 import { loadCldr, L10n, enableRipple, getValue } from '@syncfusion/ej2-base';
 import * as gregorian from 'cldr-data/main/id/ca-gregorian.json';
@@ -52,12 +36,11 @@ const RelasiList = () => {
     const token = sessionData?.token ?? '';
     const userid = sessionData?.userid ?? '';
 
-    
     if (isLoading) {
         return;
     }
     const router = useRouter();
-    const { norelasi,isRedirectFromSupp } = router.query;
+    const { norelasi, isRedirectFromSupp } = router.query;
     // Loading data indicator
     const [showLoader, setShowLoader] = useState(true);
     const contentLoader = () => {
@@ -156,17 +139,17 @@ const RelasiList = () => {
                 let vTipe = 'all';
                 let vLimit = '10000';
 
-                if (noRegisterValue == null || noRegisterValue == '') {
+                if (noRegisterValue == null || noRegisterValue == '' || !isNoRegisterChecked) {
                     vKodeRelasi = 'all';
                 } else {
                     vKodeRelasi = `${noRegisterValue}`;
                 }
-                if (namaRelasiValue == null || namaRelasiValue == '') {
+                if (namaRelasiValue == null || namaRelasiValue == '' || !isNamaRelasiChecked) {
                     vNamaRelasi = 'all';
                 } else {
                     vNamaRelasi = `${namaRelasiValue}`;
                 }
-                if (tipeRelasiValue == null || tipeRelasiValue == '') {
+                if (tipeRelasiValue == null || tipeRelasiValue == '' || !isTipeRelasiChecked) {
                     vTipe = 'all';
                 } else {
                     vTipe = `${tipeRelasiValue}`;
@@ -222,14 +205,14 @@ const RelasiList = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setPageTitle('Relasi'));
-        if(norelasi){
+        if (norelasi) {
             setMasterDataState('EDIT');
             setMasterKodeRelasi(norelasi as string);
 
             setDialogInputDataVisible(true);
         } else if (isRedirectFromSupp) {
             setMasterDataState('BARU');
-        setDialogInputDataVisible(true);
+            setDialogInputDataVisible(true);
         }
     }, []);
     // Panggil refreshListData saat nilai filter berubah
@@ -444,76 +427,34 @@ const RelasiList = () => {
                         <b>Daftar Relasi</b>
                     </p>
                     <div style={{ minHeight: '40px' }} className="mb-4 flex flex-col justify-between md:flex-row">
-                        <TooltipComponent
-                            content="Tampilkan filter data"
-                            opensOn="Hover"
-                            openDelay={1000}
-                            target="#btnFilter"
-                        >
-                            <TooltipComponent
-                                content="Daftarkan Relasi baru"
-                                opensOn="Hover"
-                                openDelay={1000}
-                                target="#btnBaru"
-                            >
-                                <TooltipComponent
-                                    content="Edit data relasi"
-                                    opensOn="Hover"
-                                    openDelay={1000}
-                                    target="#btnEdit"
-                                >
-                                    <TooltipComponent
-                                        content="Hapus data relasi"
-                                        opensOn="Hover"
-                                        openDelay={1000}
-                                        target="#btnHapus"
-                                    >
-                                        <TooltipComponent
-                                            content="Tampilkan detail Relasi"
-                                            opensOn="Hover"
-                                            openDelay={1000}
-                                            target="#btnDetail"
-                                        >
-                                            <div className="flex flex-col md:flex-row">
-                                                <button
-                                                    id="btnBaru"
-                                                    disabled={disabledBaru}
-                                                    type="submit"
-                                                    className="btn btn-primary mb-2 md:mb-0 md:mr-2"
-                                                    onClick={showNewRecord}
-                                                >
-                                                    Baru
-                                                </button>
-                                                {/* Component Modal Tambah Data Relasi */}
-                                                <button
-                                                    id="btnEdit"
-                                                    onClick={() => showEditRecord()}
-                                                    type="submit"
-                                                    className="btn btn-primary mb-2 md:mb-0 md:mr-2"
-                                                >
-                                                    Ubah
-                                                </button>
-                                                <button
-                                                    id="btnFilter"
-                                                    type="submit"
-                                                    className={`btn btn-primary mb-2 md:mb-0 md:mr-2 ${
-                                                        panelVisible ? 'pointer-events-none opacity-50' : ''
-                                                    }`}
-                                                    onClick={handleFilterClick}
-                                                >
-                                                    Filter
-                                                </button>
-                                                {/* Component Modal Edit Data Relasi */}
-                                                <button
-                                                    id="btnHapus"
-                                                    type="submit"
-                                                    className="btn btn-danger mb-2 md:mb-0 md:mr-2"
-                                                >
+                        <TooltipComponent content="Tampilkan filter data" opensOn="Hover" openDelay={1000} target="#btnFilter">
+                            <TooltipComponent content="Daftarkan Relasi baru" opensOn="Hover" openDelay={1000} target="#btnBaru">
+                                <TooltipComponent content="Edit data relasi" opensOn="Hover" openDelay={1000} target="#btnEdit">
+                                    {/* <TooltipComponent content="Hapus data relasi" opensOn="Hover" openDelay={1000} target="#btnHapus"> */}
+                                    <TooltipComponent content="Tampilkan detail Relasi" opensOn="Hover" openDelay={1000} target="#btnDetail">
+                                        <div className="flex flex-col md:flex-row">
+                                            <button id="btnBaru" disabled={disabledBaru} type="submit" className="btn btn-primary mb-2 md:mb-0 md:mr-2" onClick={showNewRecord}>
+                                                Baru
+                                            </button>
+                                            {/* Component Modal Tambah Data Relasi */}
+                                            <button id="btnEdit" onClick={() => showEditRecord()} type="submit" className="btn btn-primary mb-2 md:mb-0 md:mr-2">
+                                                Ubah
+                                            </button>
+                                            <button
+                                                id="btnFilter"
+                                                type="submit"
+                                                className={`btn btn-primary mb-2 md:mb-0 md:mr-2 ${panelVisible ? 'pointer-events-none opacity-50' : ''}`}
+                                                onClick={handleFilterClick}
+                                            >
+                                                Filter
+                                            </button>
+                                            {/* Component Modal Edit Data Relasi */}
+                                            {/* <button id="btnHapus" type="submit" className="btn btn-danger mb-2 md:mb-0 md:mr-2">
                                                     Hapus
-                                                </button>
-                                            </div>
-                                        </TooltipComponent>
+                                                </button> */}
+                                        </div>
                                     </TooltipComponent>
+                                    {/* </TooltipComponent> */}
                                 </TooltipComponent>
                             </TooltipComponent>
                         </TooltipComponent>
@@ -531,20 +472,11 @@ const RelasiList = () => {
                             <div className="flex h-full flex-col pb-16">
                                 <div className="pb-5">
                                     <div className="flex items-center text-center">
-                                        <button
-                                            className="absolute right-0 top-0 p-2 text-gray-600 hover:text-gray-900"
-                                            onClick={handleTogglePanel}
-                                        >
+                                        <button className="absolute right-0 top-0 p-2 text-gray-600 hover:text-gray-900" onClick={handleTogglePanel}>
                                             <FontAwesomeIcon icon={faTimes} width="18" height="18" />
                                         </button>
                                         <div className="shrink-0">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                            >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                 {/* prettier-ignore */}
                                                 <path
                                                 stroke="currentColor"
@@ -594,20 +526,9 @@ const RelasiList = () => {
                                                 />
                                                 <span>Nama Relasi</span>
                                             </label>
-                                            <input
-                                                type="text"
-                                                placeholder="--- Nama Relasi ---"
-                                                className="form-input"
-                                                value={namaRelasiValue}
-                                                onChange={handleNamaRelasiInputChange}
-                                            />
+                                            <input type="text" placeholder="--- Nama Relasi ---" className="form-input" value={namaRelasiValue} onChange={handleNamaRelasiInputChange} />
                                             <label className="mt-3 flex cursor-pointer items-center">
-                                                <input
-                                                    type="checkbox"
-                                                    className="form-checkbox"
-                                                    checked={isTipeRelasiChecked}
-                                                    onChange={() => setIsTipeRelasiChecked(!isTipeRelasiChecked)}
-                                                />
+                                                <input type="checkbox" className="form-checkbox" checked={isTipeRelasiChecked} onChange={() => setIsTipeRelasiChecked(!isTipeRelasiChecked)} />
                                                 <span>Tipe</span>
                                             </label>
                                             <select
@@ -634,12 +555,7 @@ const RelasiList = () => {
                                                 }}
                                                 className="btn btn-primary mt-2"
                                             >
-                                                <FontAwesomeIcon
-                                                    icon={faArrowsRotate}
-                                                    className="shrink-0 ltr:mr-2 rtl:ml-2"
-                                                    width="18"
-                                                    height="18"
-                                                />
+                                                <FontAwesomeIcon icon={faArrowsRotate} className="shrink-0 ltr:mr-2 rtl:ml-2" width="18" height="18" />
                                                 Refresh Data
                                             </button>
                                         </div>
@@ -649,58 +565,22 @@ const RelasiList = () => {
                         </div>
                     )}
                     <div
-                        className={`overlay absolute z-[5] hidden h-full w-full rounded-md bg-black/60 ${
-                            isShowTaskMenu && '!block xl:!hidden'
-                        }`}
+                        className={`overlay absolute z-[5] hidden h-full w-full rounded-md bg-black/60 ${isShowTaskMenu && '!block xl:!hidden'}`}
                         onClick={() => setIsShowTaskMenu(!isShowTaskMenu)}
                     ></div>
-                    <div
-                        className="h-full flex-1 overflow-auto"
-                        // style={{
-                        //     background: '#dedede',
-                        //     width: '100%',
-                        //     height: '100%',
-                        // }}
-                    >
+                    <div className="h-full flex-1 overflow-auto">
                         <div className="cursor flex items-center ltr:mr-3 rtl:ml-3">
-                            <button
-                                type="button"
-                                className="block hover:text-primary xl:hidden ltr:mr-3 rtl:ml-3"
-                                onClick={() => setIsShowTaskMenu(!isShowTaskMenu)}
-                            >
-                                <svg
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
+                            <button type="button" className="block hover:text-primary xl:hidden ltr:mr-3 rtl:ml-3" onClick={() => setIsShowTaskMenu(!isShowTaskMenu)}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M20 7L4 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                                    <path
-                                        opacity="0.5"
-                                        d="M20 12L4 12"
-                                        stroke="currentColor"
-                                        strokeWidth="1.5"
-                                        strokeLinecap="round"
-                                    />
-                                    <path
-                                        d="M20 17L4 17"
-                                        stroke="currentColor"
-                                        strokeWidth="1.5"
-                                        strokeLinecap="round"
-                                    />
+                                    <path opacity="0.5" d="M20 12L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                                    <path d="M20 17L4 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                                 </svg>
                             </button>
                         </div>
                         {showLoader && contentLoader()}
                         <div className="panel-data overflow-hidden" style={{ background: '#dedede', width: '100%' }}>
-                            <TooltipComponent
-                                opensOn="Hover"
-                                openDelay={1000}
-                                beforeRender={beforeRenderListData}
-                                target=".e-headertext"
-                                ref={(t) => (tooltipListData = t)}
-                            >
+                            <TooltipComponent opensOn="Hover" openDelay={1000} beforeRender={beforeRenderListData} target=".e-headertext" ref={(t) => (tooltipListData = t)}>
                                 <GridComponent
                                     id="gridListData"
                                     ref={(g) => (gridListData = g)}
@@ -830,20 +710,7 @@ const RelasiList = () => {
                                             clipMode="EllipsisWithTooltip"
                                         />
                                     </ColumnsDirective>
-                                    <Inject
-                                        services={[
-                                            Page,
-                                            Selection,
-                                            Edit,
-                                            /*Toolbar,*/ Sort,
-                                            Group,
-                                            Filter,
-                                            Resize,
-                                            Reorder /*, Freeze,*/,
-                                            ExcelExport,
-                                            PdfExport,
-                                        ]}
-                                    />
+                                    <Inject services={[Page, Selection, Edit, /*Toolbar,*/ Sort, Group, Filter, Resize, Reorder /*, Freeze,*/, ExcelExport, PdfExport]} />
                                 </GridComponent>
                             </TooltipComponent>
                             {/*============ Tampilkan popup menu untuk print dan simpan ke file ================*/}

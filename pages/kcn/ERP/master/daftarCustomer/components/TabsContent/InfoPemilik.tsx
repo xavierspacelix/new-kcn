@@ -77,7 +77,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                 <div className="col-span-2" key={item.FieldName + index}>
                                     {item.Label && <span className="e-label font-bold">{item.Label}</span>}
                                     <div className="flex items-center justify-between gap-3">
-                                        <div className="form-input">
+                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                             <TextBoxComponent
                                                 id={item.FieldName + index}
                                                 value={String(item.Value)}
@@ -88,7 +88,13 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                             />
                                         </div>
                                         {item.IsAction && (
-                                            <TooltipComponent content={item.FieldName === 'website' ? 'Kunjungi Website' : 'Kirimkan Email'} position="TopCenter">
+                                            <TooltipComponent
+                                                opensOn="Hover"
+                                                openDelay={5}
+                                                target={'#' + item.FieldName + index}
+                                                content={item.FieldName === 'website' ? 'Kunjungi Website' : 'Kirimkan Email'}
+                                                position="TopCenter"
+                                            >
                                                 <ButtonComponent
                                                     onClick={() => isActionHandle(item.FieldName, String(item.Value))}
                                                     id={item.FieldName + index}
@@ -139,7 +145,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                             ) : item.Type === 'select' ? (
                                 <div key={item.FieldName + index}>
                                     {item.Label ? <span className="e-label font-bold">{item.Label}</span> : <span className="e-label font-bold text-[#f8f7ff]">&</span>}
-                                    <div className="container form-input">
+                                    <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                         <ComboBoxComponent
                                             id={item.FieldName}
                                             fields={{ text: 'label', value: 'value' }}
@@ -175,7 +181,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                             ) : item.Type === 'number' ? (
                                 <div key={item.FieldName + index}>
                                     <span className="e-label font-bold">{item.Label}</span>
-                                    <div className="container form-input">
+                                    <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                         <span className="e-input-group e-control-wrapper">
                                             <input
                                                 id={item.FieldName + index}
@@ -206,7 +212,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                             ) : item.Type === 'string' ? (
                                 <div key={item.FieldName + index}>
                                     <span className="e-label font-bold">{item.Label}</span>
-                                    <div className="container form-input">
+                                    <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                         <TextBoxComponent
                                             id={item.FieldName + index}
                                             name={item.FieldName}
@@ -222,7 +228,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                 <div key={item.FieldName + index}>
                                     {item.Label ? <span className="e-label font-bold">{item.Label}</span> : <span className="e-label font-bold text-[#f8f7ff]">&</span>}
                                     <div className="flex flex-col gap-2">
-                                        <div className="container form-input">
+                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                             <DatePickerComponent
                                                 id={item.FieldName + index}
                                                 value={new Date(String(item.Value))}

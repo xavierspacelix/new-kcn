@@ -1,7 +1,7 @@
 import React from 'react';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { DialogComponent } from '@syncfusion/ej2-react-popups';
-import { BaseFormField, CheckboxCustomerCustom, contentLoader, dKTabInterface, JamOpsField } from '../Template';
+import { BaseFormField, CheckboxCustomerCustom, contentLoader, dKTabInterface, JamOpsField, MapFields } from '../Template';
 import stylesHeader from './customerHeader.module.css';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,7 +35,7 @@ import SelectRelasiDialog from './SelectRelasiDialog';
 import PotentialProduk from '../TabsContent/PotentialProduk';
 import RekeningBank from '../TabsContent/RekeningBank';
 import LainLain from '../TabsContent/LainLain';
-import Penjualan from '../TabsContent/LainLain';
+import Penjualan from '../TabsContent/Penjualan';
 import moment from 'moment';
 
 interface NewEditProps {
@@ -67,6 +67,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
     const [formDKField, setFormDKField] = React.useState<dKTabInterface[]>([]);
     const [formPotensialProdukField, setFormPotensialProdukField] = React.useState<PotensiaProdukProps[]>([]);
     const [formRekeningBankField, setFormRekeningBankField] = React.useState<RekeningBankkProps[]>([]);
+    const [formFasMapField, setFormFasMapField] = React.useState<any[]>(MapFields);
     const [dsProdukKategori, setDsProdukKategori] = React.useState<any[]>([]);
     const [dsProdukKelompok, setDsProdukKelompok] = React.useState<any[]>([]);
     const [dsAkunPiutang, setDsAkunPiutang] = React.useState<any[]>([]);
@@ -301,6 +302,19 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
             await getDataMasterCustomer(params?.entitas, params?.kode_relasi ?? '', params?.token, 'produk_potensial').then((result) => {
                 setFormPotensialProdukField(result);
             });
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'fasmap').then((result) => {
+                setFormFasMapField((prev: any[]) => {
+                    return prev.map((item) => {
+                        if (result[0].hasOwnProperty(item.FieldName)) {
+                            return {
+                                ...item,
+                                Value: result[0][item.FieldName] ?? '',
+                            };
+                        }
+                        return item;
+                    });
+                });
+            });
 
             await fetchKategoriKelompok(params?.entitas, params?.token).then((result) => {
                 setDsProdukKategori(result['kategori']);
@@ -472,14 +486,12 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
             .filter((item) => item.group.startsWith('detail') && item.Type !== 'space')
             .reduce((acc: { [key: string]: any }, curr) => {
                 if (curr.FieldName === 'jenis_bayar' || curr.FieldName === 'jenis_order') {
-                    // Jika FieldName 'jenis_bayar', ambil Items-nya dan buat key baru untuk setiap item
                     if (curr.Items) {
                         curr.Items.forEach((item, index) => {
                             acc[item.FieldName] = item.Value;
                         });
                     }
                 } else {
-                    // Untuk FieldName lain, ambil Value biasa
                     acc[curr.FieldName] = curr.Value;
                 }
                 return acc;
@@ -715,7 +727,14 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                                 dsProdukKelompok={dsProdukKelompok}
                                             />
                                         ) : item.id == 6 ? (
-                                            <></>
+                                            <LainLain
+                                                Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 6)}
+                                                handleChange={handleChange}
+                                                params={params}
+                                                state={state}
+                                                MapField={formFasMapField}
+                                                setMapField={setFormFasMapField}
+                                            />
                                         ) : // <LainLain
                                         // Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 4)}
                                         // handleChange={handleChange}

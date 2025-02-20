@@ -81,7 +81,7 @@ function TabelDaftarRelasi({ data, columns, kode_entitas, propsDaftarRelasiListA
             // alert('Pilih List Daftar Relasi yang akan diedit');
         } else {
             const x = Buffer.from(`entitas=${kode_entitas}&kode_relasi=${selectedRow}&jenis=edit`).toString('base64');
-            router.push({ pathname: './createDaftarRelasi', query: { x_: x } });
+            router.push({ pathname: './DialogRelasi', query: { x_: x } });
         }
     };
     // TODO: Tanstack

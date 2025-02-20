@@ -125,8 +125,6 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
     // Loading data indicator
     const [showLoader, setShowLoader] = useState(true);
     const closeDialogRelasi = () => {
-        console.log('BATAL CLICKED');
-
         if (norelasi) {
             const targetUrl = '/kcn/ERP/master/supplier/supplier';
             const queryParams = {
@@ -149,6 +147,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                 query: queryParams,
             });
         }
+
         onClose();
         setTimeout(() => {
             if (onRefresh) {
@@ -208,7 +207,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
     };
     const postingInputData = async (data: any) => {
         let jsonSave: any;
-        if (masterDataState == 'BARU') {
+        if (masterDataState === 'BARU') {
             jsonSave = {
                 entitas: kode_entitas,
                 tipe: masterData.tipe,
@@ -418,7 +417,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
     useEffect(() => {
         const refreshDatasource = async () => {
             setShowLoader(true);
-            if (masterDataState == 'BARU') {
+            if (masterDataState === 'BARU') {
                 setMasterData({
                     entitas: kode_entitas,
                     kode_relasi: '',
@@ -449,8 +448,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                     kecamatan: '',
                     kelurahan: '',
                 });
-                setKontakRelasiForm({
-                    kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
+                setKontakRelasiForm([{
+                    kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
                     id_relasi: '',
                     nama_lengkap: '',
                     nama_person: '',
@@ -468,7 +467,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                     file_ktp: '',
                     file_ttd: '',
                     aktif_kontak: 'Y',
-                });
+                }]);
             }
 
             if (masterDataState == 'EDIT') {
@@ -648,9 +647,10 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
     let dialogKontakRelasi: Dialog | any;
     const [dialogKontakRelasiVisible, setDialogKontakRelasiVisible] = useState(false);
     const addDetailRelasi = async () => {
+        console.log(masterDataState === 'BARU' ? '' : masterData.kode_relasi)
         setEditModeDetail(false);
         setSelectedListData({
-            kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
+            kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
             id_relasi: '',
             nama_lengkap: '',
             nama_person: '',
@@ -674,7 +674,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
     useEffect(() => {
         if (masterDataState === 'BARU') {
             setSelectedListData({
-                kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
+                kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
                 id_relasi: '',
                 nama_lengkap: '',
                 nama_person: '',
@@ -697,7 +697,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
     }, [masterDataState]);
 
     const [inputValue, setInputValue] = useState({
-        kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
+        kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
         id_relasi: '',
         nama_lengkap: '',
         nama_person: '',
@@ -741,18 +741,19 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
             isFlat: false,
             click: () => {
                 if (!editModeDetail) {
-                    console.log('masuk sini');
-
                     const id = idRelasi + totalLine + 1;
 
                     const newObject = {
                         ...inputValue,
-                        id_relasi: totalLine + 1,
+                        id_relasi: (totalLine + 1).toString() as string,
                     };
+                    gridDetailRelasi.addRecord(newObject);
+                    setRowIdxDetailBarang(id);
+                    setDialogKontakRelasiVisible(false);
+                    gridDetailRelasi.refresh();
 
-                    // Kosongkan nil''ai input setelah ditambahkan ke dalam array
                     setInputValue({
-                        kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
+                        kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
                         id_relasi: '',
                         nama_lengkap: '',
                         nama_person: '',
@@ -771,29 +772,20 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                         file_ttd: '',
                         aktif_kontak: 'Y',
                     });
-                    // kontakRelasiForm.push(newObject);
-                    gridDetailRelasi.addRecord(newObject);
-                    // kontakRelasiForm.push(newObject);
-                    setRowIdxDetailBarang(id);
-                    setDialogKontakRelasiVisible(false);
                 } else {
-                    console.log('masuksini');
-
                     const rowIndex = gridDetailRelasi.getSelectedRowIndexes();
                     const existingData = gridDetailRelasi.properties.dataSource;
                     const updatedArray = (existingData[rowIndex] = {
                         ...inputValue,
                     });
-                    console.log(updatedArray);
 
                     kontakRelasiForm[rowIndex] = {
                         ...updatedArray,
                     };
-                    console.log(kontakRelasiForm[rowIndex]);
                     gridDetailRelasi.refresh();
                     setDialogKontakRelasiVisible(false);
                     setInputValue({
-                        kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
+                        kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
                         id_relasi: '',
                         nama_lengkap: '',
                         nama_person: '',
@@ -824,11 +816,12 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
             },
             isFlat: false,
             click: () => {
+                console.log(kontakRelasiForm);
                 setEditModeDetail(false);
 
-                setDialogKontakRelasiVisible(false);
+                // setDialogKontakRelasiVisible(false);
                 setInputValue({
-                    kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
+                    kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
                     id_relasi: '',
                     nama_lengkap: '',
                     nama_person: '',
@@ -853,7 +846,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
 
     const [isAktifKontakChecked, setIsAktifKontakChecked] = useState<boolean>(false);
     const [selectedListData, setSelectedListData] = useState({
-        kode_relasi: masterDataState == 'BARU' ? '' : masterData.kode_relasi,
+        kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
         id_relasi: '',
         nama_lengkap: '',
         nama_person: '',
@@ -955,7 +948,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                     target={target ?? '#main-target'}
                     header={() => {
                         let header: string = '';
-                        if (masterDataState == 'BARU') {
+                        if (masterDataState === 'BARU') {
                             header = 'Daftar Relasi Baru';
                         } else if (masterDataState == 'EDIT') {
                             header = 'Edit Relasi';
@@ -1030,7 +1023,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                         <DatePickerComponent
                                                             locale="id"
                                                             // cssClass="e-custom-style"
-                                                            renderDayCell={onRenderDayCell}
+                                                            // renderDayCell={onRenderDayCell}
                                                             placeholder="Tgl. Relasi"
                                                             enableMask={true}
                                                             maskPlaceholder={{ day: 'd', month: 'M', year: 'y' }}
@@ -1166,7 +1159,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                                         : '-- Pilih Kecamatan --'}
                                                                 </option>
                                                                 {kecamatanList.map((kecamatan,index) => (
-                                                                    <option value={kecamatan.nama_kecamatan} key={kecamatan.nama_kecamatan, + index+1}>
+                                                                    <option value={kecamatan.nama_kecamatan} key={kecamatan.nama_kecamatan + index+1}>
                                                                         {kecamatan.nama_kecamatan}
                                                                     </option>
                                                                 ))}
@@ -1474,7 +1467,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                     locale="id"
                                                     ref={(g) => (gridDetailRelasi = g)}
                                                     dataSource={kontakRelasiForm}
-                                                    
+                                                    editSettings={{ allowAdding:true, allowEditing: false, allowDeleting: true }}
                                                     selectionSettings={{ mode: 'Row', type: 'Single' }}
                                                     allowResizing={true}
                                                     // editSettings={editOptions}
@@ -1497,8 +1490,8 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                         if (gridDetailRelasi) {
                                                             const rowIndex: number = args.row.rowIndex;
                                                             gridDetailRelasi.selectRow(rowIndex);
-                
-                                                           showEditRecord();
+                                                            // showEditRecord();
+                                                            // gridDetailRelasi.editModule.closeEdit();
                                                         }
                                                     }}
                                                 >
@@ -1549,8 +1542,9 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                     <Inject services={[Page, Selection, Edit, CommandColumn, Toolbar, Resize]} />
                                                 </GridComponent>
                                                 <div className="panel-pager">
-                                                    <TooltipComponent content="Baru" opensOn="Hover" openDelay={1000} target="#buAdd1">
-                                                        <TooltipComponent content="Hapus" opensOn="Hover" openDelay={1000} target="#buDelete1">
+                                                    <TooltipComponent content="Baru" opensOn="Hover" openDelay={50} target="#buAdd1">
+                                                        <TooltipComponent content="Ubah" opensOn="Hover" openDelay={50} target="#buEdit">
+                                                        <TooltipComponent content="Hapus" opensOn="Hover" openDelay={50} target="#buDel">
                                                             <div className="mt-1 flex">
                                                                 <ButtonComponent
                                                                     id="buAdd1"
@@ -1563,16 +1557,26 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                                 />
                                                                 
                                                                 <ButtonComponent
-                                                                    id="buAdd1"
+                                                                    id="buEdit"
                                                                     type="button" //Solusi tdk refresh halaman saat selesai onClick
                                                                     cssClass="e-warning e-small"
+                                                                    iconCss="e-icons e-small e-edit"
+                                                                    style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
+                                                                    disabled={!stateBrowse}
+                                                                    onClick={() => showEditRecord()}
+                                                                />
+                                                                <ButtonComponent
+                                                                    id="buDel"
+                                                                    type="button" //Solusi tdk refresh halaman saat selesai onClick
+                                                                    cssClass="e-danger e-small"
                                                                     iconCss="e-icons e-small e-trash"
                                                                     style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
                                                                     disabled={!stateBrowse}
-                                                                    onClick={addDetailRelasi}
+                                                                    onClick={() => gridDetailRelasi.deleteRecord()}
                                                                 />
                                                             </div>
                                                         
+                                                        </TooltipComponent>
                                                         </TooltipComponent>
                                                     </TooltipComponent>
                                                 </div>
@@ -1626,7 +1630,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                 scrollbarWidth: 'none',
                             }}
                         >
-                            {(masterDataState == 'BARU' || masterDataState == 'EDIT') && (
+                            {(masterDataState === 'BARU' || masterDataState == 'EDIT') && (
                                 <ButtonComponent
                                     id="buBatalDokumen1"
                                     content="Batal"
@@ -1636,7 +1640,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                     onClick={closeDialogRelasi}
                                 />
                             )}
-                            {(masterDataState == 'BARU' || masterDataState == 'EDIT') && (
+                            {(masterDataState === 'BARU' || masterDataState == 'EDIT') && (
                                 <ButtonComponent
                                     id="buSimpanDokumen1"
                                     content="Simpan"
@@ -1669,6 +1673,26 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                 buttons={buttonKontakRelasi}
                 position={{ X: 'center', Y: 'center' }}
                 close={() => {
+                    setInputValue({
+                        kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
+                        id_relasi: '',
+                        nama_lengkap: '',
+                        nama_person: '',
+                        jab: '',
+                        hubungan: '',
+                        bisnis: '',
+                        bisnis2: '',
+                        telp: '',
+                        hp: '',
+                        hp2: '',
+                        fax: '',
+                        email: '',
+                        catatan: '',
+                        file_kuasa: '',
+                        file_ktp: '',
+                        file_ttd: '',
+                        aktif_kontak: 'Y',
+                    });
                     setDialogKontakRelasiVisible(false);
                 }}
                 closeOnEscape={true}

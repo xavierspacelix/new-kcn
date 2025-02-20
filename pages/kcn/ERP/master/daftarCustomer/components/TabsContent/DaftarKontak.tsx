@@ -162,7 +162,6 @@ const DaftarKontak = ({ dataSource, params, setFormDKField }: DaftarKontakProps)
                     isOpen={isOpenDialog}
                     onClose={(args) => {
                         console.log('args', args);
-                        // gridDKType.addRecord(args, );
                         setFormDKField((prev: any) => [...prev, args]);
                         setIsOpenDialog(false);
                     }}
