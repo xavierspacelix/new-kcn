@@ -448,26 +448,28 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                     kecamatan: '',
                     kelurahan: '',
                 });
-                setKontakRelasiForm([{
-                    kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
-                    id_relasi: '',
-                    nama_lengkap: '',
-                    nama_person: '',
-                    jab: '',
-                    hubungan: '',
-                    bisnis: '',
-                    bisnis2: '',
-                    telp: '',
-                    hp: '',
-                    hp2: '',
-                    fax: '',
-                    email: '',
-                    catatan: '',
-                    file_kuasa: '',
-                    file_ktp: '',
-                    file_ttd: '',
-                    aktif_kontak: 'Y',
-                }]);
+                setKontakRelasiForm([
+                    {
+                        kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
+                        id_relasi: '',
+                        nama_lengkap: '',
+                        nama_person: '',
+                        jab: '',
+                        hubungan: '',
+                        bisnis: '',
+                        bisnis2: '',
+                        telp: '',
+                        hp: '',
+                        hp2: '',
+                        fax: '',
+                        email: '',
+                        catatan: '',
+                        file_kuasa: '',
+                        file_ktp: '',
+                        file_ttd: '',
+                        aktif_kontak: 'Y',
+                    },
+                ]);
             }
 
             if (masterDataState == 'EDIT') {
@@ -647,7 +649,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
     let dialogKontakRelasi: Dialog | any;
     const [dialogKontakRelasiVisible, setDialogKontakRelasiVisible] = useState(false);
     const addDetailRelasi = async () => {
-        console.log(masterDataState === 'BARU' ? '' : masterData.kode_relasi)
+        console.log(masterDataState === 'BARU' ? '' : masterData.kode_relasi);
         setEditModeDetail(false);
         setSelectedListData({
             kode_relasi: masterDataState === 'BARU' ? '' : masterData.kode_relasi,
@@ -988,7 +990,7 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                 <tr>
                                                     <th style={{ width: '110px' }}>No. Register</th>
                                                     <th style={{ width: '150px' }}>Tipe Relasi</th>
-                                                    <th style={{ width: '150px' }}>Tanggal</th>
+                                                    <th style={{ width: '150px' }}>Relasi Sejak</th>
                                                     <th style={{ width: '300px' }}>Perusahaan</th>
                                                 </tr>
                                             </thead>
@@ -1046,7 +1048,6 @@ const DialogRelasi: React.FC<dialogRelasiProps> = ({ userid, kode_entitas, maste
                                                                     });
                                                                 }
                                                             }}
-                                                            readonly={masterDataState == 'EDIT'}
                                                         >
                                                             <Inject services={[MaskedDateTime]} />
                                                         </DatePickerComponent>

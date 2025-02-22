@@ -77,7 +77,7 @@ const InfoPemilik = ({ Field, handleChange, params, state, setStatus }: InfoPemi
                                 <div className="col-span-2" key={item.FieldName + index}>
                                     {item.Label && <span className="e-label font-bold">{item.Label}</span>}
                                     <div className="flex items-center justify-between gap-3">
-                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
+                                        <div className={`form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                             <TextBoxComponent
                                                 id={item.FieldName + index}
                                                 value={String(item.Value)}

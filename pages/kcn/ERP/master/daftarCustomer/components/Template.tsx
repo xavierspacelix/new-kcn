@@ -1,5 +1,5 @@
 import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FieldDKProps, FieldProps, JamOpsProps, PotensiaProdukProps } from '../functions/definition';
+import { AlamatKirimProps, FieldDKProps, FieldProps, JamOpsProps, PotensiaProdukProps } from '../functions/definition';
 
 interface CheckboxProps {
     id: string;
@@ -409,6 +409,24 @@ export const MapFields = [
         Value: '',
         Visible: true,
     },
+];
+export const initialAlamat: FieldProps[] = [
+    { id: 1, FieldName: 'kode_cust', Label: '', Type: '', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: false },
+    { id: 2, FieldName: 'id_cust', Label: '', Type: '', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: false },
+    { id: 3, FieldName: 'utama', Label: '', Type: '', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: false },
+    { id: 4, FieldName: 'alamat_kirim1', Label: 'Alamat', Type: 'longString', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 5, FieldName: 'alamat_kirim2', Label: '', Type: 'longString', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 6, FieldName: 'kota_kirim', Label: 'Kota', Type: 'select', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 7, FieldName: 'kodepos_kirim', Label: 'Kode Pos', Type: 'number', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 8, FieldName: 'kecamatan_kirim', Label: 'Kecamatan', Type: 'select', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 9, FieldName: 'propinsi_kirim', Label: 'Provinsi', Type: 'select', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 10, FieldName: 'kelurahan_kirim', Label: 'Kelurahan', Type: 'select', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 11, FieldName: 'negara_kirim', Label: 'Negara', Type: 'select', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 12, FieldName: 'lat_kirim', Label: 'Latitude', Type: 'GeoLat', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 13, FieldName: 'long_kirim', Label: 'Longitude', Type: 'GeoLat', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: true },
+    { id: 14, FieldName: 'tgl_update', Label: '', Type: '', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: false },
+    { id: 15, FieldName: 'userid', Label: '', Type: '', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: false },
+    { id: 16, FieldName: 'alamat_lengkap', Label: 'Alamat Lengkap', Type: 'string', Value: '', TabId: 1, ReadOnly: false, IsAction: false, group: 'lainlainAlamat', Visible: false },
 ];
 const Template = () => {
     return <div>Template</div>;

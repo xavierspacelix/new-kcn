@@ -6,6 +6,7 @@ import stylesHeader from './customerHeader.module.css';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+    AlamatKirimProps,
     convertJamOpsToObject,
     customerTab,
     fetchAkun,
@@ -67,6 +68,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
     const [formDKField, setFormDKField] = React.useState<dKTabInterface[]>([]);
     const [formPotensialProdukField, setFormPotensialProdukField] = React.useState<PotensiaProdukProps[]>([]);
     const [formRekeningBankField, setFormRekeningBankField] = React.useState<RekeningBankkProps[]>([]);
+    const [formAlamatKirimField, setFormAlamatKirimField] = React.useState<AlamatKirimProps[]>([]);
     const [formFasMapField, setFormFasMapField] = React.useState<any[]>(MapFields);
     const [dsProdukKategori, setDsProdukKategori] = React.useState<any[]>([]);
     const [dsProdukKelompok, setDsProdukKelompok] = React.useState<any[]>([]);
@@ -205,9 +207,6 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
             });
             setFormJamOpsField(newJamOps);
         } else if (grup === 'masterRight') {
-            console.log('grup', grup);
-            console.log('name', name);
-            console.log('value', value);
             const newData = formBaseStateField
                 .filter((itemF) => itemF.group === grup)
                 .map((item) => {
@@ -315,6 +314,9 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     });
                 });
             });
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'kirim').then((result) => {
+                setFormAlamatKirimField(result)
+            });
 
             await fetchKategoriKelompok(params?.entitas, params?.token).then((result) => {
                 setDsProdukKategori(result['kategori']);
@@ -325,6 +327,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
             });
 
             setFormBaseStateField(newData.sort((a, b) => a.id - b.id));
+            setFormFasMapField((prevMapField: any[]) => prevMapField.map((field) => (field.FieldName === 'kode_cust' ? { ...field, Value: params?.kode_cust } : field)));
         } catch (error) {
             console.error(error);
             setShowLoader(false);
@@ -498,6 +501,14 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
             }, {});
 
         const jamOps = convertJamOpsToObject(formJamOpsField, master.kode_cust, params?.userid);
+        const fasMap = formFasMapField
+            .filter((item) => item.Type !== 'space')
+            .reduce((acc: { [key: string]: any }, curr) => {
+                acc[curr.FieldName] = curr.Value;
+                return acc;
+            }, {});
+
+        console.log(formAlamatKirimField)
     };
     const saveDoc = async () => {
         try {
@@ -734,6 +745,8 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                                 state={state}
                                                 MapField={formFasMapField}
                                                 setMapField={setFormFasMapField}
+                                                dsAlamatKirim={formAlamatKirimField}
+                                                setFormAlamatKirimField={setFormAlamatKirimField}
                                             />
                                         ) : // <LainLain
                                         // Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 4)}

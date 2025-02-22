@@ -526,7 +526,7 @@ const RelasiList = () => {
                                                 />
                                                 <span>Nama Relasi</span>
                                             </label>
-                                            <input type="text" placeholder="--- Nama Relasi ---" className="form-input" value={namaRelasiValue} onChange={handleNamaRelasiInputChange} />
+                                            <input type="text" placeholder="--- Nama Relasi ---" className="form-input" value={namaRelasiValue} onChange={handleNamaRelasiInputChange} name='nama_relasi' />
                                             <label className="mt-3 flex cursor-pointer items-center">
                                                 <input type="checkbox" className="form-checkbox" checked={isTipeRelasiChecked} onChange={() => setIsTipeRelasiChecked(!isTipeRelasiChecked)} />
                                                 <span>Tipe</span>
@@ -613,12 +613,7 @@ const RelasiList = () => {
                                     loadingIndicator={{ indicatorType: 'Shimmer' }}
                                     queryCellInfo={queryCellInfoListData}
                                     rowSelecting={rowSelectingListData}
-                                    dataBound={() => {
-                                        //Selecting row after the refresh Complete
-                                        if (gridListData) {
-                                            gridListData.selectRow(rowIdxListData.current);
-                                        }
-                                    }}
+
                                     recordDoubleClick={(args: any) => {
                                         if (gridListData) {
                                             const rowIndex: number = args.row.rowIndex;

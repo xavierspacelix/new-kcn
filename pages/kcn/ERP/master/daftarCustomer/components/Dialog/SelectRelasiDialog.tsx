@@ -6,7 +6,7 @@ import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import stylesHeader from './customerHeader.module.css';
 import { ColumnDirective, ColumnsDirective, Filter, GridComponent, Group, Inject, Page, Sort } from '@syncfusion/ej2-react-grids';
-import { iPTabValue } from '../Template';
+
 import { ComboBoxComponent } from '@syncfusion/ej2-react-dropdowns';
 import DialogRelasi from '../../../daftarRelasi/component/DialogRelasi';
 
@@ -53,8 +53,8 @@ const SelectRelasiDialog = ({ isOpen, onClose, params, relasiSource, state }: Se
         kode_relasi: '',
         nama_relasi: '',
     });
-        const [status, setStatus] = React.useState(false);
-    
+    const [status, setStatus] = React.useState(false);
+
     const [isNew, setIsNew] = React.useState(false);
 
     const [iPTab, setIPTab] = React.useState<any[]>([
@@ -447,7 +447,7 @@ const SelectRelasiDialog = ({ isOpen, onClose, params, relasiSource, state }: Se
                     userid={params?.userid}
                     kode_entitas={params?.entitas}
                     masterKodeRelasi={params?.kode_relasi ?? ''}
-                    masterDataState={"BARU"}
+                    masterDataState={'BARU'}
                     isOpen={isNew}
                     target="#DialogSelecteRelasi"
                     onClose={() => {

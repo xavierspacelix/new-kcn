@@ -25,6 +25,7 @@ interface DaftarKontakProps {
 }
 let gridDKType: GridComponent;
 const DaftarKontak = ({ dataSource, params, setFormDKField }: DaftarKontakProps) => {
+
     const [isOpenDialog, setIsOpenDialog] = React.useState(false);
     const [stateKontak, setStateKontak] = React.useState('ready');
     const [editValue, setEditValue] = React.useState<dKTabInterface>(dKTabValue);

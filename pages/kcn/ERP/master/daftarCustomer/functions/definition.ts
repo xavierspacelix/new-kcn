@@ -343,6 +343,23 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
             },
         });
         return data.data.data;
+    } else if (type === 'kirim') {
+        const data = await axios.get(`${apiUrl}/erp/list_info_kirim_customer?`, {
+            params: {
+                entitas: entitas,
+                param1: kode_cust,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const newData = data.data.data.map((item: { utama: string }) => {
+            return {
+                ...item,
+                utama: item.utama === 'Y' ? true : false,
+            };
+        });
+        return newData;
     }
 };
 export interface RelasiProps {
@@ -514,6 +531,24 @@ export type RekeningBankkProps = {
     tgl_update: string;
     userid: string;
 };
+export type AlamatKirimProps = {
+    kode_cust: string;
+    id_cust: string;
+    alamat_kirim1: string;
+    alamat_kirim2: string;
+    kota_kirim: string;
+    kecamatan_kirim: string;
+    kelurahan_kirim: string;
+    kodepos_kirim: string;
+    propinsi_kirim: string;
+    negara_kirim: string;
+    utama: boolean;
+    lat_kirim: string;
+    long_kirim: string;
+    userid: string;
+    tgl_update: string;
+};
+
 let id: number = 1;
 export const customerTab = [
     {
