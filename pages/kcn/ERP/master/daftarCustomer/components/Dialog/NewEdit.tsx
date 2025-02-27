@@ -7,6 +7,7 @@ import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     AlamatKirimProps,
+    base64ToFile,
     convertJamOpsToObject,
     customerTab,
     fetchAkun,
@@ -20,6 +21,7 @@ import {
     getDataMasterCustomer,
     HisPlafondProps,
     JamOpsProps,
+    LoadImage,
     onRenderDayCell,
     PotensiaProdukProps,
     prepareNewData,
@@ -27,6 +29,7 @@ import {
     RelasiProps,
     vtFileProps,
     vtFileTemplate,
+    vtPDFTemplate,
 } from '../../functions/definition';
 import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Tab } from '@headlessui/react';
@@ -43,6 +46,7 @@ import Penjualan from '../TabsContent/Penjualan';
 import moment from 'moment';
 import Catatan from '../TabsContent/Catatan';
 import FilePendukung from '../TabsContent/FilePendukung';
+import { Troubleshoot } from '@mui/icons-material';
 
 interface NewEditProps {
     isOpen: boolean;
@@ -64,6 +68,8 @@ interface NewEditProps {
     setParams: any;
 }
 let gridJamOPSType: GridComponent;
+let dialogInstance: DialogComponent;
+
 const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditProps) => {
     const [status, setStatus] = React.useState(false);
     const [title, setTitle] = React.useState('Customer Baru');
@@ -77,6 +83,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
     const [formFasMapField, setFormFasMapField] = React.useState<any[]>(MapFields);
     const [formHisPlafond, setFormHisPlafond] = React.useState<HisPlafondProps[]>([]);
     const [formVtFile, setFormVtFile] = React.useState<vtFileProps[]>([]);
+    const [formVtPDF, setFormVtPDF] = React.useState<vtFileProps[]>(vtPDFTemplate);
     const [dsProdukKategori, setDsProdukKategori] = React.useState<any[]>([]);
     const [dsProdukKelompok, setDsProdukKelompok] = React.useState<any[]>([]);
     const [dsAkunPiutang, setDsAkunPiutang] = React.useState<any[]>([]);
@@ -110,10 +117,6 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 </div>
 
                 <div className="flex">
-                    {/*  TODO: onClick */}
-                    <div className="e-btn e-danger e-small" onClick={() => {}}>
-                        Berikut
-                    </div>
                     {/* TODO: onClick */}
                     <div
                         className="e-btn e-danger e-small"
@@ -328,10 +331,9 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
             await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'hisplafond').then((result) => {
                 setFormHisPlafond(result);
             });
+            const newVtFile: vtFileProps[] = [];
             await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'sfc').then((result) => {
-                console.log('result', result);
-                const newVtFile: vtFileProps[] = [];
-                result.map((item: any, index: number) => {
+                result.map(async (item: any, index: number) => {
                     const newindex = index + 1;
                     newVtFile.push({
                         ...vtFileTemplate,
@@ -340,9 +342,51 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                         mandatory: item.fileStatus === 'Y' ? true : false,
                     });
                 });
-                setFormVtFile(newVtFile);
             });
+            await Promise.all(
+                newVtFile.map(async (item: vtFileProps) => {
+                    try {
+                        const result = await LoadImage(params?.entitas, params?.kode_cust ?? '', params?.token, item.id);
 
+                        if (result.length > 0) {
+                            const newFile = base64ToFile(result[0].decodeBase64_string, result[0].filegambar.split('.')[0]);
+                            item.nama_file = result[0].filegambar;
+                            item.file = newFile;
+                            item.original_name = result[0].fileoriginal;
+                            item.state = 'fetching';
+                            item.exist = true;
+                        }
+                    } catch (err) {
+                        item.state = 'fetching';
+                        item.exist = true;
+                        console.error('err', err);
+                    }
+                })
+            );
+            setFormVtFile(newVtFile);
+
+            const PDFFILE = await Promise.all(
+                vtPDFTemplate.map(async (item: vtFileProps) => {
+                    try {
+                        const result = await LoadImage(params?.entitas, params?.kode_cust ?? '', params?.token, item.id);
+
+                        if (result.length > 0) {
+                            const newFile = base64ToFile(result[0].decodeBase64_string, result[0].filegambar.split('.')[0]);
+                            item.nama_file = result[0].filegambar;
+                            item.file = newFile;
+                            item.original_name = result[0].fileoriginal;
+                            item.state = 'fetching';
+                            item.exist = true;
+                        }
+                    } catch (err) {
+                        item.state = 'fetching';
+                        item.exist = true;
+                        console.error('err', err);
+                    }
+                    return item;
+                })
+            );
+            setFormVtPDF(PDFFILE);
             await fetchKategoriKelompok(params?.entitas, params?.token).then((result) => {
                 setDsProdukKategori(result['kategori']);
                 setDsProdukKelompok(result['kelompok']);
@@ -379,6 +423,27 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 })
                 .catch((error) => {
                     console.error('Error:', error);
+                });
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'sfc')
+                .then((result) => {
+                    if (result.length > 0) {
+                        const newVtFile: vtFileProps[] = [];
+                        result.map((item: any, index: number) => {
+                            const newindex = index + 1;
+                            newVtFile.push({
+                                ...vtFileTemplate,
+                                id: newindex,
+                                keterangan: item.description,
+                                mandatory: item.fileStatus === 'Y' ? true : false,
+                            });
+                        });
+                        setFormVtFile(newVtFile);
+                    } else {
+                        myAlertGlobal(`File pendukung belum disetting, hubungi administrator anda.`, 'dialogCustomer', 'warning');
+                    }
+                })
+                .catch((error) => {
+                    myAlertGlobal(`Terjadi Kesalahan Server! ${error}`, 'dialogCustomer', 'warning');
                 });
             await FillFromSQL(params.entitas, 'termin', null, params.token)
                 .then((result) => {
@@ -497,11 +562,11 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 return item;
             });
         });
-
         await getDataMasterCustomer(params?.entitas, newDataValue?.kode_relasi ?? '', params?.token, 'person').then((result) => {
             setFormDKField(result);
         });
     };
+    const handleBlockData = async () => {};
     const beforeSaveDoc = async () => {
         // Create Object Master
         const master = formBaseStateField
@@ -532,8 +597,16 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 acc[curr.FieldName] = curr.Value;
                 return acc;
             }, {});
-
-        console.log(formAlamatKirimField);
+        const rawBody = {
+            entitas: params?.entitas,
+            ...master,
+            detail: {
+                ...detail,
+            },
+            jamops: {
+                ...jamOps,
+            },
+        };
     };
     const saveDoc = async () => {
         try {
@@ -579,6 +652,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
         } else if (isOpen && state === 'new') {
             quCustNewRecord();
         }
+        dialogInstance.show(true);
         fetchListRelasi();
         fetchInitialData();
     }, [isOpen, status]);
@@ -592,6 +666,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 visible={isOpen}
                 close={dialogClose}
                 header={title.toString()}
+                ref={(dialog: DialogComponent) => (dialogInstance = dialog as DialogComponent)}
                 showCloseIcon={true}
                 target="#main-target"
                 closeOnEscape={false}
@@ -715,7 +790,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                             </Tab.List>
                             <Tab.Panels className={`w-full flex-1 border border-t-0 border-white-light text-sm dark:border-[#191e3a]`}>
                                 {customerTab.map((item: { id: number; name: string }) => (
-                                    <Tab.Panel key={item.id} className={`h-[450px] overflow-auto  p-2 ${item.id == 8 ? '!bg-white' : 'bg-[#f8f7ff]'}`}>
+                                    <Tab.Panel key={item.id} className={`h-[480px] overflow-auto  p-2 ${item.id == 8 ? '!bg-white' : 'bg-[#f8f7ff]'}`}>
                                         {item.id == 1 ? (
                                             <InfoPerusahaan
                                                 Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 1)}
@@ -777,7 +852,16 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                         ) : item.id == 7 ? (
                                             <Catatan Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 7)} handleChange={handleChange} dataSource={formHisPlafond} />
                                         ) : item.id == 8 ? (
-                                            <FilePendukung vtFile={formVtFile} state={state}/>
+                                            <FilePendukung
+                                                vtFile={formVtFile}
+                                                state={state}
+                                                params={{
+                                                    kelas: String(formBaseStateField.find((item) => item.FieldName === 'kelas')?.Value),
+                                                }}
+                                                setVTFile={setFormVtFile}
+                                                vtPDF={formVtPDF}
+                                                setVTFilePDF={setFormVtPDF}
+                                            />
                                         ) : item.id == 9 ? (
                                             <RekeningBank
                                                 dataSource={formRekeningBankField}
@@ -804,7 +888,9 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     isOpen={selectRelasiDialog}
                     onClose={(args): void => {
                         setSelectRelasiDialog(false);
-                        onSelect(args);
+                        if (args) {
+                            onSelect(args);
+                        }
                     }}
                     params={params}
                     relasiSource={relasiSource}

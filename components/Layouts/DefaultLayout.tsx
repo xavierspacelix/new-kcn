@@ -96,7 +96,7 @@ const DefaultLayout = ({ children }: PropsWithChildren) => {
                         </button>
                     )}
                 </div>
-                <div className={`${themeConfig.navbar} main-container min-h-screen text-black dark:text-white-dark`}>
+                <div id="main_layout" className={`${themeConfig.navbar} main-container min-h-screen text-black dark:text-white-dark`}>
                     {/* BEGIN SIDEBAR */}
                     <Sidebar />
                     {/* END SIDEBAR */}

@@ -424,9 +424,48 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
                 Authorization: `Bearer ${token}`,
             },
         });
-        return groupItemsByNumber(data.data.data[0]);
+        if (data.data.data.length === 0) {
+            return [];
+        } else {
+            return groupItemsByNumber(data.data.data[0]);
+        }
     }
 };
+
+export const LoadImage = async (entitas: string, kode_cust: string, token: string, id?: number) => {
+    const data = await axios.get(`${apiUrl}/erp/load_fileGambar_byId`, {
+        params: {
+            entitas,
+            param1: kode_cust,
+            param2: id,
+        },
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return data.data.data;
+};
+export function base64ToFile(base64: string, filename: string): File {
+    const mimeType = getMimeTypeFromBase64(base64);
+    const base64String = base64.replace(/^data:.+;base64,/, '');
+    const byteCharacters = atob(base64String);
+    const byteArrays = new Uint8Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays[i] = byteCharacters.charCodeAt(i);
+    }
+
+    const file = new File([byteArrays], filename, { type: mimeType });
+    return file;
+}
+
+function getMimeTypeFromBase64(base64: string): string {
+    const mimeMatch = base64.match(/^data:(.*?);base64,/);
+
+    if (mimeMatch) {
+        return mimeMatch[1];
+    }
+
+    return 'application/octet-stream';
+}
+
 export interface RelasiProps {
     kode_relasi: string;
     nama_relasi: string;
@@ -632,16 +671,42 @@ export type vtFileProps = {
     nama_file: string;
     original_name: string;
     file: File | null;
+    state: string;
+    exist?: boolean;
 };
 
-export const vtFileTemplate = {
+export const vtFileTemplate: vtFileProps = {
     id: 0,
     keterangan: '',
     mandatory: false,
     nama_file: '',
     original_name: '',
     file: null,
+    state: '',
+    exist: false,
 };
+export const vtPDFTemplate: vtFileProps[] = [
+    {
+        id: 51,
+        keterangan: '',
+        mandatory: false,
+        nama_file: '',
+        original_name: '',
+        file: null,
+        state: '',
+        exist: false,
+    },
+    {
+        id: 52,
+        keterangan: '',
+        mandatory: false,
+        nama_file: '',
+        original_name: '',
+        file: null,
+        state: '',
+        exist: false,
+    },
+];
 let id: number = 1;
 export const customerTab = [
     {
