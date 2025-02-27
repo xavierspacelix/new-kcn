@@ -144,7 +144,16 @@ export const JamOpsField: JamOpsProps[] = [
     { id: 6, Hari: 'Sabtu', JamBuka: '', JamTutup: '', Buka: false },
     { id: 7, Hari: 'Minggu', JamBuka: '', JamTutup: '', Buka: false },
 ];
-
+export const TabFilePendukung = [
+    {
+        id: 1,
+        label: 'Gambar',
+    },
+    {
+        id: 2,
+        label: 'Portable Document',
+    },
+];
 export const PotensialProdukField: PotensiaProdukProps[] = [
     {
         kode_cust: '',
@@ -349,6 +358,9 @@ export const BaseFormField: FieldProps[] = [
     { id: id++, FieldName: 'negara_kirim', Label: 'Negara', Type: 'string', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
     { id: id++, FieldName: 'lat_kirim', Label: 'Latitude', Type: 'GeoLat', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
     { id: id++, FieldName: 'long_kirim', Label: 'Longitude', Type: 'GeoLat', Value: '', TabId: 6, ReadOnly: true, IsAction: false, group: 'masterRight', Visible: true },
+
+    // Catatan
+    { id: id++, FieldName: 'catatan', Label: 'Catatan', Type: 'textarea', Value: '', TabId: 7, ReadOnly: false, IsAction: false, group: 'masterRight', Visible: true },
 ];
 export const baseFormDKField: FieldDKProps[] = [
     { id: 1, FieldName: 'nama_lengkap', Type: 'string', Value: '', TabId: 0, ReadOnly: false, IsAction: false, Visible: false, Label: 'Nama' },

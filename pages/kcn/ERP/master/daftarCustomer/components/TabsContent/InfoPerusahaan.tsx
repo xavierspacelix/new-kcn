@@ -79,8 +79,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                                 <div key={item.FieldName + index}>
                                     <span className="e-label font-bold"> {item.Label}</span>
                                     <div className="flex flex-col gap-2">
-                                                                                            <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
-
+                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                             <DatePickerComponent
                                                 id={item.FieldName + index}
                                                 value={typeof item.Value === 'string' ? new Date(item.Value) : item.Value instanceof Date ? item.Value : new Date()}
@@ -102,8 +101,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                             ) : item.Type === 'longString' ? (
                                 <div className="col-span-2" key={item.FieldName + index}>
                                     {item.Label && <span className="e-label font-bold">{item.Label}</span>}
-                                                                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
-
+                                    <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                         <TextBoxComponent
                                             id={item.FieldName + index}
                                             value={String(item.Value)}
@@ -119,8 +117,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                             ) : item.Type === 'number' ? (
                                 <div key={item.FieldName + index}>
                                     <span className="e-label font-bold">{item.Label}</span>
-                                                                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
-
+                                    <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                         <span className="e-input-group e-control-wrapper">
                                             <input
                                                 id={item.FieldName + index}
@@ -155,8 +152,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                             ) : item.Type === 'select' ? (
                                 <div key={item.FieldName + index}>
                                     <span className="e-label font-bold">{item.Label}</span>
-                                                                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
-
+                                    <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                         <ComboBoxComponent
                                             id={item.FieldName}
                                             fields={{ text: 'label', value: 'value' }}
@@ -175,8 +171,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                             ) : item.Type === 'string' ? (
                                 <div key={item.FieldName + index}>
                                     <span className="e-label font-bold">{item.Label}</span>
-                                                                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
-
+                                    <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                         <TextBoxComponent
                                             id={item.FieldName + index}
                                             name={item.FieldName}
@@ -254,7 +249,7 @@ const InfoPerusahaan = ({ Field, OpsField, handleChange, onRenderDayCell, gridRe
                             </GridComponent>
                         </div>
                         {Field?.filter((item: FieldProps) => item.Type === 'textarea')?.map((item: FieldProps, index: number) => (
-                            <div className="mt-6" key={item.FieldName + index}>
+                            <div key={item.FieldName + index}>
                                 <span className="e-label font-bold">{item.Label}</span>
                                 <textarea id="ctnTextarea" rows={3} className="form-textarea" ref={textareaRef} value={item.Value ? item.Value.toString() : ''} readOnly={item.ReadOnly} />
                             </div>

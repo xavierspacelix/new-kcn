@@ -1,6 +1,6 @@
 import React from 'react';
 import { Column, ColumnDirective, ColumnsDirective, commandClick, DialogEditEventArgs, Edit, GridComponent, Inject, Sort, Toolbar } from '@syncfusion/ej2-react-grids';
-import { AlamatKirimProps, FieldProps } from '../../functions/definition';
+import { AlamatKirimProps, FieldProps, getMaxId } from '../../functions/definition';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { DialogComponent, TooltipComponent } from '@syncfusion/ej2-react-popups';
@@ -38,7 +38,7 @@ interface AlamatKirimType {
     onClose: (args: any) => void;
     initalData: FieldProps[];
     params: ParamsType;
-    setFormAlamatKirimField: Function;
+    // setFormAlamatKirimField: Function;
 }
 let gridFasMap: GridComponent;
 const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField, setMapField, setFormAlamatKirimField }: LainLainType) => {
@@ -93,6 +93,7 @@ const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField,
             myAlertGlobal(`Nama Customer Belum diisi.`, 'dialogCustomer', 'warning');
         } else if (proses === 'new') {
             gridFasMap.clearSelection();
+            setTemplateAlamat((prev: FieldProps[]) => prev.map((item) => (item.FieldName === 'kode_cust' ? { ...item, Value: params.kode_cust } : item)));
             setOpenDialog(true);
         } else if (proses === 'edit') {
             const data = gridFasMap.getSelectedRecords()[0];
@@ -122,12 +123,13 @@ const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField,
                 myAlertGlobal(`Silahkan Memilih Data Yang Akan di Hapus.`, 'dialogCustomer', 'warning');
             }
         } else if (proses === 'primary') {
-            const idx = gridFasMap.getSelectedRowIndexes();
+            const idx = gridFasMap.getSelectedRecords();
             if (idx.length > 0) {
-                dsAlamatKirim.map((item, i) => ({
-                    ...item,
-                    utama: i == idx[0],
+                const newDataSource = dsAlamatKirim.map((address) => ({
+                    ...address,
+                    utama: (address as any).id_cust === (idx[0] as any).id_cust,
                 }));
+                setFormAlamatKirimField(newDataSource);
                 gridFasMap.refresh();
             } else {
                 myAlertGlobal(`Silahkan Memilih Data Yang Akan di Jadikan Alamat Utama.`, 'dialogCustomer', 'warning');
@@ -162,7 +164,6 @@ const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField,
         if (isEdit.length > 0) {
             const newObject = {
                 ...data,
-                id_cust: (gridFasMap.dataSource as any[]).length + 1,
                 utama: (gridFasMap.dataSource as any[]).length > 0 ? false : true,
                 userid: params.userid,
                 tgl_update: moment().format('YYYY-MM-DD'),
@@ -171,10 +172,11 @@ const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField,
             dsAlamatKirim[isEdit[0]] = newObject;
             gridFasMap.refresh();
         } else {
+            const newID = getMaxId(dsAlamatKirim);
             const newObject = {
                 ...data,
-                id_cust: (gridFasMap.dataSource as any[]).length + 1,
-                utama: (gridFasMap.dataSource as any[]).length > 0 ? false : true,
+                id_cust: (newID ?? 0) + 1,
+                utama: dsAlamatKirim.length > 0 ? false : true,
                 userid: params.userid,
                 tgl_update: moment().format('YYYY-MM-DD'),
                 alamat_lengkap: s,
@@ -464,8 +466,8 @@ const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField,
                             mode: 'Row',
                             type: 'Single',
                         }}
-                        allowSorting={true}
-                        allowResizing={true}
+                        allowSorting={false}
+                        allowResizing={false}
                         allowReordering={true}
                         pageSettings={{
                             pageSize: 25,
@@ -511,7 +513,7 @@ const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField,
                                 clipMode="EllipsisWithTooltip"
                             />
                         </ColumnsDirective>
-                        <Inject services={[Edit, Sort]} />
+                        <Inject services={[Edit]} />
                     </GridComponent>
                     <div className="panel-pager mt-3">
                         <TooltipComponent content="Baru" opensOn="Hover" openDelay={5} target="#btnNew">
@@ -567,30 +569,26 @@ const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField,
                     onClose={(args) => {
                         setOpenDialog(false);
                         if (args) {
+                            console.log('args', args);
                             saveNewAlamat(args);
-                        } else {
-                            console.log(args);
                             setTemplateAlamat(initialAlamat);
                         }
                     }}
                     initalData={templateAlamat}
                     params={params}
-                    setFormAlamatKirimField={setFormAlamatKirimField}
                 />
             )}
         </div>
     );
 };
-const DialogAddAlamat = ({ isOpen, onClose, initalData, params, setFormAlamatKirimField }: AlamatKirimType) => {
+const DialogAddAlamat = ({ isOpen, onClose, initalData, params }: AlamatKirimType) => {
     const title = 'Alamat kirim atas ' + params.nama_relasi;
-    const onChangeAlamat = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
-        setFormAlamatKirimField((prev: AlamatKirimProps[]) => {
-            const newData = prev.map((item) => {
-                return { ...item, [name]: value }; // Mengupdate properti dinamis sesuai `name`
-            });
-            console.log(newData)
-            return newData; 
+    const onChangeAlamat = (event: any, value: string) => {
+        const { name } = event.target;
+        initalData.map((item: FieldProps) => {
+            if (item.FieldName === name) {
+                item.Value = value ?? event.value;
+            }
         });
     };
     const handlePasteLocationClick = async () => {
@@ -640,6 +638,9 @@ const DialogAddAlamat = ({ isOpen, onClose, initalData, params, setFormAlamatKir
                                     acc[curr.FieldName] = curr.Value;
                                     return acc;
                                 }, {});
+                            initalData.map((item: FieldProps) => {
+                                item.Value = '';
+                            });
                             onClose(alamat);
                         }}
                     >
@@ -704,7 +705,7 @@ const DialogAddAlamat = ({ isOpen, onClose, initalData, params, setFormAlamatKir
                                                     id={item.FieldName + index}
                                                     value={String(item.Value)}
                                                     onChange={(event: any) => {
-                                                        onChangeAlamat(event);
+                                                        onChangeAlamat(event, event.target.value);
                                                     }}
                                                     readOnly={item.ReadOnly}
                                                 />
@@ -716,10 +717,11 @@ const DialogAddAlamat = ({ isOpen, onClose, initalData, params, setFormAlamatKir
                                         {item.Label ? <span className="e-label font-bold">{item.Label}</span> : <span className="e-label font-bold text-[#f8f7ff]">&</span>}
                                         <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
                                             <ComboBoxComponent
+                                                key={item.FieldName}
+                                                name={item.FieldName}
                                                 id={item.FieldName}
                                                 fields={{ text: 'label', value: 'value' }}
                                                 value={String(item.Value)}
-                                                key={item.FieldName}
                                                 dataSource={
                                                     item.FieldName === 'propinsi_kirim'
                                                         ? params?.provinsiArray
@@ -734,7 +736,7 @@ const DialogAddAlamat = ({ isOpen, onClose, initalData, params, setFormAlamatKir
                                                         : []
                                                 }
                                                 onChange={(event: any) => {
-                                                    onChangeAlamat(event);
+                                                    onChangeAlamat(event, event.value);
                                                 }}
                                             />
                                         </div>
@@ -742,7 +744,7 @@ const DialogAddAlamat = ({ isOpen, onClose, initalData, params, setFormAlamatKir
                                 ) : item.Type === 'number' ? (
                                     <div key={item.FieldName + index}>
                                         <span className="e-label font-bold">{item.Label}</span>
-                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`}>
+                                        <div className={`container form-input ${item.ReadOnly && 'bg-[#eee]'}`} key={item.FieldName}>
                                             <span className="e-input-group e-control-wrapper">
                                                 <input
                                                     id={item.FieldName + index}
@@ -764,7 +766,7 @@ const DialogAddAlamat = ({ isOpen, onClose, initalData, params, setFormAlamatKir
                                                         }
                                                     }}
                                                     onChange={(event: any) => {
-                                                        onChangeAlamat(event);
+                                                        onChangeAlamat(event, event.target.value);
                                                     }}
                                                 />
                                             </span>
@@ -789,7 +791,7 @@ const DialogAddAlamat = ({ isOpen, onClose, initalData, params, setFormAlamatKir
                                                 name={item.FieldName}
                                                 value={String(item.Value)}
                                                 onBlur={(event: any) => {
-                                                    onChangeAlamat(event);
+                                                    onChangeAlamat(event, event.target.value);
                                                 }}
                                                 readOnly={item.ReadOnly}
                                             />

@@ -18,12 +18,15 @@ import {
     FieldProps,
     generateNoCust,
     getDataMasterCustomer,
+    HisPlafondProps,
     JamOpsProps,
     onRenderDayCell,
     PotensiaProdukProps,
     prepareNewData,
     RekeningBankkProps,
     RelasiProps,
+    vtFileProps,
+    vtFileTemplate,
 } from '../../functions/definition';
 import { faBarcode, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Tab } from '@headlessui/react';
@@ -38,6 +41,8 @@ import RekeningBank from '../TabsContent/RekeningBank';
 import LainLain from '../TabsContent/LainLain';
 import Penjualan from '../TabsContent/Penjualan';
 import moment from 'moment';
+import Catatan from '../TabsContent/Catatan';
+import FilePendukung from '../TabsContent/FilePendukung';
 
 interface NewEditProps {
     isOpen: boolean;
@@ -70,6 +75,8 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
     const [formRekeningBankField, setFormRekeningBankField] = React.useState<RekeningBankkProps[]>([]);
     const [formAlamatKirimField, setFormAlamatKirimField] = React.useState<AlamatKirimProps[]>([]);
     const [formFasMapField, setFormFasMapField] = React.useState<any[]>(MapFields);
+    const [formHisPlafond, setFormHisPlafond] = React.useState<HisPlafondProps[]>([]);
+    const [formVtFile, setFormVtFile] = React.useState<vtFileProps[]>([]);
     const [dsProdukKategori, setDsProdukKategori] = React.useState<any[]>([]);
     const [dsProdukKelompok, setDsProdukKelompok] = React.useState<any[]>([]);
     const [dsAkunPiutang, setDsAkunPiutang] = React.useState<any[]>([]);
@@ -314,8 +321,26 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                     });
                 });
             });
+
             await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'kirim').then((result) => {
-                setFormAlamatKirimField(result)
+                setFormAlamatKirimField(result);
+            });
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'hisplafond').then((result) => {
+                setFormHisPlafond(result);
+            });
+            await getDataMasterCustomer(params?.entitas, params?.kode_cust ?? '', params?.token, 'sfc').then((result) => {
+                console.log('result', result);
+                const newVtFile: vtFileProps[] = [];
+                result.map((item: any, index: number) => {
+                    const newindex = index + 1;
+                    newVtFile.push({
+                        ...vtFileTemplate,
+                        id: newindex,
+                        keterangan: item.description,
+                        mandatory: item.fileStatus === 'Y' ? true : false,
+                    });
+                });
+                setFormVtFile(newVtFile);
             });
 
             await fetchKategoriKelompok(params?.entitas, params?.token).then((result) => {
@@ -508,10 +533,11 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                 return acc;
             }, {});
 
-        console.log(formAlamatKirimField)
+        console.log(formAlamatKirimField);
     };
     const saveDoc = async () => {
         try {
+            console.log(formBaseStateField);
             await beforeSaveDoc();
         } catch (error) {}
     };
@@ -681,15 +707,15 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                                         -mb-[1px] flex items-center border border-transparent p-3.5 py-2 !outline-none transition duration-300 hover:text-danger`}
                                                 id={`tab-${item.id}`}
                                             >
-                                                {item.name}
+                                                {item.id + '. ' + item.name}
                                             </button>
                                         )}
                                     </Tab>
                                 ))}
                             </Tab.List>
-                            <Tab.Panels className="w-full flex-1 border border-t-0 border-white-light bg-[#f8f7ff]  p-2 text-sm dark:border-[#191e3a]">
+                            <Tab.Panels className={`w-full flex-1 border border-t-0 border-white-light text-sm dark:border-[#191e3a]`}>
                                 {customerTab.map((item: { id: number; name: string }) => (
-                                    <Tab.Panel key={item.id} className={'h-[450px] overflow-auto'}>
+                                    <Tab.Panel key={item.id} className={`h-[450px] overflow-auto  p-2 ${item.id == 8 ? '!bg-white' : 'bg-[#f8f7ff]'}`}>
                                         {item.id == 1 ? (
                                             <InfoPerusahaan
                                                 Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 1)}
@@ -748,12 +774,11 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
                                                 dsAlamatKirim={formAlamatKirimField}
                                                 setFormAlamatKirimField={setFormAlamatKirimField}
                                             />
-                                        ) : // <LainLain
-                                        // Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 4)}
-                                        // handleChange={handleChange}
-                                        // onRenderDayCell={onRenderDayCell}
-                                        // />
-                                        item.id == 9 ? (
+                                        ) : item.id == 7 ? (
+                                            <Catatan Field={formBaseStateField.filter((item: FieldProps) => item.TabId == 7)} handleChange={handleChange} dataSource={formHisPlafond} />
+                                        ) : item.id == 8 ? (
+                                            <FilePendukung vtFile={formVtFile} state={state}/>
+                                        ) : item.id == 9 ? (
                                             <RekeningBank
                                                 dataSource={formRekeningBankField}
                                                 params={{

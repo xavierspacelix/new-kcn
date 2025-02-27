@@ -210,7 +210,28 @@ export const getDataRegionIndonesia = async (entitas: string, type: string) => {
     });
     return data.data.data;
 };
+type ItemGroup = {
+    description: string;
+    fileStatus: string;
+};
 
+function groupItemsByNumber(data: Record<string, any>): ItemGroup[] {
+    let groupedItems: ItemGroup[] = [];
+
+    for (let i = 1; i <= 20; i++) {
+        let keyFket = `fket${i}`;
+        let keyFile = `file${i}`;
+
+        if (data[keyFket]) {
+            groupedItems.push({
+                description: data[keyFket],
+                fileStatus: data[keyFile] || 'N', // Jika tidak ada, default ke "N"
+            });
+        }
+    }
+
+    return groupedItems;
+}
 export const getDataMasterCustomer = async (entitas: string, kode_cust: string, token: string, type: string) => {
     if (type === 'master') {
         const data = await axios.get(`${apiUrl}/erp/master_customer?`, {
@@ -237,7 +258,6 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
                 plafond_atas: SpreadNumber(item.plafond_atas),
             };
         });
-        console.log(newData);
         return newData;
     } else if (type === 'detail') {
         const data = await axios.get(`${apiUrl}/erp/detail_customer`, {
@@ -360,6 +380,51 @@ export const getDataMasterCustomer = async (entitas: string, kode_cust: string, 
             };
         });
         return newData;
+    } else if (type === 'hisplafond') {
+        const data = await axios.get(`${apiUrl}/erp/history_plafond_customer?`, {
+            params: {
+                entitas: entitas,
+                param1: kode_cust,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const newData = data.data.data.map((item: any) => {
+            return {
+                ...item,
+                tgl_update: item.tgl_update === null ? null : moment(item.tgl_update).format('DD-MM-YYYY'),
+                plafond_lama:
+                    item.plafond_lama % 1 >= 0.5
+                        ? new Intl.NumberFormat('en-US', {
+                              maximumFractionDigits: 2,
+                              minimumFractionDigits: 2,
+                          }).format(item.plafond_lama)
+                        : new Intl.NumberFormat('en-US', {
+                              maximumFractionDigits: 2,
+                          }).format(item.plafond_lama),
+                plafond_baru:
+                    item.plafond_baru % 1 >= 0.5
+                        ? new Intl.NumberFormat('en-US', {
+                              maximumFractionDigits: 2,
+                              minimumFractionDigits: 2,
+                          }).format(item.plafond_baru)
+                        : new Intl.NumberFormat('en-US', {
+                              maximumFractionDigits: 2,
+                          }).format(item.plafond_baru),
+            };
+        });
+        return newData;
+    } else if (type === 'sfc') {
+        const data = await axios.get(`${apiUrl}/erp/vtFile?`, {
+            params: {
+                entitas: entitas,
+            },
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return groupItemsByNumber(data.data.data[0]);
     }
 };
 export interface RelasiProps {
@@ -548,7 +613,35 @@ export type AlamatKirimProps = {
     userid: string;
     tgl_update: string;
 };
+export type HisPlafondProps = {
+    plafond_lama: string;
+    plafond_baru: string;
+    tgl_lama: string;
+    catatan: string;
+    id: string;
+    kode_cust: string;
+    plafond_maksimal: string;
+    kelas: string;
+    tgl_update: string;
+    userid: string;
+};
+export type vtFileProps = {
+    id: number;
+    keterangan: string;
+    mandatory: boolean;
+    nama_file: string;
+    original_name: string;
+    file: File | null;
+};
 
+export const vtFileTemplate = {
+    id: 0,
+    keterangan: '',
+    mandatory: false,
+    nama_file: '',
+    original_name: '',
+    file: null,
+};
 let id: number = 1;
 export const customerTab = [
     {
@@ -593,6 +686,13 @@ export function onRenderDayCell(args: RenderDayCellEventArgs): void {
     if ((args.date as Date).getDay() === 0) {
         args.isDisabled = true;
     }
+}
+
+export function getMaxId(data: any[]) {
+    if (!Array.isArray(data) || data.length === 0) return null;
+
+    const ids = data.map((item) => item.id_cust).filter((id) => typeof id === 'number');
+    return ids.length > 0 ? Math.max(...ids) : null;
 }
 export async function prepareNewData(entitas: string, token: string, userid: any) {
     const quSetting = await fetchInitialValue(entitas, token, 'setting');

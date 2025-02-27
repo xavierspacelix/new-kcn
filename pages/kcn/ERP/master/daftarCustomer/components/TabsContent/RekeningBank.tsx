@@ -47,18 +47,6 @@ const RekeningBank = ({ dataSource, params, setFormRekeningBankField }: Rekening
                     name="no_rekening"
                     type="text"
                     className="no_rekening"
-                    // onKeyDown={(event: any) => {
-                    //     const char = (event as React.KeyboardEvent<HTMLInputElement>).key;
-                    //     const isValidChar = /[0-9.\s]/.test(char) || char === 'Backspace';
-                    //     if (!isValidChar) {
-                    //         event.preventDefault();
-                    //     }
-
-                    //     const inputValue = (event.target as HTMLInputElement).value;
-                    //     if (char === '.' && inputValue.includes('.')) {
-                    //         event.preventDefault();
-                    //     }
-                    // }}
                     onChange={(e: any) => {
                         if (gridRekeningBankType.dataSource && Array.isArray(gridRekeningBankType.dataSource)) {
                             gridRekeningBankType.dataSource[args.index] = {
