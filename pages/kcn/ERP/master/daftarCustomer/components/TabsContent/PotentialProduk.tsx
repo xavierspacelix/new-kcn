@@ -4,7 +4,7 @@ import { ColumnDirective, ColumnsDirective, Edit, Grid, GridComponent, Inject, S
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { ButtonComponent } from '@syncfusion/ej2-react-buttons';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
-
+import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 interface DaftarKontakProps {
     dataSource: PotensiaProdukProps[];
     params: {
@@ -61,6 +61,25 @@ const PotentialProduk = ({ dataSource, params, setFormPotensialProdukField, dsPr
             />
         );
     };
+    const editCatatan = (args: any) => {
+        return (
+            <TextBoxComponent
+                id="catatan"
+                name="catatan"
+                floatLabelType="Never"
+                placeholder={args.catatan}
+                onChange={(e: any) => {
+                    if (gridPotensialProdukType.dataSource && Array.isArray(gridPotensialProdukType.dataSource)) {
+                        gridPotensialProdukType.dataSource[args.index] = {
+                            ...gridPotensialProdukType.dataSource[args.index],
+                            catatan: e.value,
+                        };
+                    }
+                }}
+                value={args.catatan}
+            />
+        );
+    };
     const commandClick = (proses: string) => {
         const newData = {
             kode_cust: params.kode_cust,
@@ -100,7 +119,7 @@ const PotentialProduk = ({ dataSource, params, setFormPotensialProdukField, dsPr
                 height={'40vh'}
                 gridLines={'Both'}
                 loadingIndicator={{ indicatorType: 'Spinner' }}
-                recordDoubleClick={() => commandClick('edit')}
+                // recordDoubleClick={() => commandClick('edit')}
                 autoFit={true}
             >
                 <ColumnsDirective>
@@ -114,8 +133,17 @@ const PotentialProduk = ({ dataSource, params, setFormPotensialProdukField, dsPr
                         textAlign="Left"
                         clipMode="EllipsisWithTooltip"
                     />
-                    <ColumnDirective validationRules={{ required: [true, 'Kelompok Harus Diisi!'] }} width={450} editTemplate={editKelompokProduk} field="kelompok" headerText="Kelompok" headerTextAlign="Center" textAlign="Left" clipMode="EllipsisWithTooltip" />
-                    <ColumnDirective width={550} field="catatan" headerText="Catatan" headerTextAlign="Center" textAlign="Left" clipMode="EllipsisWithTooltip" />
+                    <ColumnDirective
+                        validationRules={{ required: [true, 'Kelompok Harus Diisi!'] }}
+                        width={450}
+                        editTemplate={editKelompokProduk}
+                        field="kelompok"
+                        headerText="Kelompok"
+                        headerTextAlign="Center"
+                        textAlign="Left"
+                        clipMode="EllipsisWithTooltip"
+                    />
+                    <ColumnDirective width={550} editTemplate={editCatatan} field="catatan" headerText="Catatan" headerTextAlign="Center" textAlign="Left" clipMode="EllipsisWithTooltip" />
                 </ColumnsDirective>
                 <Inject services={[Edit, Sort]} />
             </GridComponent>

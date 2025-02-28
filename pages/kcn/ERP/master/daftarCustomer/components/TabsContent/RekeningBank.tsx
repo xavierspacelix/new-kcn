@@ -215,17 +215,6 @@ const RekeningBank = ({ dataSource, params, setFormRekeningBankField }: Rekening
                                             style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
                                             onClick={() => commandClick('delete')}
                                         />
-                                        <ButtonComponent
-                                            id="btnDelete"
-                                            type="button"
-                                            cssClass="e-danger e-small"
-                                            iconCss="e-icons e-small e-trash"
-                                            style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
-                                            onClick={() => {
-                                                gridRekeningBankType.refresh();
-                                                console.log('dataSource', dataSource);
-                                            }}
-                                        />
                                     </div>
                                 </div>
                             </TooltipComponent>

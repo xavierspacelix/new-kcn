@@ -583,6 +583,8 @@ const LainLain = ({ Field, handleChange, params, state, dsAlamatKirim, MapField,
 };
 const DialogAddAlamat = ({ isOpen, onClose, initalData, params }: AlamatKirimType) => {
     const title = 'Alamat kirim atas ' + params.nama_relasi;
+    const [isAmountFocused, setIsAmountFocused] = React.useState('all');
+
     const onChangeAlamat = (event: any, value: string) => {
         const { name } = event.target;
         initalData.map((item: FieldProps) => {
@@ -751,23 +753,33 @@ const DialogAddAlamat = ({ isOpen, onClose, initalData, params }: AlamatKirimTyp
                                                     name={item.FieldName}
                                                     type="text"
                                                     className="e-control e-textbox e-lib e-input"
-                                                    value={String(item.Value)}
-                                                    readOnly={item.ReadOnly}
-                                                    onKeyDown={(event: any) => {
-                                                        const char = (event as React.KeyboardEvent<HTMLInputElement>).key;
-                                                        const isValidChar = /[0-9.\s]/.test(char) || char === 'Backspace';
-                                                        if (!isValidChar) {
-                                                            event.preventDefault();
+                                                    value={isAmountFocused === item.FieldName ? String(item.Value) : String(item.Value)}
+                                                    onChange={(e) => onChangeAlamat(event, e.target.value)}
+                                                    onFocus={() => setIsAmountFocused(item.FieldName)}
+                                                    onBlur={() => {
+                                                        setIsAmountFocused('all');
+                                                        // reCalc(gridDpList, masterData, updateMasterState);
+                                                    }}
+                                                    onKeyPress={(e) => {
+                                                        if (!/^[0-9.]$/.test(e.key) || (e.key === '.' && e.currentTarget.value.includes('.'))) {
+                                                            e.preventDefault();
                                                         }
+                                                    }}
+                                                    // onKeyDown={(event: any) => {
+                                                    //     const char = (event as React.KeyboardEvent<HTMLInputElement>).key;
+                                                    //     const isValidChar = /[0-9.\s]/.test(char) || char === 'Backspace';
+                                                    //     if (!isValidChar) {
+                                                    //         event.preventDefault();
+                                                    //     }
 
-                                                        const inputValue = (event.target as HTMLInputElement).value;
-                                                        if (char === '.' && inputValue.includes('.')) {
-                                                            event.preventDefault();
-                                                        }
-                                                    }}
-                                                    onChange={(event: any) => {
-                                                        onChangeAlamat(event, event.target.value);
-                                                    }}
+                                                    //     const inputValue = (event.target as HTMLInputElement).value;
+                                                    //     if (char === '.' && inputValue.includes('.')) {
+                                                    //         event.preventDefault();
+                                                    //     }
+                                                    // }}
+                                                    // onChange={(event: any) => {
+                                                    //     onChangeAlamat(event, event.target.value);
+                                                    // }}
                                                 />
                                             </span>
                                         </div>

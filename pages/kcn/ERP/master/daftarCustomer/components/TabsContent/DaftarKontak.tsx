@@ -25,7 +25,6 @@ interface DaftarKontakProps {
 }
 let gridDKType: GridComponent;
 const DaftarKontak = ({ dataSource, params, setFormDKField }: DaftarKontakProps) => {
-
     const [isOpenDialog, setIsOpenDialog] = React.useState(false);
     const [stateKontak, setStateKontak] = React.useState('ready');
     const [editValue, setEditValue] = React.useState<dKTabInterface>(dKTabValue);
@@ -83,53 +82,53 @@ const DaftarKontak = ({ dataSource, params, setFormDKField }: DaftarKontakProps)
                         <TooltipComponent content="Hapus" opensOn="Hover" openDelay={5} target="#btnDelete">
                             <TooltipComponent content="Info Detail Customer" opensOn="Hover" openDelay={5} target="#btnInfoDetail">
                                 <div className="flex items-center justify-start gap-3">
-                                    <div className='flex'>
-                                    <ButtonComponent
-                                        id="btnNew"
-                                        type="button"
-                                        cssClass="e-primary e-small"
-                                        iconCss="e-icons e-small e-plus"
-                                        style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
-                                        onClick={() => {
-                                            setStateKontak('new');
-                                            let id = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.id_relasi)) : 1;
-                                            setEditValue({
-                                                ...dKTabValue,
-                                                kode_relasi: params.kode_relasi ?? '',
-                                                id_relasi: Math.max(...dataSource.map((item) => item.id_relasi)) + 1,
-                                            });
-                                            setIsOpenDialog(true);
-                                        }}
-                                    />
-                                    <ButtonComponent
-                                        id="btnEdit"
-                                        type="button"
-                                        cssClass="e-warning e-small"
-                                        iconCss="e-icons e-small e-edit"
-                                        style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
-                                        onClick={() => {
-                                            const data = gridDKType.getSelectedRecords();
-                                            if (data.length > 0) {
-                                                setEditValue(data[0] as dKTabInterface);
-                                                setStateKontak('edit');
+                                    <div className="flex">
+                                        <ButtonComponent
+                                            id="btnNew"
+                                            type="button"
+                                            cssClass="e-primary e-small"
+                                            iconCss="e-icons e-small e-plus"
+                                            style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
+                                            onClick={() => {
+                                                setStateKontak('new');
+                                                let id = dataSource.length > 0 ? Math.max(...dataSource.map((item) => item.id_relasi)) + 1 : 1;
+                                                setEditValue({
+                                                    ...dKTabValue,
+                                                    kode_relasi: params.kode_relasi ?? '',
+                                                    id_relasi: id,
+                                                });
                                                 setIsOpenDialog(true);
-                                            } else {
-                                                myAlertGlobal('Pilih Data Yang Akan Diubah.', 'dialogCustomer', 'warning');
-                                            }
-                                        }}
-                                    />
-                                    <ButtonComponent
-                                        id="btnDelete"
-                                        type="button"
-                                        cssClass="e-danger e-small"
-                                        iconCss="e-icons e-small e-trash"
-                                        style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
-                                        onClick={() => {
-                                            deleteRecord();
-                                        }}
-                                    />
+                                            }}
+                                        />
+                                        <ButtonComponent
+                                            id="btnEdit"
+                                            type="button"
+                                            cssClass="e-warning e-small"
+                                            iconCss="e-icons e-small e-edit"
+                                            style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
+                                            onClick={() => {
+                                                const data = gridDKType.getSelectedRecords();
+                                                if (data.length > 0) {
+                                                    setEditValue(data[0] as dKTabInterface);
+                                                    setStateKontak('edit');
+                                                    setIsOpenDialog(true);
+                                                } else {
+                                                    myAlertGlobal('Pilih Data Yang Akan Diubah.', 'dialogCustomer', 'warning');
+                                                }
+                                            }}
+                                        />
+                                        <ButtonComponent
+                                            id="btnDelete"
+                                            type="button"
+                                            cssClass="e-danger e-small"
+                                            iconCss="e-icons e-small e-trash"
+                                            style={{ marginTop: 0 + 'em', marginRight: 0.3 + 'em' }}
+                                            onClick={() => {
+                                                deleteRecord();
+                                            }}
+                                        />
                                     </div>
-                                    <p className="text-[#BB6C74] text-xs">
+                                    <p className="text-xs text-[#BB6C74]">
                                         Untuk mengubah dan melihat detail file pendukung surat kuasa, ktp dan spesimen <br />
                                         penanggung jawab silahkan tekan tombol "Info Customer" pilih tab Daftar Kontak.
                                     </p>
@@ -162,7 +161,6 @@ const DaftarKontak = ({ dataSource, params, setFormDKField }: DaftarKontakProps)
                 <DialogDaftarKontak
                     isOpen={isOpenDialog}
                     onClose={(args) => {
-                        console.log('args', args);
                         setFormDKField((prev: any) => [...prev, args]);
                         setIsOpenDialog(false);
                     }}

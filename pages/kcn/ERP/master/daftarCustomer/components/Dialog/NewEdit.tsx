@@ -567,7 +567,7 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
         });
     };
     const handleBlockData = async () => {};
-    const beforeSaveDoc = async () => {
+    const generateJSON = async () => {
         // Create Object Master
         const master = formBaseStateField
             .filter((item) => item.group.startsWith('master') && item.Type !== 'space')
@@ -606,12 +606,20 @@ const NewEditDialog = ({ isOpen, onClose, params, state, setParams }: NewEditPro
             jamops: {
                 ...jamOps,
             },
+            kirim: [...formAlamatKirimField],
+            produk: [...formPotensialProdukField],
+            rekening: [...formRekeningBankField],
+            fasmap: {
+                ...fasMap,
+            },
+            person: [...formDKField],
         };
+        return rawBody;
     };
     const saveDoc = async () => {
         try {
-            console.log(formBaseStateField);
-            await beforeSaveDoc();
+            const rawBody = await generateJSON();
+            console.log('rawBody :', rawBody);
         } catch (error) {}
     };
 
